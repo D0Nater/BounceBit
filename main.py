@@ -59,10 +59,10 @@ def update_buttons():
 
 def update_pictures():
 	globals()['image_play'] = del_picture_background("pictures\\play_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
-	globals()['image_stop'] = del_picture_background("pictures\\pause_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
+	globals()['image_pause'] = del_picture_background("pictures\\pause_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
 
 	globals()['image_play_line'] = del_picture_background("pictures\\play_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_second_color'])
-	globals()['image_stop_line'] = del_picture_background("pictures\\stop_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_second_color'])
+	globals()['image_pause_line'] = del_picture_background("pictures\\pause_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_second_color'])
 
 	globals()['image_add'] = del_picture_background("pictures\\add_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
 	globals()['image_save'] = del_picture_background("pictures\\save_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
@@ -145,7 +145,7 @@ def play_music():
 		else:
 			player.play()
 			song_play_now['play'] = 1
-			button['image'] = image_stop_line
+			button['image'] = image_pause_line
 		# update past song #
 		try:
 			if past_song['past_lib'] == past_song['lib_now']:
@@ -216,7 +216,7 @@ def play_music():
 
 		# Button 'play/stop' #
 		if song_play_now['play'] == 1:
-			play_button = Button(image=image_stop_line, command=lambda: click_play(play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE)
+			play_button = Button(image=image_pause_line, command=lambda: click_play(play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE)
 		else:
 			play_button = Button(image=image_play_line, command=lambda: click_play(play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE)
 		play_button_drow = line_for_song.create_window(line_for_song.bbox(behind_song_button)[2]+20, 31, window=play_button)
@@ -298,6 +298,7 @@ class Album:
 		self.music = info['music']
 
 	def drow_album(self, this_class, lib):
+
 		# for buttons #
 		play_song = False
 
@@ -313,7 +314,7 @@ class Album:
 
 			elif event == 'click_play':
 				if click_play == 0:
-					button['image'] = image_stop
+					button['image'] = image_pause
 					play_song = True
 					click_play = 1
 				else:
@@ -378,7 +379,7 @@ class Song:
 						globals()['player_thread'].start()
 					player.play()
 					click_play = 1
-					button['image'] = image_stop
+					button['image'] = image_pause
 					if list_of_play != list_of_music:
 						globals()['list_of_play'] = list_of_music.copy()
 				else:
@@ -417,7 +418,7 @@ class Song:
 		# button 'play' #
 		if (past_song['past_lib'] == past_song['lib_now']) and song_play_now['play'] == 1 and song_play_now['song_id'] == self.song_data[4]:
 			click_play = 1
-			play_button = Button(image=image_stop, command=lambda: button_click('click_play', play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
+			play_button = Button(image=image_pause, command=lambda: button_click('click_play', play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
 		else:
 			play_button = Button(image=image_play, command=lambda: button_click('click_play', play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
 		play_button_drow = canvas.create_window(self.x, self.y, window=play_button)
@@ -594,7 +595,7 @@ root.title("")
 # Program Settings #
 settings = Settings(root.winfo_screenwidth(), root.winfo_screenheight(), 'en', 'dark') # default settings
 settings.update_settings() # read database
-settings.create_readme(PROGRAM_NAME, VERSION, AUTHOR, GITHUB) # create README.md
+settings.create_readme(PROGRAM_NAME, VERSION, AUTHOR, GITHUB) # create readme.txt
 
 # Window Settings #
 root.iconbitmap(default="pictures\\program_icon.ico")
