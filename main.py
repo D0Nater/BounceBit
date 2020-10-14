@@ -246,9 +246,6 @@ def change_setting(setting, new_setting):
 		settings.language = new_setting
 		update_buttons()
 
-	elif setting == 'text':
-		settings.text_settings = new_setting
-
 	settings_interface()
 
 
@@ -271,12 +268,6 @@ def settings_interface():
 	lang_text = canvas.create_text(15, 140, text=languages['Язык'][settings.language], anchor=W, fill=themes[settings.theme]['text_color'], font="Verdana 13")
 	ru_lang = canvas.create_window(canvas.bbox(lang_text)[2]+70, 141, window=Button(text="Русский", command=lambda: change_setting('lang', 'ru'), bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], bd=1, width=15))
 	canvas.create_window(canvas.bbox(ru_lang)[2]+55, 141, window=Button(text="English", command=lambda: change_setting('lang', 'en'), bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], bd=1, width=15))
-
-	# Text #
-	# canvas.create_text(36, 193, text=languages['Текст'][settings.language], fill=themes[settings.theme]['text_color'], font="Verdana 13")
-	# canvas.create_text(135, 193, text=settings.text_settings, fill=themes[settings.theme]['text_color'], font="Verdana 11")
-	# canvas.create_window(92, 194, window=Button(text="-", command=lambda: change_setting('text', settings.text_settings-1), bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], bd=1, font="Verdana 12", width=2, height=1))
-	# canvas.create_window(180, 194, window=Button(text="+", command=lambda: change_setting('text', settings.text_settings+1), bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], bd=1, font="Verdana 12", width=2, height=1))
 
 	# Background #
 	bg_text = canvas.create_text(15, 193, text=languages['Фон'][settings.language], anchor=W, fill=themes[settings.theme]['text_color'], font="Verdana 13")
@@ -307,7 +298,6 @@ class Album:
 		self.music = info['music']
 
 	def drow_album(self, this_class, lib):
-
 		# for buttons #
 		play_song = False
 
@@ -556,7 +546,6 @@ def drow_data(all_data, lib, text, text_error):
 				PageButton(num, text).drow_button(x, canvas.bbox(lib_name)[3]-9)
 				x += 29
 
-
 	root.update()
 	canvas.config(scrollregion=canvas.bbox('all'))
 
@@ -603,9 +592,9 @@ root = Tk()
 root.title("")
 
 # Program Settings #
-settings = Settings(root.winfo_screenwidth(), root.winfo_screenheight(), 'en', 'dark', 12) # default settings
+settings = Settings(root.winfo_screenwidth(), root.winfo_screenheight(), 'en', 'dark') # default settings
 settings.update_settings() # read database
-settings.create_readme(PROGRAM_NAME, VERSION, AUTHOR, GITHUB) # create readme.txt
+settings.create_readme(PROGRAM_NAME, VERSION, AUTHOR, GITHUB) # create README.md
 
 # Window Settings #
 root.iconbitmap(default="pictures\\program_icon.ico")
@@ -646,76 +635,3 @@ update_buttons()
 
 # Start window #
 root.mainloop()
-
-
-# ###############################################################################
-# import sys
-# import requests
-
-# import time
-
-# """ For download music """
-# from threading import Thread
-
-# import pyglet
-# from pyglet.media import *
-
-
-# def download_file(url, filename=None):
-#     with open(filename, "wb") as f:
-#         print("Downloading %s" % filename)
-#         response = requests.get(url, stream=True)
-#         total_length = response.headers.get('content-length')
-
-#         if total_length is None:
-#             f.write(response.content)
-#         else:
-#             dl = 0
-#             total_length = int(total_length)
-#             for data in response.iter_content(chunk_size=4096):
-#                 dl += len(data)
-#                 f.write(data)
-#                 done = int(50 * dl / total_length)
-#                 sys.stdout.write("\r[%s%s]" % ('=' * done, ' ' * (50 - done)))
-#                 sys.stdout.flush()
-
-# url = 'https://cdndl.zaycev.net/track/21795525/7rjXpcxVcpkFizTZEEm7H1PeU6F1uyMct3c4rWW3KyJEcBMjwWHAwtz8NrWWovkgeEfa2q1ArFr8G7pJhT5Cc37RHkvYh4tT7M5x6osseKUSK1jR7AHUs54VDYbcMyHBw4QYKFEhDcLXR1LTG6shZDQwmoQqAwW5cDtaiMECbV4hNGpNscwA762q3cHXk7BbMLyCWCD4SeDHUk6Qfp4a46oTHYWqoNso5UwaPYoQafA7cXXm1D7H3fRPT56TZpq6pJ4M13XY1xB7V4mkwoALsZZjmtg5RC8SHAhiW836wBoUKpMEabYZ8FchMJZq1gM8vnufsq45HUySvGtpbSbBKeB4PKZUaYYPR6ha6LowbcQDyLX8E17'
-# download_file(url, 'my_track.wav')
-# print('download - OK!')
-
-# def pause_func():
-# 	while True:
-# 		a = input('> ')
-
-# 		if a == 's':
-# 			player.pause()
-
-# 		elif a == 'p':
-# 			player.play()
-
-# 			pyglet.app.run()
-
-
-# player = pyglet.media.Player()
-# player.queue(pyglet.resource.media('17695864.mp3'))
-
-# player.play()
-
-# t = Thread(target=pause_func)
-# t.start()
-
-
-# while True:
-# 	pyglet.app.run()
-
-
-# url = "https://cdndl.zaycev.net/track/22357591/7rjXpcxVcpkFizTZEEm7GwE6ZQqqRhPJKFN6uutK3ULHsEdAGdD4LPk5pRBHfWcHSXGpLMdYPDgbiu6nYhxeE9vLihCiP1ZQQuayAhtk6NKjLHPY2r97pDhiWDPTdprKZGmU9wbnEZJja5vtSDN17tJeVr9xewx5FyPJo5p9Hq9WpmRKAp3FjAXPvawRE3eimn7RZA5BTX9KTLudLBVmB9c43jjdGP7q6wKufxaWK9bTaHh84bsmjbfvKLTgfVyw2Ny6bK22KoVutXKp1Qqw4jmd18A6gFFCSinSBqW5bXPzmnBGRAWSLsm5XoLvTjtHAv2nb3KtKvCo4cJTNMnzBeTehhfkrS1ADqmr4UzPjR8CKBikPLB"
-# filename = "Databases\\Download_Music\\new_track.mp3"
-# download_file(url, filename)
-
-# music = pyglet.media.load('Databases\\Download_Music\\17695864.mp3')
-
-# music.play()
-# pyglet.app.run()
-# ###############################################################################
-
