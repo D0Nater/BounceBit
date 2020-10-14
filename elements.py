@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-
 """ For Player """
 import pyglet
 
