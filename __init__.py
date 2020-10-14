@@ -10,7 +10,7 @@ GitHub: https://github.com/D0Nater/BounceBit/
 
 Date: 14.10.2020 (day/month/year)
 
-Lang: Python
+Lang: Python 3.6.7
 
 Packages: (
 	gc,
