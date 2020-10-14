@@ -32,12 +32,11 @@ def encode_text(text):
 
 
 class Settings:
-	def __init__(self, width=None, height=None, language=None, theme=None, text_settings=None):
+	def __init__(self, width=None, height=None, language=None, theme=None):
 		self.width = int(width)
 		self.height = int(height)
 		self.language = language
 		self.theme = theme
-		self.text_settings = int(text_settings)
 
 
 	def create_readme(self, PROGRAM_NAME, VERSION, AUTHOR, GITHUB):
