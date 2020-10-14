@@ -16,31 +16,8 @@ import requests
 import lxml.html
 from lxml import etree
 
-
-def decode_text(text):
-	"""
-	Return decoced text
-	"""
-	translated = ''
-	i = len(text) - 1
-	while i >= 0:
-		translated = translated + text[i]
-		i = i - 1
-	decode_text = (b64decode(translated)).decode("UTF-8")
-	return decode_text
-
-
-def encode_text(text):
-	"""
-	Return encoded text
-	"""
-	encode_text = (b64encode(text.encode("UTF-8"))).decode()
-	translated = ''
-	i = len(encode_text) - 1
-	while i >= 0:
-		translated = translated + encode_text[i]
-		i = i - 1
-	return translated
+""" For encode/decode db4 """
+from settings import encode_text, decode_text
 
 
 def error_correction():
