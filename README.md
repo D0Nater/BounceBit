@@ -5,8 +5,7 @@ Program for listen music free
 
 Packages
 
-lxml:
-<code> pip install lxml </code>
+<code> pip install lxml </code> <br>
 <code> pip install numpy </code> <br>
 <code> pip install Pillow </code> <br>
 <code> pip install pyglet </code> <br>
