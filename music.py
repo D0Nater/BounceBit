@@ -30,23 +30,23 @@ def error_correction():
 
 	def check_db(db_name):
 
-		conn = sqlite3.connect(f'Databases\\{db_name}')
+		conn = sqlite3.connect(f'Databases/{db_name}')
 		cursor = conn.cursor()
 
 		try:
 			cursor.execute('SELECT * FROM user_music WHERE name=?', (encode_text("test_name"),)).fetchone()
 		except sqlite3.DatabaseError:
 			conn.close()
-			remove(f'Databases\\{db_name}')
-			conn = sqlite3.connect(f'Databases\\{db_name}')
+			remove(f'Databases/{db_name}')
+			conn = sqlite3.connect(f'Databases/{db_name}')
 			cursor = conn.cursor()
 
 		try:
 			cursor.execute('SELECT * FROM user_albums WHERE name=?', (encode_text("test_name"),)).fetchone()
 		except sqlite3.DatabaseError:
 			conn.close()
-			remove(f'Databases\\{db_name}')
-			conn = sqlite3.connect(f'Databases\\{db_name}')
+			remove(f'Databases/{db_name}')
+			conn = sqlite3.connect(f'Databases/{db_name}')
 			cursor = conn.cursor()
 
 		try: cursor.execute('CREATE TABLE user_music (name, author, url, song_time, num, song_id)')
@@ -62,15 +62,15 @@ def error_correction():
 	check_db('database3.sqlite') # download music
 
 
-search_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "url": "", "connect": False}
+top_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "url": "", "connect": False}
 
 
 class Music:
 	def download_music(song_id, url):
-		if not path.exists("Databases\\Download_Music"):
-			mkdir("Databases\\Download_Music")
+		if not path.exists("Databases/Download_Music"):
+			mkdir("Databases/Download_Music")
 
-		with open(f'Databases\\Download_Music\\{song_id}.mp3', "wb") as f:
+		with open(f'Databases/Download_Music/{song_id}.mp3', "wb") as f:
 			response = requests.get(requests.get(f'https://zaycev.net{url}').json()['url'], stream=True)
 			total_length = response.headers.get('content-length')
 
@@ -83,7 +83,8 @@ class Music:
 					dl += len(data)
 					f.write(data)
 
-		audio = EasyID3(f'Databases\\Download_Music\\{song_id}.mp3')
+		# music params #
+		audio = EasyID3(f'Databases/Download_Music/{song_id}.mp3')
 		audio['title'] = u""
 		audio['artist'] = u""
 		audio['album'] = u"BounceBit"
@@ -91,24 +92,25 @@ class Music:
 		audio.save()
 
 	def delete_music(song_id):
-		if path.exists(f'Databases\\Download_Music\\{song_id}.mp3'):
-			remove(f'Databases\\Download_Music\\{song_id}.mp3')
+		if path.exists(f'Databases/Download_Music/{song_id}.mp3'):
+			remove(f'Databases/Download_Music/{song_id}.mp3')
 
 	def top_music(url='https://zaycev.net/'):
-		global search_music_json
 		clear_ram()
+		global top_music_json
 		try:
-			if search_music_json['url'] != url or not search_music_json['connect']:
-				search_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "url": ""}
-				search_music_json['url'] = url
+			if top_music_json['url'] != url or not top_music_json['connect']:
+				top_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "url": ""}
+				top_music_json['url'] = url
 				
 				headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
 				api = requests.get(url, headers=headers)
 
-				search_music_json['connect'] = True
+				top_music_json['connect'] = True
 
 				tree = lxml.html.document_fromstring(api.text)
 
+				# music #
 				for num in range(1, 61):
 					new_song = {
 						"name": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
@@ -117,73 +119,75 @@ class Music:
 						"song_time": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[2]/text()')[0],
 						"song_id": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-id')[0]
 					}
-					search_music_json['music'][f'song{num-1}'] = new_song
-					search_music_json['music']['num'] += 1
+					top_music_json['music'][f'song{num-1}'] = new_song
+					top_music_json['music']['num'] += 1
 					del new_song
 
 				del tree
 
 		except requests.exceptions.ConnectionError:
-			search_music_json['connect'] = False
+			top_music_json['connect'] = False
 
-		return search_music_json
+		return top_music_json
 
 	def search_music(text, page):
 		clear_ram()
+		search_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "pages": [], "connect": False}
 		try:
-			search_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "pages": []}
 				
 			headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
 			api = requests.get(f'https://zaycev.net/search.html?page={page}&query_search={text}', headers=headers)
 
 			tree = lxml.html.document_fromstring(api.text)
 
-			try:
-				for num in range(1, 41):
-					try:
-						new_song = {
-							"name": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
-							"author": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
-							"url": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-url')[0],
-							"song_time": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[2]/text()')[0],
-							"song_id": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-id')[0]
-						}
-						search_music_json['music'][f'song{num-1}'] = new_song
-						search_music_json['music']['num'] += 1
-						del new_song
-					except:
-						break
-
+			# Music #
+			for num in range(1, 41):
 				try:
-					search_music_json['pages'].append(tree.xpath('//*[@id="search-page"]/div/div/div[3]/div/span/span/text()')[0])
-
-					for num in range((2 if int(page) > 1 else 1), 6):
-						try:
-							search_music_json['pages'].append(tree.xpath(f'//*[@id="search-page"]/div/div/div[3]/div/a[{num}]/span/text()')[0])
-						except:
-							pass
-
-					if search_music_json['pages'][-1] == 'Следующая':
-						(search_music_json['pages']).pop()
-
-					search_music_json['pages'] = sorted(search_music_json['pages'])
+					new_song = {
+						"name": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
+						"author": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
+						"url": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-url')[0],
+						"song_time": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[2]/text()')[0],
+						"song_id": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-id')[0]
+					}
+					search_music_json['music'][f'song{num-1}'] = new_song
+					search_music_json['music']['num'] += 1
+					del new_song
 				except:
-					pass
+					break
 
-				del tree
+			# Pages #
+			try:
+				# page now (default 1) #
+				search_music_json['pages'].append(tree.xpath('//*[@id="search-page"]/div/div/div[3]/div/span/span/text()')[0])
 
+				# other pages #
+				for num in range((2 if int(page) > 1 else 1), 6):
+					try:
+						search_music_json['pages'].append(tree.xpath(f'//*[@id="search-page"]/div/div/div[3]/div/a[{num}]/span/text()')[0])
+					except:
+						pass
+
+				if search_music_json['pages'][-1] == 'Следующая':
+					(search_music_json['pages']).pop()
+
+				search_music_json['pages'] = sorted(search_music_json['pages'])
+
+				search_music_json['connect'] = True
 			except:
-				return {"music": {"num": 0}, "music_albums": {"num": 0}, "pages": []}
+				pass
+
+			del tree
 
 		except requests.exceptions.ConnectionError:
-			pass
+			search_music_json['connect'] = False
 
 		return search_music_json
 
 	def read_music(db_name):
 		error_correction()
 
-		conn = sqlite3.connect(f'Databases\\{db_name}')
+		conn = sqlite3.connect(f'Databases/{db_name}')
 		cursor = conn.cursor()
 
 		json_text = {"music": {"num": 0}, "music_albums": {"num": 0}}
@@ -200,13 +204,12 @@ class Music:
 			json_text['music']['num'] += 1
 
 		conn.close()
-
 		return json_text
 
 	def check_song(db_name, song_id):
 		error_correction()
 
-		conn = sqlite3.connect(f'Databases\\{db_name}')
+		conn = sqlite3.connect(f'Databases/{db_name}')
 		cursor = conn.cursor()
 		answ = 0 if (cursor.execute('SELECT * FROM user_music WHERE song_id=?', (encode_text(song_id),))).fetchone() == None else 1
 
@@ -216,7 +219,7 @@ class Music:
 	def add_song(db_name, song_data):
 		error_correction()
 
-		conn = sqlite3.connect(f'Databases\\{db_name}')
+		conn = sqlite3.connect(f'Databases/{db_name}')
 		cursor = conn.cursor()
 
 		try:
@@ -228,20 +231,18 @@ class Music:
 
 		conn.commit()
 		conn.close()
-
 		clear_ram()
 
 	def delete_song(db_name, song_id):
 		error_correction()
 
-		conn = sqlite3.connect(f'Databases\\{db_name}')
+		conn = sqlite3.connect(f'Databases/{db_name}')
 		cursor = conn.cursor()
 
 		cursor.execute('DELETE FROM user_music WHERE song_id=?', (encode_text(song_id),))
 
 		conn.commit()
 		conn.close()
-
 		clear_ram()
 
 
@@ -255,7 +256,7 @@ class Albums:
 	def add_album(self, db_name, album_data):
 		error_correction()
 
-		conn = sqlite3.connect(f'Databases\\{db_name}')
+		conn = sqlite3.connect(f'Databases/{db_name}')
 		cursor = conn.cursor()
 
 		try:
@@ -266,18 +267,16 @@ class Albums:
 
 		conn.commit()
 		conn.close()
-
 		clear_ram()
 
 	def delete_album(self, db_name, data):
 		error_correction()
 
-		conn = sqlite3.connect(f'Databases\\{db_name}')
+		conn = sqlite3.connect(f'Databases/{db_name}')
 		cursor = conn.cursor()
 
 		cursor.execute('DELETE FROM user_albums WHERE (name=?) AND (author=?)', (encode_text(song_data[0]), encode_text(song_data[1]), encode_text(song_data[2])))
 
 		conn.commit()
 		conn.close()
-
 		clear_ram()
