@@ -11,7 +11,7 @@ from tkinter import *
 import pyglet
 from pyglet.media import *
 
-""" For download music """
+""" For download and listen music """
 from threading import Thread
 
 """ For clear RAM """
@@ -20,12 +20,10 @@ from gc import collect as clear_ram
 """ For load music on screen """
 from time import sleep as time_sleep
 
-from PIL import Image, ImageTk
-
 """ Other Scripts """
 from elements import *
 from settings import Settings
-from music import Music, Albums
+from music import Music
 
 
 class PageButton:
@@ -60,27 +58,27 @@ def update_buttons():
 
 
 def update_pictures():
-	globals()['image_play'] = del_picture_background("pictures\\play_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
-	globals()['image_pause'] = del_picture_background("pictures\\pause_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
+	globals()['image_play'] = del_picture_background("pictures/play_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
+	globals()['image_pause'] = del_picture_background("pictures/pause_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
 
-	globals()['image_play_line'] = del_picture_background("pictures\\play_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_second_color'])
-	globals()['image_pause_line'] = del_picture_background("pictures\\pause_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_second_color'])
+	globals()['image_play_line'] = del_picture_background("pictures/play_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_second_color'])
+	globals()['image_pause_line'] = del_picture_background("pictures/pause_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_second_color'])
 
-	globals()['image_add'] = del_picture_background("pictures\\add_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
-	globals()['image_save'] = del_picture_background("pictures\\save_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
+	globals()['image_add'] = del_picture_background("pictures/add_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
+	globals()['image_save'] = del_picture_background("pictures/save_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
 
-	globals()['image_add_click'] = del_picture_background("pictures\\add_button_click.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
-	globals()['image_save_click'] = del_picture_background("pictures\\save_button_click.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
+	globals()['image_add_click'] = del_picture_background("pictures/add_button_click.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
+	globals()['image_save_click'] = del_picture_background("pictures/save_button_click.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
 
-	globals()['image_behind_song'] = del_picture_background("pictures\\behind_song_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_second_color'])
-	globals()['image_after_song'] = del_picture_background("pictures\\after_song_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_second_color'])
+	globals()['image_behind_song'] = del_picture_background("pictures/behind_song_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_second_color'])
+	globals()['image_after_song'] = del_picture_background("pictures/after_song_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_second_color'])
 
-	globals()['image_more'] = del_picture_background("pictures\\more_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
-	globals()['image_search'] = del_picture_background("pictures\\search_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
+	globals()['image_more'] = del_picture_background("pictures/more_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
+	globals()['image_search'] = del_picture_background("pictures/search_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
 
 
 def new_music_control(song_id):
-	player.queue(pyglet.media.load(f'Databases\\Download_Music\\{song_id}.mp3'))
+	player.queue(pyglet.media.load(f'Databases/Download_Music/{song_id}.mp3'))
 	player.play()
 
 	if not player_bool:
@@ -184,6 +182,7 @@ def play_music():
 
 		update_buttons()
 
+
 	if song_play_now['name'] is not "" and song_play_now['author'] is not "":
 		# update past song #
 		try:
@@ -196,15 +195,18 @@ def play_music():
 		song_name = line_for_song.create_text(30, 19, text=song_play_now['name'], fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
 		song_author = line_for_song.create_text(30, 39, text=song_play_now['author'], fill='grey50', anchor=W, font="Verdana 12")
 
+		# time now #
 		x_time = line_for_song.bbox(song_name)[2]+23 if line_for_song.bbox(song_name)[2] > line_for_song.bbox(song_author)[2] else line_for_song.bbox(song_author)[2]+23
 		time = line_for_song.create_text(x_time, 30, text=song_time_now, fill='grey50', anchor=W, font="Verdana 10")
 
+		# time line #
 		time_line = line_for_song.create_line(line_for_song.bbox(time)[2]+8, line_for_song.bbox(time)[3]-7, line_for_song.bbox(time)[2]+130, line_for_song.bbox(time)[3]-7, width=4, fill='grey11')
 		time_line_now = line_for_song.create_line(line_for_song.bbox(time_line)[2], line_for_song.bbox(time_line)[3]-7, 0, line_for_song.bbox(time_line)[3]-7, width=4, fill='black')
 
 		line_for_song.delete(time)
 		line_for_song.delete(time_line_now)
 
+		# song time #
 		song_time = line_for_song.create_text(line_for_song.bbox(time_line)[2]+8, line_for_song.bbox(time_line)[1]+4, text=song_play_now['time'], fill='grey50', anchor=W, font="Verdana 10")
 
 		# Button 'behind song' #
@@ -274,70 +276,6 @@ def settings_interface():
 	canvas.config(scrollregion=canvas.bbox('all'))
 
 	update_buttons()
-
-
-class Album:
-	def __init__(self, x, y, num, info):
-		self.x = x
-		self.y = y
-		self.num = num
-		self.name = info['name']
-		self.author = info['author']
-		self.music = info['music']
-
-	def drow_album(self, this_class, lib):
-
-		# for buttons #
-		play_song = False
-
-		click_play = 0
-		click_add = int(Albums.check_album(Music.read_music("Databases\\Music.json")))
-
-		def button_click(event, button):
-			nonlocal click_play, click_add
-
-			if event == 'click_more':
-				past_song['lib_now'] = f'{lib} {self.name}'
-				drow_album_music(self.name, self.author, self.music, f'{lib} {self.name}')
-
-			elif event == 'click_play':
-				if click_play == 0:
-					button['image'] = image_pause
-					play_song = True
-					click_play = 1
-				else:
-					button['image'] = image_play
-					play_song = False
-					click_play = 0
-
-			elif event == 'click_add':
-				if click_add == 0:
-					Albums.add_album("Databases\\Music.json", Music.read_music())
-					button['image'] = image_add_click
-					click_add = 1
-				else:
-					Albums.delete_album("Databases\\Music.json", Music.read_music())
-					button['image'] = image_add
-					click_add = 0
-
-		# Album info #
-		text_album = canvas.create_text(self.x, self.y, text=f"{self.name}  -  ", fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
-		text_author = canvas.create_text(canvas.bbox(text_album)[2], self.y, text=self.author, fill='grey50', anchor=W, font="Verdana 12")
-
-		# button 'more' #
-		more_button = Button(image=image_more, command=lambda: button_click('click_more', more_button), width=19, height=21, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
-		more_button_drow = canvas.create_window(canvas.bbox(text_author)[2]+23, self.y, window=more_button)
-
-		# button 'play' #
-		play_button = Button(image=image_play, command=lambda: button_click('click_play', play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
-		play_button_drow = canvas.create_window(canvas.bbox(more_button_drow)[2]+33, self.y, window=play_button)
-
-		# button 'add' #
-		if click_add == 0:
-			add_button = Button(image=image_add, command=lambda: button_click('click_add', add_button), width=15, height=20, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
-		else:
-			add_button = Button(image=image_add_click, command=lambda: button_click('click_add', add_button), width=15, height=20, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
-		add_button_drow = canvas.create_window(canvas.bbox(play_button_drow)[2]+40, self.y, window=add_button)
 
 
 class Song:
@@ -426,39 +364,6 @@ class Song:
 		save_button_drow = canvas.create_window(canvas.bbox(add_button_drow)[2]+20, self.y, window=save_button)
 
 
-def drow_album_music(album_name, author, songs, lib):
-	clear_list_of_songs()
-	clear_ram()
-	canvas.delete("all")
-	songs['num'] = len(songs)
-	globals()['list_of_music'] = {"music": songs}
-
-	text = languages[lib.split(' ')[0]][settings.language]
-	text = canvas.create_text(14, 15, text=text, fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
-	text = canvas.create_image(canvas.bbox(text)[2]+20, 17, image=image_more)
-	text = canvas.create_text(canvas.bbox(text)[2]+11, 15, text=f'{album_name}  -  ', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
-	text = canvas.create_text(canvas.bbox(text)[2], 15, text=author, fill='grey50', anchor=W, font="Verdana 13")
-
-	y = 70
-
-	for song_now in range(songs['num']):
-		song_name = songs[f'song{song_now}']['name']
-		song_author = songs[f'song{song_now}']['author']
-
-		text_song = canvas.create_text(20, y, text=f"{song_name}  -  ", fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
-		text_author = canvas.create_text(canvas.bbox(text_song)[2], y, text=song_author, fill='grey50', anchor=W, font="Verdana 12")
-
-		del song_name, song_author
-		new_song = Song(canvas.bbox(text_author)[2]+34, y, song_now, songs[f'song{song_now}'])
-		new_song.drow_music(new_song, lib)
-		list_of_songs_class.append(new_song)
-		globals()['list_of_music']['music'][f'song{song_now}']['class'] = new_song
-		y += 40
-
-	root.update()
-	canvas.config(scrollregion=canvas.bbox('all'))
-
-
 def drow_data(all_data, lib, text, text_error):
 	clear_list_of_songs()
 	clear_ram()
@@ -483,13 +388,13 @@ def drow_data(all_data, lib, text, text_error):
 	y = 90
 
 	# albums #
-	for num in range(all_data['music_albums']['num']):
-		new_album = Album(20, y, num+1, all_data['music_albums'][f'album{num+1}'])
-		new_album.drow_album(new_album, lib)
-		list_of_songs_class.append(new_album)
-		y += 40
+	# for num in range(all_data['music_albums']['num']):
+	# 	new_album = Album(20, y, num+1, all_data['music_albums'][f'album{num+1}'])
+	# 	new_album.drow_album(new_album, lib)
+	# 	list_of_songs_class.append(new_album)
+	# 	y += 40
 
-	y += (0 if all_data['music_albums']['num'] == 0 else 25)
+	# y += (0 if all_data['music_albums']['num'] == 0 else 25)
 
 	# music #
 	for song_now in range(all_data['music']['num']):
@@ -509,10 +414,12 @@ def drow_data(all_data, lib, text, text_error):
 
 	canvas.delete(load_text)
 
+	# lib name #
 	lib_name_text = languages[lib.split(' ')[0]][settings.language]+((' - '+languages['page'][settings.language]+' '+lib.split(' ')[1]) if len(lib.split(' ')) > 1 else '')
 	lib_name = canvas.create_text(14, 15, text=lib_name_text, fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
 	if (lib.split(' ')[0] == 'Рекомендации' or lib.split(' ')[0] == 'Поиск') and not all_data['connect']:
+		# errors #
 		canvas.create_text(14, 60, text=languages[text_error][settings.language], fill='grey50', anchor=W, font="Verdana 12")
 
 	else:
@@ -572,7 +479,7 @@ def music_interface(lib, text_error, all_data, text=''):
 		text_error = canvas.create_text(20, canvas.bbox(text_lib)[3]+25, text=f'Error:\n{traceback.format_exc()}', fill='red', anchor=NW, font="Verdana 15")
 		text_error = canvas.create_text(20, canvas.bbox(text_error)[3]+25, text='Сообщить об ошибке', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
-		add_button = Button(text="VK", bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=1, width=10, command=lambda: print(' - ok!'))
+		add_button = Button(text="VK", bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=1, width=10, command=lambda: print(' - none :('))
 		add_button_drow = canvas.create_window(canvas.bbox(text_error)[2]+50, canvas.bbox(text_error)[3]-11, window=add_button)
 
 
@@ -586,7 +493,7 @@ settings.update_settings() # read database
 settings.create_readme(PROGRAM_NAME, VERSION, AUTHOR, GITHUB) # create readme.txt
 
 # Window Settings #
-root.iconbitmap(default="pictures\\program_icon.ico")
+root.iconbitmap(default="pictures/program_icon.ico")
 root.geometry(f"{settings.width-50}x{settings.height-100}")
 root.minsize(width=180, height=45)
 root.maxsize(width=settings.width, height=settings.height)
@@ -605,7 +512,7 @@ canvas = Canvas(root, width=settings.width, height=settings.height-200, yscrollc
 canvas.configure(scrollregion=canvas.bbox("all"))
 canvas.bind_all("<MouseWheel>", on_mousewheel)
 vscrollbar.config(command=canvas.yview)
-# vscrollbar.pack(side=LEFT, fill=Y)
+# vscrollbar.pack(side=LEFT, fill=Y) # draw scrollbar
 canvas.pack()
 
 # Line for songs #
@@ -613,10 +520,8 @@ line_for_song = Canvas(root, width=settings.width, height=200, bg=themes[setting
 line_for_song.pack()
 
 # Create and drow logo #
-image_logo = ImageTk.PhotoImage(Image.open("pictures\\main_logo1.jpg").resize((canvas.winfo_reqwidth(), canvas.winfo_reqheight()), Image.ANTIALIAS))
+image_logo = ImageTk.PhotoImage(Image.open("pictures/main_logo1.jpg").resize((canvas.winfo_reqwidth(), canvas.winfo_reqheight()), Image.ANTIALIAS))
 canvas.create_image(0, 0, image=image_logo, anchor=NW)
-
-image_background = ImageTk.PhotoImage(Image.open("pictures\\wall_test.jpg").resize((canvas.winfo_reqwidth(), canvas.winfo_reqheight()), Image.ANTIALIAS))
 
 # Drow buttons for music #
 update_pictures()
