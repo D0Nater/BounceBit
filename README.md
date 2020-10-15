@@ -7,15 +7,15 @@ Packages
 
 lxml:
 <code> pip install lxml </code>
-numpy:
+<br> numpy:
 <code> pip install numpy </code>
-PIL:
+<br> PIL:
 <code> pip install Pillow </code>
-pyglet:
+<br> pyglet:
 <code> pip install pyglet </code>
-mutagen:
+<br> mutagen:
 <code> pip install mutagen </code>
-requests:
+<br> requests:
 <code> pip install requests </code>
-gc:
+<br> gc:
 <code> pip install gc-python-utils </code>
