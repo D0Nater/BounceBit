@@ -3,8 +3,7 @@ Program for listen music free
 
 ![alt text](Screenshots/BounceBit.png "BounceBit")
 
-Packages
-
+Packages <br>
 <code> pip install lxml </code> <br>
 <code> pip install numpy </code> <br>
 <code> pip install Pillow </code> <br>
