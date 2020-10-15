@@ -32,7 +32,7 @@ def encode_text(text):
 
 
 class Settings:
-	def __init__(self, width=None, height=None, language=None, theme=None):
+	def __init__(self, width, height, language, theme):
 		self.width = int(width)
 		self.height = int(height)
 		self.language = language
@@ -40,7 +40,7 @@ class Settings:
 
 
 	def create_readme(self, PROGRAM_NAME, VERSION, AUTHOR, GITHUB):
-		with open("Databases\\README.md", "w+") as file:
+		with open("Databases/README.md", "w+") as file:
 			file.write(text_for_readme%(PROGRAM_NAME,VERSION,AUTHOR,GITHUB))
 
 
@@ -52,15 +52,15 @@ class Settings:
 		if not path.exists('Databases'):
 			mkdir('Databases')
 
-		conn = sqlite3.connect('Databases\\database1.sqlite')
+		conn = sqlite3.connect('Databases/database1.sqlite')
 		cursor = conn.cursor()
 
 		try:
 			cursor.execute('SELECT * FROM settings WHERE setting=?', (encode_text("width"),)).fetchone()
 		except sqlite3.DatabaseError:
 			conn.close()
-			remove('Databases\\database1.sqlite')
-			conn = sqlite3.connect('Databases\\database1.sqlite')
+			remove('Databases/database1.sqlite')
+			conn = sqlite3.connect('Databases/database1.sqlite')
 			cursor = conn.cursor()
 
 		try:
@@ -87,7 +87,7 @@ class Settings:
 		"""
 		self.error_correction()
 
-		conn = sqlite3.connect('Databases\\database1.sqlite')
+		conn = sqlite3.connect('Databases/database1.sqlite')
 		cursor = conn.cursor()
 
 		cursor.execute('UPDATE settings SET param=? WHERE setting=?', (encode_text(self.width), encode_text("width")))
@@ -105,7 +105,7 @@ class Settings:
 		"""
 		self.error_correction()
 
-		conn = sqlite3.connect('Databases\\database1.sqlite')
+		conn = sqlite3.connect('Databases/database1.sqlite')
 		cursor = conn.cursor()
 
 		self.width = int(decode_text(cursor.execute('SELECT param FROM settings WHERE setting=?', (encode_text("width"),)).fetchone()[0]))
