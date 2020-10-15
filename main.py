@@ -20,6 +20,8 @@ from gc import collect as clear_ram
 """ For load music on screen """
 from time import sleep as time_sleep
 
+from PIL import Image, ImageTk
+
 """ Other Scripts """
 from elements import *
 from settings import Settings
@@ -129,10 +131,6 @@ def play_music():
 
 				time_sleep(1)
 
-		# line_for_song.delete(time_line_now)
-		# time_line_now = line_for_song.create_line(time_line_bbox[0]+5, time_line_bbox[1]+5, float(time_line_bbox[0])+num_for_time_line_now+5.0, time_line_bbox[1]+5, width=4, fill='black')
-
-
 	def click_play(button):
 		global song_play_now
 
@@ -154,7 +152,6 @@ def play_music():
 			pass
 
 		update_buttons()
-
 
 	def behind_after_music(event):
 		song_num = song_play_now['num'] + (event)
@@ -186,7 +183,6 @@ def play_music():
 		play_music()
 
 		update_buttons()
-
 
 	if song_play_now['name'] is not "" and song_play_now['author'] is not "":
 		# update past song #
@@ -253,6 +249,11 @@ def settings_interface():
 	clear_ram()
 	canvas.delete("all")
 
+	try:
+		del globals()['image_logo']
+	except:
+		pass
+
 	settings_text = canvas.create_text(15, 19, text=languages['Настройки'][settings.language], anchor=W, fill=themes[settings.theme]['text_color'], font="Verdana 13")
 
 	# Save #
@@ -268,19 +269,6 @@ def settings_interface():
 	lang_text = canvas.create_text(15, 140, text=languages['Язык'][settings.language], anchor=W, fill=themes[settings.theme]['text_color'], font="Verdana 13")
 	ru_lang = canvas.create_window(canvas.bbox(lang_text)[2]+70, 141, window=Button(text="Русский", command=lambda: change_setting('lang', 'ru'), bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], bd=1, width=15))
 	canvas.create_window(canvas.bbox(ru_lang)[2]+55, 141, window=Button(text="English", command=lambda: change_setting('lang', 'en'), bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], bd=1, width=15))
-
-	# Background #
-	bg_text = canvas.create_text(15, 193, text=languages['Фон'][settings.language], anchor=W, fill=themes[settings.theme]['text_color'], font="Verdana 13")
-	canvas.create_window(canvas.bbox(bg_text)[2]+50, 194, window=Button(text=languages['open'][settings.language], command=lambda: print('open'), bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], bd=1, font="Verdana 11", width=7, height=1))
-
-	# News #
-	canvas.create_text(135, 240, text=languages['Новости'][settings.language], fill=themes[settings.theme]['text_color'], font="Verdana 14")
-	text_news = Text(width=28, height=20, bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], bd=1, font="Verdana 12")
-	text_thread = ThreadWithReturnValue(target=read_news, daemon=True)
-	text_thread.start()
-	text_news.insert(END, text_thread.join()[settings.language])
-	text_news.config(state=DISABLED)
-	canvas.create_window(155, 445, window=text_news)
 
 	root.update()
 	canvas.config(scrollregion=canvas.bbox('all'))
@@ -627,6 +615,8 @@ line_for_song.pack()
 # Create and drow logo #
 image_logo = ImageTk.PhotoImage(Image.open("pictures\\main_logo1.jpg").resize((canvas.winfo_reqwidth(), canvas.winfo_reqheight()), Image.ANTIALIAS))
 canvas.create_image(0, 0, image=image_logo, anchor=NW)
+
+image_background = ImageTk.PhotoImage(Image.open("pictures\\wall_test.jpg").resize((canvas.winfo_reqwidth(), canvas.winfo_reqheight()), Image.ANTIALIAS))
 
 # Drow buttons for music #
 update_pictures()
