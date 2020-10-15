@@ -5,12 +5,10 @@ Program for listen music free
 
 Packages
 
-<code>
-  pip install lxml <br>
-  pip install numpy <br>
-  pip install Pillow <br>
-  pip install pyglet <br>
-  pip install mutagen <br>
-  pip install requests <br>
-  pip install gc-python-utils
-</code>
+<code> pip install lxml </code>
+<code> pip install numpy </code>
+<code> pip install Pillow </code>
+<code> pip install pyglet </code>
+<code> pip install mutagen </code>
+<code> pip install requests </code>
+<code> pip install gc-python-utils </code>
