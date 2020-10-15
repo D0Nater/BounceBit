@@ -14,7 +14,6 @@ import json
 import requests
 import lxml.html
 from os import path
-from lxml import etree
 from os import remove as del_file
 
 """ For Pictures """
@@ -59,13 +58,38 @@ def read_news():
 				with open('Databases\\database4', 'w+') as json_db:
 					json_db.write(encode_text('{"text": "", "id": 0}'))
 
+	def parse_news():
+		text = ''
+
+		try:
+			headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
+
+			api = requests.get('https://github.com/D0Nater/BounceBit/blob/main/News.json', headers=headers)
+			tree = lxml.html.document_fromstring(api.text)
+
+			num = 1
+			while True:
+				try:
+					text += tree.xpath(f'//*[@id="LC1"]/span[{num}]/text()')[0]
+					text += tree.xpath(f'//*[@id="LC1"]/text()[{num}]')[0]
+					num += 1
+				except Exception as error:
+					break
+
+			text = json.loads(decode_text(text).replace("'", '"'))
+
+		except:
+			with open('Databases\\database4', encoding='utf-8') as json_db:
+				text = json.loads(decode_text(json_db.read()).replace("'", '"'))
+
+		return text
+
 	check_errors_db4()
 
-	with open('Utilits\\News.json', encoding='utf-8') as json_db:
-		new_news_data = json.loads(json_db.read())
+	new_news_data = parse_news()
 
 	with open('Databases\\database4', encoding='utf-8') as json_db:
-		json_data_db = json.loads('"'.join(i for i in decode_text(json_db.read()).split("'")))
+		json_data_db = json.loads(decode_text(json_db.read()).replace("'", '"'))
 
 	if new_news_data['id'] != json_data_db['id']:
 		with open('Databases\\database4', 'w+') as json_db:
@@ -90,6 +114,10 @@ def del_picture_background(file, color, background):
 	data[(data == (46,46,46)).all(axis=-1)] = background
 	data[(data == (255,255, 255)).all(axis=-1)] = color
 	return ImageTk.PhotoImage(Image.fromarray(data, mode='RGB'))
+
+
+def update_program():
+	pass
 
 
 """ Elements for main program """
