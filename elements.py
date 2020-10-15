@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 
+
 """ For Player """
 import pyglet
 
@@ -20,9 +21,6 @@ from os import remove as del_file
 from PIL import Image, ImageTk
 from numpy import array as nump_array
 
-""" For encode/decode db4 """
-from settings import encode_text, decode_text
-
 
 class ThreadWithReturnValue(Thread):
 	def __init__(self, group=None, target=None, name=None, args=(), kwargs=None, *, daemon=None):
@@ -37,67 +35,6 @@ class ThreadWithReturnValue(Thread):
 	def join(self):
 		Thread.join(self)
 		return self._return
-
-
-def read_news():
-	def check_errors_db4():
-		# check dir #
-		if not path.exists('Databases'):
-			mkdir('Databases')
-
-		# check json file #
-		if not path.exists('Databases\\database4'):
-			print('none file')
-			with open('Databases\\database4', 'w+') as json_db:
-				json_db.write(encode_text('{"text": "", "id": 0}'))
-		else:
-			try:
-				with open('Databases\\database4') as json_db:
-					json.loads('"'.join(i for i in decode_text(json_db.read()).split("'")))
-			except:
-				with open('Databases\\database4', 'w+') as json_db:
-					json_db.write(encode_text('{"text": "", "id": 0}'))
-
-	def parse_news():
-		text = ''
-
-		try:
-			headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
-
-			api = requests.get('https://github.com/D0Nater/BounceBit/blob/main/News.json', headers=headers)
-			tree = lxml.html.document_fromstring(api.text)
-
-			num = 1
-			while True:
-				try:
-					text += tree.xpath(f'//*[@id="LC1"]/span[{num}]/text()')[0]
-					text += tree.xpath(f'//*[@id="LC1"]/text()[{num}]')[0]
-					num += 1
-				except Exception as error:
-					break
-
-			text = json.loads(decode_text(text).replace("'", '"'))
-
-		except:
-			with open('Databases\\database4', encoding='utf-8') as json_db:
-				text = json.loads(decode_text(json_db.read()).replace("'", '"'))
-
-		return text
-
-	check_errors_db4()
-
-	new_news_data = parse_news()
-
-	with open('Databases\\database4', encoding='utf-8') as json_db:
-		json_data_db = json.loads(decode_text(json_db.read()).replace("'", '"'))
-
-	if new_news_data['id'] != json_data_db['id']:
-		with open('Databases\\database4', 'w+') as json_db:
-			json_db.write(encode_text(str(new_news_data)))
-
-		return new_news_data['text']
-
-	return json_data_db['text']
 
 
 def clear_list_of_songs():
