@@ -7,10 +7,6 @@ import requests
 """ For Graphical Interface """
 from tkinter import *
 
-""" For play music """
-import pyglet
-from pyglet.media import *
-
 """ For download and listen music """
 from threading import Thread
 
@@ -78,15 +74,6 @@ def update_pictures():
 
 
 class PlayMusic:
-    def new_music_control(self, song_id):
-        globals()['player'] = pyglet.media.Player()
-        player.queue(pyglet.media.load(f'Databases/Download_Music/{song_id}.mp3'))
-        player.play()
-
-        if not player_bool:
-            pyglet.app.run()
-            globals()['player_bool'] = True
-
     def song_time_thread(self):
         global song_time_now
 
@@ -117,7 +104,6 @@ class PlayMusic:
                 else:
                     song_time_now = f'{song_time_now_num[0]}:{song_time_now_num[1]}'
 
-
                 globals()['num_for_time_line_now'] += num_for_time_line
 
                 line_for_song.delete(self.time)
@@ -138,11 +124,11 @@ class PlayMusic:
                 song_play_now['play'] = 0
                 button['image'] = image_play_line
             else:
-                player.play()
+                # player.play()
+                Thread(target=player.play).start()
                 song_play_now['play'] = 1
                 button['image'] = image_pause_line
-                self.time_thread = Thread(target=main_player.song_time_thread, daemon=True)
-                self.time_thread.start()
+                Thread(target=main_player.song_time_thread, daemon=True).start()
             # update past song #
             try:
                 if past_song['past_lib'] == past_song['lib_now']:
@@ -184,11 +170,15 @@ class PlayMusic:
             # update song time #
             globals()['song_time_now'] = '0:00'
 
-            player.pause()
+            player.stop()
 
             # play new song #
             if past_song['lib_now'] == 'Загруженное':
-                self.new_music_control(song_play_now['song_id'])
+                player.new_song(song_play_now['song_id'])
+
+            # Play new song #
+            player.next_song()
+            Thread(target=player.play).start()
 
             main_player.drow_music_line()
             update_buttons()
@@ -239,9 +229,7 @@ class PlayMusic:
             # Button 'after song' #
             after_song_button = line_for_song.create_window(line_for_song.bbox(play_button_drow)[2]+21, 30, window=Button(image=image_after_song, command=lambda: behind_after_music(1), width=17, height=19, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE))
 
-            self.time_thread = Thread(target=main_player.song_time_thread, daemon=True)
-            self.time_thread.start()
-            # globals()['time_song_thread'] = True
+            Thread(target=main_player.song_time_thread, daemon=True).start()
 
 
 def change_setting(setting, new_setting):
@@ -322,9 +310,12 @@ class Song:
                 if click_play == 0:
                     if self.song_data[4] != globals()['song_play_now']['song_id']:
                         globals()['song_time_now'] = '0:00'
-                        globals()['player_thread']=Thread(target=main_player.new_music_control, args=(self.song_data[4],), daemon=True)
-                        globals()['player_thread'].start()
-                    player.play()
+                        player.stop()
+                        player.new_song(self.song_data[4])
+                        if globals()['song_play_now']['song_id'] != None:
+                            player.next_song()
+
+                    Thread(target=player.play).start()
                     click_play = 1
                     button['image'] = image_pause
                     if list_of_play != list_of_music:
@@ -507,6 +498,7 @@ def music_interface(lib, text_error, all_data, text=''):
 root = Tk()
 root.title("")
 
+player = MyPlayer()
 main_player = PlayMusic()
 
 # Program Settings #
@@ -521,8 +513,7 @@ root.minsize(width=180, height=45)
 root.maxsize(width=settings.width, height=settings.height)
 
 # Parse News #
-news_thread = Thread(target=parse_new_news)
-news_thread.start()
+Thread(target=parse_new_news).start()
 
 # Create scrollbar #
 vscrollbar = Scrollbar(root, bg=themes[settings.theme]['background'])
