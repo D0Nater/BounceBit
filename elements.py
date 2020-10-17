@@ -9,7 +9,6 @@ from gc import collect as clear_ram
 """ For play music """
 import pyglet
 import pyglet.media as media
-import datetime
 from time import sleep as time_sleep
 
 """ For news """
@@ -60,6 +59,7 @@ class MyPlayer:
         while self.play_song_while:
             self.player.play()
             time_sleep(0.4)
+        return
 
     def pause(self):
         self.player.pause()
@@ -159,11 +159,6 @@ GITHUB = 'https://github.com/D0Nater/BounceBit/'
 PROGRAM_NAME = 'Bounce Bit'
 
 song_play_now = {"play": 0, "name": "", "author": "", "time": "", "url": "", "song_id": None, "num": 0}
-
-player_thread = None
-player_bool = False
-
-song_time_now = '0:00'
 
 past_song = {"class": None, "past_lib": None, "lib_now": None}
 
