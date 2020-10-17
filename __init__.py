@@ -26,7 +26,6 @@ Packages: (
 	sqlite3,
 	mutagen 1.45.1,
 	requests 2.23.0,
-	traceback,
 	threading
 )
 
