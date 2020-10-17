@@ -176,9 +176,10 @@ class Music:
                 # sorted numbers #
                 search_music_json['pages'] = sorted(search_music_json['pages'])
 
-                search_music_json['connect'] = True
             except:
                 pass
+
+            search_music_json['connect'] = True
 
             del tree
 
