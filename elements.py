@@ -9,6 +9,7 @@ from gc import collect as clear_ram
 """ For play music """
 import pyglet
 import pyglet.media as media
+import datetime
 from time import sleep as time_sleep
 
 """ For news """
@@ -228,9 +229,9 @@ languages = {
         "ru": "Текст",
         "en": "Text"
     },
-    "Фон": {
-        "ru": "Фон",
-        "en": "Background"
+    "Загрузка": {
+        "ru": "Загрузка",
+        "en": "Loading"
     },
     "Новости": {
         "ru": "Новости",
