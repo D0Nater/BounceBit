@@ -90,6 +90,7 @@ class Music:
         audio['album'] = u"BounceBit"
         audio['composer'] = u""
         audio.save()
+        return
 
     def delete_music(song_id):
         if path.exists(f'Databases/Download_Music/{song_id}.mp3'):
