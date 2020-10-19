@@ -19,6 +19,9 @@ from tkinter import *
 """ For download and listen music """
 from threading import Thread
 
+""" For files """
+from os import path as oc_pach
+
 """ For clear RAM """
 from gc import collect as clear_ram
 
@@ -28,8 +31,8 @@ from time import sleep as time_sleep
 
 """ Other Scripts """
 from elements import *
-from settings import Settings
 from music import Music
+from settings import Settings
 
 
 class PageButton:
@@ -107,7 +110,7 @@ class PlayMusic:
             num_for_time_line_now = (((song_time_official[0]*60) + song_time_official[1]) / 200) + num_for_time_line*2
 
         while song_play_now['play']:
-            song_time_now = time.strftime("%M:%S", time.gmtime(60*min_song + sec_song)) 
+            song_time_now = time.strftime("%M:%S", time.gmtime(60*min_song + sec_song))
             sec_song += 1
 
             num_for_time_line_now += num_for_time_line
@@ -177,6 +180,10 @@ class PlayMusic:
             # update line #
             main_player.drow_music_line()
             update_buttons()
+
+    def loading_song(self):
+        line_for_song.create_text(30, 25, text=languages['Загрузка'][settings.language]+"...", fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
+        root.update()
 
     def drow_music_line(self):
         def click_play(button):
@@ -249,7 +256,8 @@ class PlayMusic:
             # Button 'after song' #
             after_song_button = line_for_song.create_window(line_for_song.bbox(play_button_drow)[2]+21, 30, window=Button(image=image_after_song, command=lambda: self.behind_after_music(1), width=17, height=19, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE))
 
-            Thread(target=main_player.song_time_thread, daemon=True).start()
+            if song_play_now['play']:
+                Thread(target=main_player.song_time_thread, daemon=True).start()
 
 
 def change_setting(setting, new_setting):
@@ -338,6 +346,11 @@ class Song:
                     button['image'] = image_play
                 else:
                     if self.song_data[4] != song_play_now['song_id']:
+                        if not path.exists(f"Databases/Download_Music/{self.song_data[4]}.mp3"):
+                            main_player.loading_song()
+                            download_song = ThreadWithReturnValue(target=Music.download_music, args=(self.song_data[4], self.song_data[2]))
+                            download_song.start()
+                            download_song.join()
                         player.stop()
                         globals()['song_time_now'] = '00:00'
                         player.new_song(self.song_data[4])
@@ -348,13 +361,14 @@ class Song:
 
                     click_play = 1
                     button['image'] = image_pause
+                    past_song['class'] = this_class
+                    past_song['past_lib'] = lib
+
                     if list_of_play != list_of_music:
                         globals()['list_of_play'] = list_of_music.copy()
 
                 globals()['song_play_now'] = {"play": click_play, "name": self.song_data[0], "author": self.song_data[1], "time": self.song_data[3], "url": self.song_data[2], "song_id": self.song_data[4], "num": self.num}
                 main_player.drow_music_line()
-                past_song['class'] = this_class
-                past_song['past_lib'] = lib
 
             elif event == 'click_add':
                 if click_add == 0:
@@ -405,7 +419,7 @@ def drow_data(all_data, lib, search_text, text_error):
     clear_list_of_songs()
     clear_ram()
 
-    load_text = canvas.create_text(14, 15, text="Загрузка...", fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+    load_text = canvas.create_text(14, 15, text=languages['Загрузка'][settings.language]+"...", fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
     root.update()
     time_sleep(0.1)
 
@@ -447,6 +461,10 @@ def drow_data(all_data, lib, search_text, text_error):
         new_song.drow_music(new_song, lib)
         list_of_songs_class.append(new_song)
         globals()['list_of_music']['music'][f'song{song_now}']['class'] = new_song
+
+        if song_play_now['song_id'] == all_data['music'][f'song{song_now}']['song_id']:
+            past_song['class'] = new_song
+
         y += 40
 
     canvas.delete(load_text)
@@ -525,7 +543,6 @@ settings.create_readme(PROGRAM_NAME, VERSION, AUTHOR, GITHUB) # create readme.tx
 root.iconbitmap(default="pictures/program_icon.ico")
 root.geometry(f"{settings.width-50}x{settings.height-100}")
 root.minsize(width=180, height=45)
-root.maxsize(width=settings.width, height=settings.height)
 root.state('zoomed')
 
 # Parse News #
