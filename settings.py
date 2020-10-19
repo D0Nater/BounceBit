@@ -1,35 +1,42 @@
 # -*- coding: utf-8 -*-
 
+""" For database """
 import sqlite3
+
+""" For files """
 from os import path, mkdir, remove
+
+""" For decoding and encoding text """
 from base64 import b64decode, b64encode
 
-
-text_for_readme = """%s v%s
- Author: %s.
+text_for_readme = """ %s v%s
+ Author: %s
  GitHub: %s
 """
 
-
 def decode_text(text):
-    translated = ''
-    i = len(text) - 1
-    while i >= 0:
-        translated = translated + text[i]
-        i = i - 1
-    decode_text = (b64decode(translated)).decode("UTF-8")
-    return decode_text
-
+    try:
+        translated = ''
+        i = len(text) - 1
+        while i >= 0:
+            translated = translated + text[i]
+            i = i - 1
+        decode_text = (b64decode(translated)).decode("UTF-8")
+        return decode_text
+    except:
+        return ''
 
 def encode_text(text):
-    encode_text = (b64encode(str(text).encode("UTF-8"))).decode()
-    translated = ''
-    i = len(encode_text) - 1
-    while i >= 0:
-        translated = translated + encode_text[i]
-        i = i - 1
-    return translated
-
+    try:
+        encode_text = (b64encode(str(text).encode("UTF-8"))).decode()
+        translated = ''
+        i = len(encode_text) - 1
+        while i >= 0:
+            translated = translated + encode_text[i]
+            i = i - 1
+        return translated
+    except:
+        return ''
 
 class Settings:
     def __init__(self, width, height, language, theme):
@@ -38,11 +45,9 @@ class Settings:
         self.language = language
         self.theme = theme
 
-
     def create_readme(self, PROGRAM_NAME, VERSION, AUTHOR, GITHUB):
         with open("Databases/README.md", "w+") as file:
             file.write(text_for_readme%(PROGRAM_NAME,VERSION,AUTHOR,GITHUB))
-
 
     def error_correction(self):
         """
@@ -80,7 +85,6 @@ class Settings:
         conn.commit()
         conn.close()
 
-
     def change_settings(self):
         """
         For Button 'Save'
@@ -97,7 +101,6 @@ class Settings:
 
         conn.commit()
         conn.close()
-
 
     def update_settings(self):
         """
