@@ -103,11 +103,11 @@ class PlayMusic:
 
         self.time_line_bbox = line_for_song.bbox(self.time_line)
 
-        num_for_time_line = ((song_time_official[0]*60) + song_time_official[1]) / 200
+        num_for_time_line = (60*song_time_official[0] + song_time_official[1]+1) / 160
+
         if song_time_now == '00:00':
             # if play new song #
             num_for_time_line_now = 0 # default time line
-            num_for_time_line_now = (((song_time_official[0]*60) + song_time_official[1]) / 200) + num_for_time_line*2
 
         while song_play_now['play']:
             song_time_now = time.strftime("%M:%S", time.gmtime(60*min_song + sec_song))
@@ -124,7 +124,9 @@ class PlayMusic:
                 line_for_song.delete(self.time_line_now)
 
                 self.time = line_for_song.create_text(self.x_time, 30, text=song_time_now, fill='grey50', anchor=W, font="Verdana 10")
-                self.time_line_now = line_for_song.create_line(self.time_line_bbox[0]+5, self.time_line_bbox[1]+5, float(self.time_line_bbox[0])+globals()['num_for_time_line_now']+5.0, self.time_line_bbox[1]+5, width=4, fill='black')
+                # self.time_line_now = line_for_song.create_line(self.time_line_bbox[0]+5, self.time_line_bbox[1]+5, float(self.time_line_bbox[0])+globals()['num_for_time_line_now']+5, self.time_line_bbox[1]+5, width=4, fill='black')
+
+                self.time_line_now = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, self.time_line_bbox[0]+globals()['num_for_time_line_now']+8, line_for_song.bbox(self.time)[3]-7, width=4, fill='black')
 
             else:
                 return
@@ -212,7 +214,7 @@ class PlayMusic:
         clear_ram()
         line_for_song.delete("all")
 
-        if song_play_now['song_id'] is not "":
+        if song_play_now['song_id'] is not None:
             # update past song #
             try:
                 if past_song['past_lib'] == past_song['lib_now']:
@@ -229,9 +231,11 @@ class PlayMusic:
             self.time = line_for_song.create_text(self.x_time, 30, text=song_time_now, fill='grey50', anchor=W, font="Verdana 10")
 
             # time line #
-            self.time_line = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, line_for_song.bbox(self.time)[2]+130, line_for_song.bbox(self.time)[3]-7, width=4, fill='grey11')
+            self.time_line = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, line_for_song.bbox(self.time)[2]+168, line_for_song.bbox(self.time)[3]-7, width=4, fill='grey11')
+            
             try:
-                self.time_line_now = line_for_song.create_line(self.time_line_bbox[0]+5, self.time_line_bbox[1]+5, float(self.time_line_bbox[0])+globals()['num_for_time_line_now']+5.0, self.time_line_bbox[1]+5, width=4, fill='black')
+                # self.time_line_now = line_for_song.create_line(self.time_line_bbox[0]+5, self.time_line_bbox[1]+5, float(self.time_line_bbox[0])+globals()['num_for_time_line_now']+5, self.time_line_bbox[1]+5, width=4, fill='black')
+                self.time_line_now = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, self.time_line_bbox[0]+globals()['num_for_time_line_now']+8, line_for_song.bbox(self.time)[3]-7, width=4, fill='black')
             except:
                 self.time_line_now = line_for_song.create_line(line_for_song.bbox(self.time_line)[2], line_for_song.bbox(self.time_line)[3]-7, 0, line_for_song.bbox(self.time_line)[3]-7, width=4, fill='black')
 
@@ -310,7 +314,7 @@ def settings_interface():
     # News #
     canvas.create_text(135, 240, text=languages['Новости'][settings.language], fill=themes[settings.theme]['text_color'], font="Verdana 14")
 
-    # Creat news block #
+    # Creat block news #
     text_news = Text(width=28, height=20, bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], bd=1, font="Verdana 12")
     text_news.insert(END, read_news()[settings.language]) # write news in block
     text_news.config(state=DISABLED) # update config
@@ -437,15 +441,6 @@ def drow_data(all_data, lib, search_text, text_error):
 
     """ Drow data on page """
     y = 90
-
-    # albums #
-    # for num in range(all_data['music_albums']['num']):
-    #   new_album = Album(20, y, num+1, all_data['music_albums'][f'album{num+1}'])
-    #   new_album.drow_album(new_album, lib)
-    #   list_of_songs_class.append(new_album)
-    #   y += 40
-
-    # y += (0 if all_data['music_albums']['num'] == 0 else 25)
 
     # music #
     for song_now in range(all_data['music']['num']):
