@@ -161,6 +161,8 @@ PROGRAM_NAME = 'Bounce Bit'
 
 song_play_now = {"play": 0, "name": "", "author": "", "time": "", "url": "", "song_id": None, "num": 0}
 
+song_time_now = '00:00'
+
 past_song = {"class": None, "past_lib": None, "lib_now": None}
 
 list_of_music = {}
