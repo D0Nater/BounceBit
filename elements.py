@@ -176,6 +176,7 @@ themes = {
         'background': 'grey18',
         'second_color': 'grey14',
         'text_color': 'white',
+        'highlightcolor': 'red',
         'button_color': (255, 255, 255),
         'button_background': (46, 46, 46),
         'button_second_color': (36,36,36)
@@ -199,6 +200,7 @@ themes = {
 }
 
 languages = {
+    # Buttons #
     "Загруженное": {
         "ru": "Загруженное",
         "en": "Loaded"
@@ -211,10 +213,8 @@ languages = {
         "ru": "Рекомендации",
         "en": "Recommendations"
     },
-    "Поиск" : {
-        "ru": "Поиск",
-        "en": "Search"
-    },
+
+    # Settings #
     "Настройки": {
         "ru": "Настройки",
         "en": "Settings"
@@ -227,18 +227,8 @@ languages = {
         "ru": "Язык",
         "en": "Lang"
     },
-    "Текст": {
-        "ru": "Текст",
-        "en": "Text"
-    },
-    "Загрузка": {
-        "ru": "Загрузка",
-        "en": "Loading"
-    },
-    "Новости": {
-        "ru": "Новости",
-        "en": "News"
-    },
+
+    # Themes #
     "Тема": {
         "ru": "Тема",
         "en": "Theme"
@@ -255,18 +245,48 @@ languages = {
         "ru": "Пурпурная",
         "en": "Purple"
     },
-    "Альбом": {
-        "ru": "Альбом",
-        "en": "Album"
+
+    # Music genres #
+    "Genres": {
+        "ru": "Жанры",
+        "en": "Genres"
     },
-    "page": {
+    "Rock": {
+        "ru": "Рок",
+        "en": "Rock"
+    },
+    "Pop": {
+        "ru": "Поп",
+        "en": "Pop"
+    },
+    "Rap": {
+        "ru": "Рэп",
+        "en": "Rap"
+    },
+    "Jazz": {
+        "ru": "Джаз",
+        "en": "Jazz"
+    },
+
+    # Other #
+    "Загрузка": {
+        "ru": "Загрузка",
+        "en": "Loading"
+    },
+    "Новости": {
+        "ru": "Новости",
+        "en": "News"
+    },
+    "Поиск" : {
+        "ru": "Поиск",
+        "en": "Search"
+    },
+    "Страница": {
         "ru": "страница",
         "en": "page"
     },
-    "open": {
-        "ru": "открыть",
-        "en": "open"
-    },
+
+    # Errors #
     "load_error": {
         "ru": "Упс, ничего не загружено ;(",
         "en": "Oops, nothing uploaded ;("
