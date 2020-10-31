@@ -232,7 +232,6 @@ class PlayMusic:
             self.time_line = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, line_for_song.bbox(self.time)[2]+168, line_for_song.bbox(self.time)[3]-7, width=4, fill='grey11')
             
             try:
-                # self.time_line_now = line_for_song.create_line(self.time_line_bbox[0]+5, self.time_line_bbox[1]+5, float(self.time_line_bbox[0])+globals()['num_for_time_line_now']+5, self.time_line_bbox[1]+5, width=4, fill='black')
                 self.time_line_now = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, self.time_line_bbox[0]+globals()['num_for_time_line_now']+8, line_for_song.bbox(self.time)[3]-7, width=4, fill='black')
             except:
                 self.time_line_now = line_for_song.create_line(line_for_song.bbox(self.time_line)[2], line_for_song.bbox(self.time_line)[3]-7, 0, line_for_song.bbox(self.time_line)[3]-7, width=4, fill='black')
@@ -466,7 +465,7 @@ def drow_data(all_data, lib, search_text, text_error):
     canvas.delete(load_text)
 
     # lib name #
-    lib_name_text = languages[lib.split(' ')[0]][settings.language]+((' - '+languages['page'][settings.language]+' '+lib.split(' ')[1]) if len(lib.split(' ')) > 1 else '')
+    lib_name_text = languages[lib.split(' ')[0]][settings.language]+((' - '+languages['Страница'][settings.language]+' '+lib.split(' ')[1]) if len(lib.split(' ')) > 1 else '')
     lib_name = canvas.create_text(14, 15, text=lib_name_text, fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
     if (lib.split(' ')[0] == 'Рекомендации' or lib.split(' ')[0] == 'Поиск') and not all_data['connect']:
