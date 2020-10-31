@@ -123,9 +123,7 @@ class PlayMusic:
                 line_for_song.delete(self.time)
                 line_for_song.delete(self.time_line_now)
 
-                self.time = line_for_song.create_text(self.x_time, 30, text=song_time_now, fill='grey50', anchor=W, font="Verdana 10")
-                # self.time_line_now = line_for_song.create_line(self.time_line_bbox[0]+5, self.time_line_bbox[1]+5, float(self.time_line_bbox[0])+globals()['num_for_time_line_now']+5, self.time_line_bbox[1]+5, width=4, fill='black')
-
+                self.time = line_for_song.create_text(self.x_time, 37, text=song_time_now, fill='grey50', anchor=W, font="Verdana 10")
                 self.time_line_now = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, self.time_line_bbox[0]+globals()['num_for_time_line_now']+8, line_for_song.bbox(self.time)[3]-7, width=4, fill='black')
 
             else:
@@ -223,12 +221,12 @@ class PlayMusic:
                 pass
 
             # Song info #
-            self.song_name = line_for_song.create_text(30, 19, text=song_play_now['name'], fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
-            self.song_author = line_for_song.create_text(30, 39, text=song_play_now['author'], fill='grey50', anchor=W, font="Verdana 12")
+            self.song_name = line_for_song.create_text(30, 32, text=song_play_now['name'], fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
+            self.song_author = line_for_song.create_text(30, 52, text=song_play_now['author'], fill='grey50', anchor=W, font="Verdana 12")
 
             # time now #
             self.x_time = line_for_song.bbox(self.song_name)[2]+23 if line_for_song.bbox(self.song_name)[2] > line_for_song.bbox(self.song_author)[2] else line_for_song.bbox(self.song_author)[2]+23
-            self.time = line_for_song.create_text(self.x_time, 30, text=song_time_now, fill='grey50', anchor=W, font="Verdana 10")
+            self.time = line_for_song.create_text(self.x_time, 37, text=song_time_now, fill='grey50', anchor=W, font="Verdana 10")
 
             # time line #
             self.time_line = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, line_for_song.bbox(self.time)[2]+168, line_for_song.bbox(self.time)[3]-7, width=4, fill='grey11')
@@ -248,17 +246,19 @@ class PlayMusic:
             self.song_time = line_for_song.create_text(line_for_song.bbox(self.time_line)[2]+8, line_for_song.bbox(self.time_line)[1]+4, text=song_play_now['time'], fill='grey50', anchor=W, font="Verdana 10")
 
             # Button 'behind song' #
-            behind_song_button = line_for_song.create_window(line_for_song.bbox(self.song_time)[2]+30, 30, window=Button(image=image_behind_song, command=lambda: self.behind_after_music(-1), width=17, height=19, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE))
+            behind_song_button = line_for_song.create_window(line_for_song.bbox(self.song_time)[2]+30, 37, window=Button(image=image_behind_song, command=lambda: self.behind_after_music(-1), width=17, height=19, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE))
 
             # Button 'play/stop' #
             if song_play_now['play']:
                 play_button = Button(image=image_pause_line, command=lambda: click_play(play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE)
             else:
                 play_button = Button(image=image_play_line, command=lambda: click_play(play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE)
-            play_button_drow = line_for_song.create_window(line_for_song.bbox(behind_song_button)[2]+20, 31, window=play_button)
+            play_button_drow = line_for_song.create_window(line_for_song.bbox(behind_song_button)[2]+20, 38, window=play_button)
 
             # Button 'after song' #
-            after_song_button = line_for_song.create_window(line_for_song.bbox(play_button_drow)[2]+21, 30, window=Button(image=image_after_song, command=lambda: self.behind_after_music(1), width=17, height=19, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE))
+            after_song_button = line_for_song.create_window(line_for_song.bbox(play_button_drow)[2]+21, 37, window=Button(image=image_after_song, command=lambda: self.behind_after_music(1), width=17, height=19, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE))
+
+            line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
 
             if song_play_now['play']:
                 Thread(target=main_player.song_time_thread, daemon=True).start()
@@ -269,11 +269,12 @@ def change_setting(setting, new_setting):
     if setting == 'theme':
         # change theme #
         settings.theme = new_setting
+
+        # update all #
         line_for_song['bg'] = themes[settings.theme]['second_color']
         main_menu['bg'] = themes[settings.theme]['second_color']
         canvas['bg'] = themes[settings.theme]['background']
 
-        # update all #
         update_pictures()
         update_buttons()
         main_player.drow_music_line()
@@ -474,14 +475,15 @@ def drow_data(all_data, lib, search_text, text_error):
     else:
         # Search #
         search_draw = canvas.create_text(canvas.bbox(lib_name)[0], canvas.bbox(lib_name)[3]+25, text=languages['Поиск'][settings.language], fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+        
+        # Search line #
         text_e = Text(width=18, height=1.4, bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], selectbackground='red', insertbackground=themes[settings.theme]['text_color'], font="Verdana 11")
         text_e.insert(END, search_text)
         text_e_drow = canvas.create_window(canvas.bbox(search_draw)[2]+105, canvas.bbox(search_draw)[3]-9, window=text_e)
 
         # Button for search #
-        search_button = Button(image=image_search, \
-            command=lambda: music_interface('Поиск 1', 'none_error', {"music": {"num": 0}, "music_albums": {"num": 0}}, text_e.get(1.0, END)), \
-            width=16, height=16, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
+        search_button = Button(image=image_search, width=16, height=16, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE, \
+            command=lambda: music_interface('Поиск 1', 'none_error', {"music": {"num": 0}, "music_albums": {"num": 0}}, text_e.get(1.0, END)))
 
         search_button_drow = canvas.create_window(canvas.bbox(text_e_drow)[2]+17, canvas.bbox(search_draw)[3]-9, window=search_button)
 
@@ -491,6 +493,8 @@ def drow_data(all_data, lib, search_text, text_error):
             for page_num in all_data['pages']:
                 PageButton(page_num, search_text).drow_button(page_x, canvas.bbox(lib_name)[3]-9)
                 page_x += 29
+
+    line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
 
     root.update()
     canvas.config(scrollregion=canvas.bbox('all'))
@@ -553,7 +557,7 @@ main_menu.create_text(145, 27, text=f"v{VERSION}", anchor=W, fill="red") # versi
 main_menu.pack()
 
 # Main canvas #
-canvas = Canvas(root, width=settings.width, height=settings.height-200, yscrollcommand=vscrollbar.set, bg=themes[settings.theme]['background'], highlightthickness=0)
+canvas = Canvas(root, width=settings.width, height=settings.height-220, yscrollcommand=vscrollbar.set, bg=themes[settings.theme]['background'], highlightthickness=0)
 canvas.configure(scrollregion=canvas.bbox("all"))
 canvas.bind_all("<MouseWheel>", on_mousewheel)
 vscrollbar.config(command=canvas.yview)
