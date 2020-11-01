@@ -189,6 +189,63 @@ class Music:
 
         return search_music_json
 
+    def genres_music(genre, page):
+        clear_ram()
+        genre_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "pages": [], "connect": False}
+        try:
+            # parse site #
+            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
+            api = requests.get(f'https://zaycev.net/genres/{genre}/index_{page}.html?spa=false&page={page}', headers=headers)
+
+            tree = lxml.html.document_fromstring(api.text)
+
+            # music #
+            for num in range(1, 41):
+                try:
+                    new_song = {
+                        "name": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
+                        "author": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
+                        "url": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-url')[0],
+                        "song_time": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[2]/text()')[0],
+                        "song_id": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-id')[0]
+                    }
+                    genre_music_json['music'][f'song{num-1}'] = new_song
+                    genre_music_json['music']['num'] += 1
+                    del new_song
+                except:
+                    break
+
+            # Pages #
+            try:
+                # page now #
+                genre_music_json['pages'].append(page)
+
+                # other pages #
+                for num in range((1 if int(page) is 1 else 2), 6):
+                    try:
+                        genre_music_json['pages'].append(tree.xpath(f'//*[@id="page-body"]/div[2]/div/div[2]/div/div/div/section/div[@class="pager clearfix"]/a[{num}]/span/text()')[0])
+                    except:
+                        pass
+
+                # delete last button #
+                if genre_music_json['pages'][-1] == 'Следующая':
+                    (genre_music_json['pages']).pop()
+
+                # sorted numbers #
+                genre_music_json['pages'] = sorted(genre_music_json['pages'])
+
+            except:
+                pass
+
+            genre_music_json['connect'] = True
+
+            del tree
+
+        except requests.exceptions.ConnectionError:
+            genre_music_json['connect'] = False
+
+        return genre_music_json
+
     def read_music(db_name):
         error_correction()
 
