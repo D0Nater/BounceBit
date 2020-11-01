@@ -85,8 +85,6 @@ def update_pictures():
     globals()['image_more'] = del_picture_background("pictures/more_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
     globals()['image_search'] = del_picture_background("pictures/search_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
 
-    globals()['image_genre1'] = del_picture_background("pictures/genre1.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
-
 
 class PlayMusic:
     def __init__(self):
