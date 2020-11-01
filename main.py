@@ -41,11 +41,10 @@ class PageButton:
         self.page_num = page_num
         self.search_text = search_text
 
-    def drow_button(self, x, y):
+    def drow_button(self, x, y, text, error):
         canvas.create_window(x, y, window=Button(text=self.page_num, \
-            command=lambda: music_interface(f'Поиск {self.page_num}', 'none_error', {"music": {"num": 0}, "music_albums": {"num": 0}}, self.search_text), \
+            command=lambda: music_interface(f'{text} {self.page_num}', error, None, self.search_text), \
             width=2, height=1, bd=0, bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], font="Verdana 12", relief=RIDGE))
-
 
 def on_mousewheel(event):
     """ Scroll """
@@ -61,7 +60,7 @@ def update_buttons():
         command=lambda: music_interface('Избранное', 'add_error', Music.read_music("database2.sqlite"))).place(x=181, y=53)
 
     globals()['recommended_music_button'] = Button(text=languages['Рекомендации'][settings.language], bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=1, width=25, \
-        command=lambda: music_interface('Рекомендации', 'connect_error', {"music": {"num": 0}, "music_albums": {"num": 0}})).place(x=363, y=53)
+        command=lambda: music_interface('Рекомендации', 'connect_error', None)).place(x=363, y=53)
 
     globals()['settings_button'] = Button(text=languages['Настройки'][settings.language], bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=1, width=25, \
         command=settings_interface).place(x=544, y=53)
@@ -85,6 +84,8 @@ def update_pictures():
 
     globals()['image_more'] = del_picture_background("pictures/more_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
     globals()['image_search'] = del_picture_background("pictures/search_button.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
+
+    globals()['image_genre1'] = del_picture_background("pictures/genre1.png", themes[settings.theme]['button_color'], themes[settings.theme]['button_background'])
 
 
 class PlayMusic:
@@ -182,10 +183,10 @@ class PlayMusic:
             update_buttons()
 
     def loading_song(self):
-        line_for_song.create_text(30, 25, text=languages['Загрузка'][settings.language]+"...", fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
+        line_for_song.create_text(30, 40, text=languages['Загрузка'][settings.language]+"...", fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
         root.update()
 
-    def drow_music_line(self):
+    def drow_music_line(self, change_settings=False):
         def click_play(button):
             global song_play_now
 
@@ -259,7 +260,7 @@ class PlayMusic:
 
             line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
 
-            if song_play_now['play']:
+            if song_play_now['play'] and not change_settings:
                 Thread(target=main_player.song_time_thread, daemon=True).start()
 
 
@@ -276,7 +277,7 @@ def change_setting(setting, new_setting):
 
         update_pictures()
         update_buttons()
-        main_player.drow_music_line()
+        # main_player.drow_music_line(change_settings=True)
 
     elif setting == 'lang':
         # change language #
@@ -437,10 +438,15 @@ def drow_data(all_data, lib, search_text, text_error):
         search_music_tread.start()
         all_data = search_music_tread.join()
 
+    elif lib.split(' ')[0] == 'Жанр':
+        search_music_tread = ThreadWithReturnValue(target=Music.genres_music, args=(languages[lib.split(' ')[1]]['en'].lower(), lib.split(' ')[2]), daemon=True)
+        search_music_tread.start()
+        all_data = search_music_tread.join()
+
     globals()['list_of_music'] = all_data
 
     """ Drow data on page """
-    y = 90
+    y = 130 if lib.split(' ')[0] == 'Рекомендации' or lib.split(' ')[0] == 'Жанр' else 90
 
     # music #
     for song_now in range(all_data['music']['num']):
@@ -465,7 +471,10 @@ def drow_data(all_data, lib, search_text, text_error):
     canvas.delete(load_text)
 
     # lib name #
-    lib_name_text = languages[lib.split(' ')[0]][settings.language]+((' - '+languages['Страница'][settings.language]+' '+lib.split(' ')[1]) if len(lib.split(' ')) > 1 else '')
+    if lib.split(' ')[0] == 'Жанр':
+        lib_name_text = languages['Жанр'][settings.language]+'-'+languages[lib.split(' ')[1]][settings.language]+' - '+languages['Страница'][settings.language]+' '+lib.split(' ')[2]
+    else:
+        lib_name_text = languages[lib.split(' ')[0]][settings.language]+((' - '+languages['Страница'][settings.language]+' '+lib.split(' ')[1]) if len(lib.split(' ')) > 1 else '')
     lib_name = canvas.create_text(14, 15, text=lib_name_text, fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
     if (lib.split(' ')[0] == 'Рекомендации' or lib.split(' ')[0] == 'Поиск') and not all_data['connect']:
@@ -474,7 +483,7 @@ def drow_data(all_data, lib, search_text, text_error):
     else:
         # Search #
         search_draw = canvas.create_text(canvas.bbox(lib_name)[0], canvas.bbox(lib_name)[3]+25, text=languages['Поиск'][settings.language], fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
-        
+
         # Search line #
         text_e = Text(width=18, height=1.4, bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], selectbackground='red', insertbackground=themes[settings.theme]['text_color'], font="Verdana 11")
         text_e.insert(END, search_text)
@@ -482,15 +491,42 @@ def drow_data(all_data, lib, search_text, text_error):
 
         # Button for search #
         search_button = Button(image=image_search, width=16, height=16, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE, \
-            command=lambda: music_interface('Поиск 1', 'none_error', {"music": {"num": 0}, "music_albums": {"num": 0}}, text_e.get(1.0, END)))
+            command=lambda: music_interface('Поиск 1', 'none_error', None, text_e.get(1.0, END)))
 
         search_button_drow = canvas.create_window(canvas.bbox(text_e_drow)[2]+17, canvas.bbox(search_draw)[3]-9, window=search_button)
+
+        # Genres #
+        if lib.split(' ')[0] == 'Рекомендации' or lib.split(' ')[0] == 'Жанр':
+            genres_text = canvas.create_text(canvas.bbox(lib_name)[0], canvas.bbox(lib_name)[3]+60, text=languages['Жанры'][settings.language], fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+            
+            genre_pop = canvas.create_window(canvas.bbox(genres_text)[2]+20, canvas.bbox(lib_name)[3]+61, anchor=W, window=Button(text=languages['Поп'][settings.language], bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=0, width=7, font="Verdana 10", \
+                command=lambda: music_interface('Жанр Поп 1', 'connect_error', None)))
+
+            genre_rock = canvas.create_window(canvas.bbox(genre_pop)[2]+7, canvas.bbox(lib_name)[3]+61, anchor=W, window=Button(text=languages['Рок'][settings.language], bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=0, width=7, font="Verdana 10", \
+                command=lambda: music_interface('Жанр Рок 1', 'connect_error', None)))
+
+            genre_rap = canvas.create_window(canvas.bbox(genre_rock)[2]+7, canvas.bbox(lib_name)[3]+61, anchor=W, window=Button(text=languages['Рэп'][settings.language], bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=0, width=7, font="Verdana 10", \
+                command=lambda: music_interface('Жанр Рэп 1', 'connect_error', None)))
+
+            genre_jazz = canvas.create_window(canvas.bbox(genre_rap)[2]+7, canvas.bbox(lib_name)[3]+61, anchor=W, window=Button(text=languages['Джаз'][settings.language], bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=0, width=7, font="Verdana 10", \
+                command=lambda: music_interface('Жанр Джаз 1', 'connect_error', None)))
+
+            genre_shanson = canvas.create_window(canvas.bbox(genre_jazz)[2]+7, canvas.bbox(lib_name)[3]+61, anchor=W, window=Button(text=languages['Шансон'][settings.language], bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=0, width=9, font="Verdana 10", \
+                command=lambda: prmusic_interface('Жанр Шансон 1', 'connect_error', None)))
+
+            genre_classical = canvas.create_window(canvas.bbox(genre_shanson)[2]+7, canvas.bbox(lib_name)[3]+61, anchor=W, window=Button(text=languages['Классика'][settings.language], bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=0, width=9, font="Verdana 10", \
+                command=lambda: music_interface('Жанр Классика 1', 'connect_error', None)))
 
         # Pages #
         page_x = canvas.bbox(lib_name)[2]+35
         if lib.split(' ')[0] == 'Поиск':
             for page_num in all_data['pages']:
-                PageButton(page_num, search_text).drow_button(page_x, canvas.bbox(lib_name)[3]-9)
+                PageButton(page_num, search_text).drow_button(page_x, canvas.bbox(lib_name)[3]-9, 'Поиск', 'none_error')
+                page_x += 29
+
+        elif lib.split(' ')[0] == 'Жанр':
+            for page_num in all_data['pages']:
+                PageButton(page_num, '').drow_button(page_x, canvas.bbox(lib_name)[3]-9, 'Жанр '+lib.split(' ')[1], 'connect_error')
                 page_x += 29
 
     line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
@@ -514,8 +550,11 @@ def music_interface(lib, text_error, all_data, search_text=''):
     try: del globals()['image_logo']
     except: pass
 
+    if all_data is None:
+        all_data = {"music": {"num": 0}, "music_albums": {"num": 0}, 'check_error': False}
+
     # drow data #
-    if (all_data['music']['num'] is 0) and (all_data['music_albums']['num'] is 0) and lib.split(' ')[0] != 'Рекомендации' and lib.split(' ')[0] != 'Поиск':
+    if (all_data['music']['num'] is 0) and (all_data['music_albums']['num'] is 0) and all_data['check_error']:
         # write error or none #
         canvas.create_text(14, 15, text=languages[lib.split(' ')[0]][settings.language], fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
         canvas.create_text(14, 60, text=languages[text_error][settings.language], fill='grey50', anchor=W, font="Verdana 12")
