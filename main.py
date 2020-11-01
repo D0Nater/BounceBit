@@ -315,7 +315,8 @@ def settings_interface():
 
     # Creat block news #
     text_news = Text(width=28, height=20, bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], bd=1, font="Verdana 12")
-    text_news.insert(END, read_news()[settings.language]) # write news in block
+    text_news.insert(END, read_news()[0]+'\n\n') # date
+    text_news.insert(END, read_news()[1][settings.language]) # write news in block
     text_news.config(state=DISABLED) # update config
     canvas.create_window(155, 445, window=text_news) # draw news block
 
