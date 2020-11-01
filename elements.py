@@ -99,12 +99,14 @@ def parse_new_news():
             headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
 
             api = requests.get('https://github.com/D0Nater/BounceBit/blob/main/News', headers=headers)
+
             tree = lxml.html.document_fromstring(api.text)
 
             # parse and decode json text #
             text = json.loads(decode_text(tree.xpath(f'//*[@id="LC1"]/text()')[0]).replace("'", '"'))
 
         except Exception as error:
+            print(error)
             with open('Databases/database4', encoding='utf-8') as json_db:
                 text = json.loads(decode_text(json_db.read()).replace("'", '"'))
 
@@ -130,7 +132,7 @@ def read_news():
     with open('Databases/database4', encoding='utf-8') as json_db:
         json_data_db = json.loads(decode_text(json_db.read()).replace("'", '"'))
 
-    return json_data_db['text']
+    return [json_data_db['date'], json_data_db['text']]
 
 
 def clear_list_of_songs():
