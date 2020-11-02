@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+""" For database """
 import sqlite3
+
+""" For files """
 from os import path, mkdir, remove
-from base64 import b64decode, b64encode
 
 """ For clear RAM """
 from gc import collect as clear_ram
@@ -14,7 +16,6 @@ from mutagen.easyid3 import EasyID3
 """ For Parse """
 import requests
 import lxml.html
-from lxml import etree
 
 """ For encode/decode db4 """
 from settings import encode_text, decode_text
