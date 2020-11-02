@@ -19,9 +19,6 @@ from tkinter import *
 """ For download and listen music """
 from threading import Thread
 
-""" For files """
-from os import path as oc_pach
-
 """ For clear RAM """
 from gc import collect as clear_ram
 
@@ -36,7 +33,7 @@ from settings import Settings
 
 
 class PageButton:
-    """ Class for pages (search music) """
+    """ Class for pages (search music / genres) """
     def __init__(self, page_num, search_text):
         self.page_num = page_num
         self.search_text = search_text
@@ -315,7 +312,7 @@ def settings_interface():
 
     # Creat block news #
     text_news = Text(width=28, height=20, bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], bd=1, font="Verdana 12")
-    text_news.insert(END, read_news()[0]+'\n\n') # date
+    text_news.insert(END, read_news()[0]+'\n\n') # write date
     text_news.insert(END, read_news()[1][settings.language]) # write news in block
     text_news.config(state=DISABLED) # update config
     canvas.create_window(155, 445, window=text_news) # draw news block
@@ -477,7 +474,7 @@ def drow_data(all_data, lib, search_text, text_error):
     lib_name = canvas.create_text(14, 15, text=lib_name_text, fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
     if (lib.split(' ')[0] == 'Рекомендации' or lib.split(' ')[0] == 'Поиск') and not all_data['connect']:
-        # Errors #
+        # Error #
         canvas.create_text(14, 60, text=languages[text_error][settings.language], fill='grey50', anchor=W, font="Verdana 12")
     else:
         # Search #
