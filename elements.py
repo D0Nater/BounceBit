@@ -9,7 +9,6 @@ from gc import collect as clear_ram
 """ For play music """
 import pyglet
 import pyglet.media as media
-import datetime
 from time import sleep as time_sleep
 
 """ For news """
