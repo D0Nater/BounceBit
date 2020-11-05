@@ -19,6 +19,9 @@ from tkinter import *
 """ For download and listen music """
 from threading import Thread
 
+""" For files """
+from os import path, remove
+
 """ For clear RAM """
 from gc import collect as clear_ram
 
@@ -43,9 +46,10 @@ class PageButton:
             command=lambda: music_interface(f'{text} {self.page_num}', error, None, self.search_text), \
             width=2, height=1, bd=0, bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], font="Verdana 12", relief=RIDGE))
 
+
 def on_mousewheel(event):
     """ Scroll """
-    if canvas.bbox('all')[3] > settings.height-200:
+    if canvas.bbox('all')[3] > settings.height-210:
         canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
 
@@ -131,6 +135,9 @@ class PlayMusic:
             # new song num #
             song_num = song_play_now['num'] + (event)
 
+            # if not song_play_now['loaded']:
+            #     Music.delete_music(song_play_now['song_id'])
+
             if song_num is -1:
                 # play last song #
                 song_num = list_of_play['music']['num'] - 1
@@ -146,13 +153,15 @@ class PlayMusic:
                 "time": list_of_play['music'][f'song{song_num}']['song_time'],
                 "url": list_of_play['music'][f'song{song_num}']['url'],
                 "song_id": list_of_play['music'][f'song{song_num}']['song_id'],
-                "num": song_num
+                "num": song_num,
+                "loaded": True
             }
             # update past song #
             if past_song['past_lib'] == past_song['lib_now']:
                 past_song['class'].drow_music(past_song['class'], past_song['lib_now'])
 
             globals()['past_song']['class'] = list_of_play['music'][f'song{song_num}']['class']
+            globals()['past_song']['song_id'] = song_play_now['song_id']
 
             # update new song #
             if past_song['past_lib'] == past_song['lib_now']:
@@ -163,6 +172,14 @@ class PlayMusic:
 
             # stop music #
             player.stop()
+
+            if not path.exists("Databases/Download_Music/%s.mp3" % song_play_now['song_id']):
+                globals()['song_play_now']['loaded'] = False
+                # download song #
+                main_player.loading_song()
+                download_song = ThreadWithReturnValue(target=Music.download_music, args=(song_play_now['song_id'], song_play_now['url']))
+                download_song.start()
+                download_song.join()
 
             # write new song #
             player.new_song(song_play_now['song_id'])
@@ -198,7 +215,8 @@ class PlayMusic:
 
             # update past song #
             try:
-                if past_song['past_lib'] == past_song['lib_now']:
+                # if past_song['past_lib'] == past_song['lib_now']:
+                if past_song['song_id'] == song_play_now['song_id']:
                     past_song['class'].drow_music(past_song['class'], past_song['lib_now'])
             except Exception as error:
                 print(f'click_play: {error}')
@@ -211,7 +229,7 @@ class PlayMusic:
         if song_play_now['song_id'] is not None:
             # update past song #
             try:
-                if past_song['past_lib'] == past_song['lib_now']:
+                if past_song['song_id'] == song_play_now['song_id']:
                     past_song['class'].drow_music(past_song['class'], past_song['lib_now'])
             except:
                 pass
@@ -272,7 +290,7 @@ def change_setting(setting, new_setting):
 
         update_pictures()
         update_buttons()
-        # main_player.drow_music_line(change_settings=True)
+        main_player.drow_music_line(change_settings=True)
 
     elif setting == 'lang':
         # change language #
@@ -346,8 +364,13 @@ class Song:
                     click_play = 0
                     button['image'] = image_play
                 else:
+                    if self.song_data[4] != song_play_now['song_id'] and song_play_now['song_id'] != None and click_save == 0:
+                        Music.delete_music(song_play_now['song_id'])
+
                     if self.song_data[4] != song_play_now['song_id']:
                         if not path.exists(f"Databases/Download_Music/{self.song_data[4]}.mp3"):
+                            globals()['song_play_now']['loaded'] = False
+                            # download song #
                             main_player.loading_song()
                             download_song = ThreadWithReturnValue(target=Music.download_music, args=(self.song_data[4], self.song_data[2]))
                             download_song.start()
@@ -355,8 +378,16 @@ class Song:
                         player.stop()
                         globals()['song_time_now'] = '00:00'
                         player.new_song(self.song_data[4])
+
                         if song_play_now['song_id'] != None:
                             player.next_song()
+
+                        # update past song #
+                        if past_song['class'] is not None:
+                            globals()['song_play_now']['play'] = 0
+                            past_song['class'].drow_music(past_song['class'], past_song['lib_now'])
+
+                        past_song['song_id'] = self.song_data[4]
 
                     Thread(target=player.play, daemon=True).start() # play
 
@@ -368,7 +399,7 @@ class Song:
                     if list_of_play != list_of_music:
                         globals()['list_of_play'] = list_of_music.copy()
 
-                globals()['song_play_now'] = {"play": click_play, "name": self.song_data[0], "author": self.song_data[1], "time": self.song_data[3], "url": self.song_data[2], "song_id": self.song_data[4], "num": self.num}
+                globals()['song_play_now'] = {"play": click_play, "name": self.song_data[0], "author": self.song_data[1], "time": self.song_data[3], "url": self.song_data[2], "song_id": self.song_data[4], "num": self.num, "loaded": song_play_now['loaded']}
                 main_player.drow_music_line()
 
             elif event == 'click_add':
@@ -383,18 +414,20 @@ class Song:
 
             elif event == 'click_save':
                 if click_save == 0:
+                    globals()['song_play_now']['loaded'] = True
                     Thread(target=Music.download_music, args=(self.song_data[4], self.song_data[2])).start()
                     Music.add_song("database3.sqlite", self.song_data)
                     button['image'] = image_save_click
                     click_save = 1
                 else:
+                    globals()['song_play_now']['loaded'] = False
                     Music.delete_music(self.song_data[4])
                     Music.delete_song("database3.sqlite", self.song_data[4])
                     button['image'] = image_save
                     click_save = 0
 
         # button 'play' #
-        if (past_song['past_lib'] == past_song['lib_now']) and song_play_now['play'] and song_play_now['song_id'] == self.song_data[4]:
+        if song_play_now['play'] and song_play_now['song_id'] == self.song_data[4]:
             click_play = 1
             play_button = Button(image=image_pause, command=lambda: button_click('click_play', play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
         else:
@@ -460,6 +493,7 @@ def drow_data(all_data, lib, search_text, text_error):
         globals()['list_of_music']['music'][f'song{song_now}']['class'] = new_song
 
         if song_play_now['song_id'] == all_data['music'][f'song{song_now}']['song_id']:
+            print('new')
             past_song['class'] = new_song
 
         y += 40
@@ -586,7 +620,7 @@ vscrollbar = Scrollbar(root, bg=themes[settings.theme]['background'])
 
 # Menu #
 main_menu = Canvas(root, width=settings.width, height=77, bg=themes[settings.theme]['second_color'], highlightthickness=0)
-main_menu.create_text(10, 25, text=PROGRAM_NAME, fill="red", anchor=W, font="Aharoni 20") # name
+main_menu.create_text(10, 25, text=PROGRAM_NAME, fill="red", anchor=W, font="Aharoni 20") # program name
 main_menu.create_text(145, 27, text=f"v{VERSION}", anchor=W, fill="red") # version
 main_menu.pack()
 
@@ -606,7 +640,7 @@ line_for_song.pack()
 image_logo = ImageTk.PhotoImage(Image.open("pictures/main_logo1.jpg").resize((canvas.winfo_reqwidth(), canvas.winfo_reqheight()), Image.ANTIALIAS))
 canvas.create_image(0, 0, image=image_logo, anchor=NW)
 
-# Drow buttons for music #
+# Buttons for music #
 update_pictures()
 
 # Drow main buttons #
