@@ -63,7 +63,7 @@ def error_correction():
     check_db('database3.sqlite') # download music
 
 
-top_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "url": "", "connect": False}
+top_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "url": "", "error": None}
 
 
 class Music:
@@ -71,18 +71,19 @@ class Music:
         if not path.exists("Databases/Download_Music"):
             mkdir("Databases/Download_Music")
 
-        with open(f'Databases/Download_Music/{song_id}.mp3', "wb") as f:
-            response = requests.get(requests.get(f'https://zaycev.net{url}').json()['url'], stream=True)
-            total_length = response.headers.get('content-length')
+        if not path.exists(f'Databases/Download_Music/{song_id}.mp3'):
+            with open(f'Databases/Download_Music/{song_id}.mp3', "wb") as f:
+                response = requests.get(requests.get(f'https://zaycev.net{url}').json()['url'], stream=True)
+                total_length = response.headers.get('content-length')
 
-            if total_length is None:
-                f.write(response.content)
-            else:
-                dl = 0
-                total_length = int(total_length)
-                for data in response.iter_content(chunk_size=4096):
-                    dl += len(data)
-                    f.write(data)
+                if total_length is None:
+                    f.write(response.content)
+                else:
+                    dl = 0
+                    total_length = int(total_length)
+                    for data in response.iter_content(chunk_size=4096):
+                        dl += len(data)
+                        f.write(data)
 
         # music params #
         audio = EasyID3(f'Databases/Download_Music/{song_id}.mp3')
@@ -97,19 +98,18 @@ class Music:
         if path.exists(f'Databases/Download_Music/{song_id}.mp3'):
             remove(f'Databases/Download_Music/{song_id}.mp3')
 
-    def top_music(url='https://zaycev.net/'):
+    def top_music():
         clear_ram()
         global top_music_json
         try:
-            if top_music_json['url'] != url or not top_music_json['connect']:
-                top_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "url": ""}
-                top_music_json['url'] = url
+            if top_music_json['music']['num'] is 0:
+                top_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "error": None}
                 
                 # parse site #
                 headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
-                api = requests.get(url, headers=headers)
+                api = requests.get('https://zaycev.net/', headers=headers)
 
-                top_music_json['connect'] = True
+                top_music_json['error'] = None
 
                 tree = lxml.html.document_fromstring(api.text)
 
@@ -129,13 +129,13 @@ class Music:
                 del tree
 
         except requests.exceptions.ConnectionError:
-            top_music_json['connect'] = False
+            top_music_json['error'] = "connect_error"
 
         return top_music_json
 
     def search_music(text, page):
         clear_ram()
-        search_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "pages": [], "connect": False}
+        search_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "pages": [], "error": None}
         try:
             # parse site #
             headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
@@ -181,18 +181,18 @@ class Music:
             except:
                 pass
 
-            search_music_json['connect'] = True
+            search_music_json['error'] = None
 
             del tree
 
         except requests.exceptions.ConnectionError:
-            search_music_json['connect'] = False
+            search_music_json['error'] = "connect_error"
 
         return search_music_json
 
     def genres_music(genre, page):
         clear_ram()
-        genre_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "pages": [], "connect": False}
+        genre_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "pages": [], "error": None}
         try:
             # parse site #
             headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
@@ -238,22 +238,22 @@ class Music:
             except:
                 pass
 
-            genre_music_json['connect'] = True
+            genre_music_json['error'] = None
 
             del tree
 
         except requests.exceptions.ConnectionError:
-            genre_music_json['connect'] = False
+            genre_music_json['error'] = "connect_error"
 
         return genre_music_json
 
-    def read_music(db_name):
+    def read_music(db_name, error):
         error_correction()
 
         conn = sqlite3.connect(f'Databases/{db_name}')
         cursor = conn.cursor()
 
-        json_text = {"music": {"num": 0}, "music_albums": {"num": 0}}
+        json_text = {"music": {"num": 0}, "music_albums": {"num": 0}, "error": None}
 
         music_list = []
         for i in cursor.execute('SELECT * FROM user_music ORDER BY song_time'):
@@ -266,6 +266,9 @@ class Music:
             song_data = {'name': decode_text(song_data[0]), 'author': decode_text(song_data[1]), 'url': decode_text(song_data[2]), 'song_time': decode_text(song_data[3]), 'song_id': decode_text(song_data[5])}
             json_text['music'][f'song{num}'] = song_data
             json_text['music']['num'] += 1
+
+        if json_text['music']['num'] is 0:
+            json_text['error'] = error
 
         conn.close()
         return json_text
