@@ -13,6 +13,8 @@
 - GitHub: github.com/D0Nater -
 """
 
+import sys
+
 """ For Graphical Interface """
 from tkinter import *
 
@@ -108,14 +110,14 @@ class SongLine:
             }
             # update past song #
             if past_song['past_lib'] == past_song['lib_now']:
-                past_song['class'].drow_music(past_song['class'], past_song['lib_now'])
+                past_song['class'].draw_music(past_song['class'], past_song['lib_now'])
 
             globals()['past_song']['class'] = list_of_play['music'][f'song{song_num}']['class']
             globals()['past_song']['song_id'] = song_play_now['song_id']
 
             # update new song #
             if past_song['past_lib'] == past_song['lib_now']:
-                past_song['class'].drow_music(past_song['class'], past_song['lib_now'])
+                past_song['class'].draw_music(past_song['class'], past_song['lib_now'])
 
             # update song time #
             globals()['song_time_now'] = '00:00'
@@ -141,14 +143,14 @@ class SongLine:
                 Thread(target=player.play, daemon=True).start() # play
 
             # update line #
-            song_line.drow_music_line()
+            song_line.draw_music_line()
             self.update_buttons()
 
     def loading_song(self):
         line_for_song.create_text(30, 40, text=languages['Загрузка'][settings.language]+"...", fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
         self.root.update()
 
-    def drow_music_line(self, change_settings=False):
+    def draw_music_line(self, change_settings=False):
         def click_play(button):
             global song_play_now
 
@@ -167,7 +169,7 @@ class SongLine:
             try:
                 # if past_song['past_lib'] == past_song['lib_now']:
                 if past_song['song_id'] == song_play_now['song_id']:
-                    past_song['class'].drow_music(past_song['class'], past_song['lib_now'])
+                    past_song['class'].draw_music(past_song['class'], past_song['lib_now'])
             except Exception as error:
                 print(f'click_play: {error}')
 
@@ -180,7 +182,7 @@ class SongLine:
             # update past song #
             try:
                 if past_song['song_id'] == song_play_now['song_id']:
-                    past_song['class'].drow_music(past_song['class'], past_song['lib_now'])
+                    past_song['class'].draw_music(past_song['class'], past_song['lib_now'])
             except:
                 pass
 
@@ -216,10 +218,10 @@ class SongLine:
                 play_button = Button(image=image_pause_line, command=lambda: click_play(play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE)
             else:
                 play_button = Button(image=image_play_line, command=lambda: click_play(play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE)
-            play_button_drow = line_for_song.create_window(line_for_song.bbox(behind_song_button)[2]+20, 38, window=play_button)
+            play_button_draw = line_for_song.create_window(line_for_song.bbox(behind_song_button)[2]+20, 38, window=play_button)
 
             # Button 'after song' #
-            after_song_button = line_for_song.create_window(line_for_song.bbox(play_button_drow)[2]+21, 37, window=Button(image=image_after_song, command=lambda: self.behind_after_music(1), width=17, height=19, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE))
+            after_song_button = line_for_song.create_window(line_for_song.bbox(play_button_draw)[2]+21, 37, window=Button(image=image_after_song, command=lambda: self.behind_after_music(1), width=17, height=19, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE))
 
             line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
 
@@ -234,7 +236,16 @@ class Song:
         self.num = num
         self.song_data = [info['name'], info['author'], info['url'], info['song_time'], info['song_id']]
 
-    def drow_music(self, this_class, lib):
+    def __del__(self):
+        pass
+
+    def del_class(self):
+        del self.x
+        del self.y
+        del self.num
+        del self.song_data
+
+    def draw_music(self, this_class, lib):
         # for buttons #
         click_play = 0
         click_add = Music.check_song_in_db("database2.sqlite", self.song_data[4])
@@ -264,13 +275,13 @@ class Song:
                     globals()['song_time_now'] = '00:00'
                     player.new_song(self.song_data[4])
 
-                    if song_play_now['song_id'] != None:
+                    if song_play_now['song_id'] is not None:
                         player.next_song()
 
                     # update past song #
                     if past_song['class'] is not None:
                         globals()['song_play_now']['play'] = 0
-                        past_song['class'].drow_music(past_song['class'], past_song['lib_now'])
+                        past_song['class'].draw_music(past_song['class'], past_song['lib_now'])
 
                     if list_of_play != list_of_music:
                         globals()['list_of_play'] = list_of_music.copy()
@@ -285,7 +296,7 @@ class Song:
                 button['image'] = image_pause
 
             globals()['song_play_now'] = {"play": click_play, "name": self.song_data[0], "author": self.song_data[1], "time": self.song_data[3], "url": self.song_data[2], "song_id": self.song_data[4], "num": self.num, "loaded": song_play_now['loaded']}
-            song_line.drow_music_line()
+            song_line.draw_music_line()
 
         def add_click(button):
             nonlocal click_add
@@ -319,31 +330,52 @@ class Song:
                 button['image'] = image_save_click
                 click_save = 1
 
-
         # button 'play' #
         if song_play_now['play'] and song_play_now['song_id'] == self.song_data[4]:
             click_play = 1
             play_button = Button(image=image_pause, command=lambda: play_click(play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
         else:
             play_button = Button(image=image_play, command=lambda: play_click(play_button), width=15, height=21, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
-        play_button_drow = canvas.create_window(self.x, self.y, window=play_button) # draw button
+        play_button_draw = canvas.create_window(self.x, self.y, window=play_button) # draw button
 
         # button 'add' #
         if click_add:
             add_button = Button(image=image_add_click, command=lambda: add_click(add_button), width=15, height=20, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
         else:
             add_button = Button(image=image_add, command=lambda: add_click(add_button), width=15, height=20, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
-        add_button_drow = canvas.create_window(canvas.bbox(play_button_drow)[2]+40, self.y, window=add_button) # draw button
+        add_button_draw = canvas.create_window(canvas.bbox(play_button_draw)[2]+40, self.y, window=add_button) # draw button
 
         # button 'download' #
         if click_save:
             save_button = Button(image=image_save_click, command=lambda: save_click(save_button), width=18, height=21, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
         else:
             save_button = Button(image=image_save, command=lambda: save_click(save_button), width=18, height=21, bd=0, bg=themes[settings.theme]['background'], relief=RIDGE)
-        save_button_drow = canvas.create_window(canvas.bbox(add_button_drow)[2]+20, self.y, window=save_button) # draw button
+        save_button_draw = canvas.create_window(canvas.bbox(add_button_draw)[2]+20, self.y, window=save_button) # draw button
 
 
 class SettingsInterface:
+    def change_settings(self, setting, new_setting):
+        # update settings #
+        if setting == 'theme':
+            # change theme #
+            self.settings.theme = new_setting
+
+            # update all #
+            line_for_song['bg'] = themes[self.settings.theme]['second_color']
+            self.main_menu['bg'] = themes[self.settings.theme]['second_color']
+            self.canvas['bg'] = themes[self.settings.theme]['background']
+
+            self.update_pictures()
+            self.update_buttons()
+            song_line.draw_music_line(change_settings=True)
+
+        elif setting == 'lang':
+            # change language #
+            self.settings.language = new_setting
+            self.update_buttons()
+
+        self.settings_interface()
+
     def settings_interface(self):
         clear_ram()
         self.canvas.delete("all")
@@ -384,28 +416,6 @@ class SettingsInterface:
 
         self.update_buttons()
 
-    def change_settings(self, setting, new_setting):
-        # update settings #
-        if setting == 'theme':
-            # change theme #
-            self.settings.theme = new_setting
-
-            # update all #
-            line_for_song['bg'] = themes[self.settings.theme]['second_color']
-            self.main_menu['bg'] = themes[self.settings.theme]['second_color']
-            self.canvas['bg'] = themes[self.settings.theme]['background']
-
-            self.update_pictures()
-            self.update_buttons()
-            song_line.drow_music_line(change_settings=True)
-
-        elif setting == 'lang':
-            # change language #
-            self.settings.language = new_setting
-            self.update_buttons()
-
-        self.settings_interface()
-
 
 class MusicInterface:
     def search_data(self):
@@ -424,54 +434,58 @@ class MusicInterface:
             search_music_tread.start()
             return search_music_tread.join()
 
-    def drow_music(self):
+    def draw_music(self):
         globals()['list_of_music'] = self.all_data
 
-        """ Drow data on page """
+        """ Draw data on page """
         y = 130 if self.lib.split(' ')[0] == 'Рекомендации' or self.lib.split(' ')[0] == 'Жанр' else 90
 
         # music #
-        for song_now in range(self.all_data['music']['num']):
+        for song_num in range(self.all_data['music']['num']):
             # Song info #
-            song_name = self.all_data['music'][f'song{song_now}']['name']
-            song_author = self.all_data['music'][f'song{song_now}']['author']
+            song_name = self.all_data['music'][f'song{song_num}']['name']
+            song_author = self.all_data['music'][f'song{song_num}']['author']
 
-            text_song = self.canvas.create_text(20, y, text=f"{song_name}  -  ", fill=themes[self.settings.theme]['text_color'], anchor=W, font="Verdana 12")
-            text_author = self.canvas.create_text(self.canvas.bbox(text_song)[2], y, text=song_author, fill='grey50', anchor=W, font="Verdana 12")
+            # Draw song name and author #
+            name_draw = self.canvas.create_text(20, y, text=f"{song_name}  -  ", fill=themes[self.settings.theme]['text_color'], anchor=W, font="Verdana 12")
+            author_draw = self.canvas.create_text(self.canvas.bbox(name_draw)[2], y, text=song_author, fill='grey50', anchor=W, font="Verdana 12")
 
             del song_name, song_author
 
-            new_song = Song(self.canvas.bbox(text_author)[2]+34, y, song_now, self.all_data['music'][f'song{song_now}'])
-            new_song.drow_music(new_song, self.lib)
+            # Creat buttons for song #
+            new_song = Song(self.canvas.bbox(author_draw)[2]+34, y, song_num, self.all_data['music'][f'song{song_num}'])
+            new_song.draw_music(new_song, self.lib)
 
             list_of_songs_class.append(new_song)
 
-            globals()['list_of_music']['music'][f'song{song_now}']['class'] = new_song
+            globals()['list_of_music']['music'][f'song{song_num}']['class'] = new_song
 
-            if song_play_now['song_id'] == self.all_data['music'][f'song{song_now}']['song_id']:
+            if song_play_now['song_id'] == self.all_data['music'][f'song{song_num}']['song_id']:
                 past_song['class'] = new_song
 
             y += 40
 
-    def drow_search(self):
+        # print(sys.getrefcount(list_of_songs_class[0]))
+        # import gc
+        # print(gc.get_referents(list_of_songs_class[0]))
+
+    def draw_search(self):
         # Search #
         search_draw = self.canvas.create_text(self.canvas.bbox(self.lib_name)[0], self.canvas.bbox(self.lib_name)[3]+25, text=languages['Поиск'][self.settings.language], fill=themes[self.settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
         # Search line #
         text_e = Text(width=18, height=1.4, bg=themes[self.settings.theme]['background'], fg=themes[self.settings.theme]['text_color'], selectbackground='red', insertbackground=themes[self.settings.theme]['text_color'], font="Verdana 11")
         text_e.insert(END, self.search_text)
-        text_e_drow = self.canvas.create_window(self.canvas.bbox(search_draw)[2]+105, self.canvas.bbox(search_draw)[3]-9, window=text_e)
+        text_e_draw = self.canvas.create_window(self.canvas.bbox(search_draw)[2]+105, self.canvas.bbox(search_draw)[3]-9, window=text_e)
 
-        # Button for search #
-        search_button = Button(image=image_search, width=16, height=16, bd=0, bg=themes[self.settings.theme]['background'], relief=RIDGE, \
-            command=lambda: self.music_interface('Поиск 1', None, text_e.get(1.0, END)))
+        # Draw button for search #
+        self.canvas.create_window(self.canvas.bbox(text_e_draw)[2]+17, self.canvas.bbox(search_draw)[3]-9, window=Button(image=image_search, width=16, height=16, bd=0, bg=themes[self.settings.theme]['background'], relief=RIDGE, \
+            command=lambda: self.music_interface('Поиск 1', None, text_e.get(1.0, END))))
 
-        search_button_drow = self.canvas.create_window(self.canvas.bbox(text_e_drow)[2]+17, self.canvas.bbox(search_draw)[3]-9, window=search_button)
-
-    def drow_genres(self):
+    def draw_genres(self):
         if self.lib.split(' ')[0] == 'Рекомендации' or self.lib.split(' ')[0] == 'Жанр':
             genres_text = self.canvas.create_text(self.canvas.bbox(self.lib_name)[0], self.canvas.bbox(self.lib_name)[3]+60, text=languages['Жанры'][self.settings.language], fill=themes[self.settings.theme]['text_color'], anchor=W, font="Verdana 13")
-                
+
             genre_pop = self.canvas.create_window(self.canvas.bbox(genres_text)[2]+20, self.canvas.bbox(self.lib_name)[3]+61, anchor=W, window=Button(text=languages['Поп'][self.settings.language], bg=themes[self.settings.theme]['second_color'], fg=themes[self.settings.theme]['text_color'], bd=0, width=7, font="Verdana 10", \
                 command=lambda: self.music_interface('Жанр Поп 1', None)))
 
@@ -490,7 +504,7 @@ class MusicInterface:
             genre_classical = self.canvas.create_window(self.canvas.bbox(genre_shanson)[2]+7, self.canvas.bbox(self.lib_name)[3]+61, anchor=W, window=Button(text=languages['Классика'][self.settings.language], bg=themes[self.settings.theme]['second_color'], fg=themes[self.settings.theme]['text_color'], bd=0, width=9, font="Verdana 10", \
                 command=lambda: self.music_interface('Жанр Классика 1', None)))
 
-    def drow_pages(self):
+    def draw_pages(self):
         class PageButton:
             """ Class for pages (search music / genres) """
             def __init__(self, page_num, func, args):
@@ -498,7 +512,7 @@ class MusicInterface:
                 self.func = func
                 self.args = args
 
-            def drow_button(self, x, y):
+            def draw_button(self, x, y):
                 canvas.create_window(x, y, window=Button(text=self.page_num, \
                     command=lambda: self.func(*self.args), \
                     width=2, height=1, bd=0, bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], font="Verdana 12", relief=RIDGE))
@@ -506,17 +520,18 @@ class MusicInterface:
         page_x = self.canvas.bbox(self.lib_name)[2]+35
         if self.lib.split(' ')[0] == 'Поиск':
             for page_num in self.all_data['pages']:
-                PageButton(page_num, self.music_interface, (f'Поиск {page_num}', None, self.search_text)).drow_button(page_x, canvas.bbox(self.lib_name)[3]-9)
+                PageButton(page_num, self.music_interface, (f'Поиск {page_num}', None, self.search_text)).draw_button(page_x, canvas.bbox(self.lib_name)[3]-9)
                 page_x += 29
 
         elif self.lib.split(' ')[0] == 'Жанр':
             for page_num in self.all_data['pages']:
-                PageButton(page_num, self.music_interface, ('Жанр %s %s'%(self.lib.split(' ')[1], page_num), None, '')).drow_button(page_x, canvas.bbox(self.lib_name)[3]-9)
+                PageButton(page_num, self.music_interface, ('Жанр %s %s'%(self.lib.split(' ')[1], page_num), None, '')).draw_button(page_x, canvas.bbox(self.lib_name)[3]-9)
                 page_x += 29
 
     def music_interface(self, lib, all_data, search_text=''):
         clear_ram()
         self.canvas.delete("all")
+        Thread(target=clear_list_of_songs).start() # delete past data
 
         self.lib = lib
         self.all_data = all_data
@@ -546,16 +561,16 @@ class MusicInterface:
 
         if self.all_data['error'] is None:
             # Music #
-            self.drow_music()
+            self.draw_music()
 
             # Search line #
-            self.drow_search()
+            self.draw_search()
 
             # Genres #
-            self.drow_genres()
+            self.draw_genres()
 
             # Pages #
-            self.drow_pages()
+            self.draw_pages()
 
             line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
 
@@ -610,14 +625,14 @@ class BounceBit(SettingsInterface, MusicInterface):
         globals()['line_for_song'] = Canvas(self.root, width=self.settings.width, height=200, bg=themes[self.settings.theme]['second_color'], bd=0, highlightthickness=0)
         line_for_song.pack()
 
-        # Create and drow logo #
+        # Create and draw logo #
         self.image_logo = ImageTk.PhotoImage(Image.open("pictures/main_logo1.jpg").resize((self.canvas.winfo_reqwidth(), self.canvas.winfo_reqheight()), Image.ANTIALIAS))
         self.canvas.create_image(0, 0, image=self.image_logo, anchor=NW)
 
         # Buttons for music #
         self.update_pictures()
 
-        # Drow main buttons #
+        # Draw main buttons #
         self.update_buttons()
 
         # Globals #
