@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" For database """
+""" For databases """
 import sqlite3
 
 """ For files """
@@ -12,6 +12,28 @@ from base64 import b64decode, b64encode
 text_for_readme = """ %s v%s
  Author: %s
  GitHub: %s
+
+ Language: Python
+ Interface: Tkinter
+ Media player: Pyglet
+
+ Don't delete files because you will lose data!
+
+ BounceBit  -  Main File
+ |
+ |___Databases  -  Folder With Data
+     |
+     |___README  -  Readme
+     |
+     |___database1  -  Settings
+     |
+     |___database2  -  Added Music
+     |
+     |___database3  -  Saved Music
+     |
+     |___database4  -  News
+     |
+     |___Download_Music  -  Folder With Your Music
 """
 
 def decode_text(text):
@@ -26,6 +48,7 @@ def decode_text(text):
     except:
         return ''
 
+
 def encode_text(text):
     try:
         encode_text = (b64encode(str(text).encode("UTF-8"))).decode()
@@ -38,6 +61,7 @@ def encode_text(text):
     except:
         return ''
 
+
 class Settings:
     def __init__(self, width, height, language, theme):
         self.width = int(width)
@@ -47,7 +71,7 @@ class Settings:
 
     def create_readme(self, PROGRAM_NAME, VERSION, AUTHOR, GITHUB):
         with open("Databases/README.md", "w+") as file:
-            file.write(text_for_readme%(PROGRAM_NAME,VERSION,AUTHOR,GITHUB))
+            file.write(text_for_readme % (PROGRAM_NAME, VERSION, AUTHOR, GITHUB))
 
     def error_correction(self):
         """
