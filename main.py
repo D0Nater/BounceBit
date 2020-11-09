@@ -465,7 +465,7 @@ class SettingsInterface:
         self.news_text = self.canvas.create_text(135, 240, text=languages['Новости'][self.settings.language], fill=themes[self.settings.theme]['text_color'], font="Verdana 14")
 
         # Creat block news #
-        self.text_news = Text(width=28, height=20, bg=themes[self.settings.theme]['background'], fg=themes[self.settings.theme]['text_color'], bd=1, font="Verdana 12")
+        self.text_news = Text(width=28, height=20, bg=themes[self.settings.theme]['background'], fg=themes[self.settings.theme]['text_color'], bd=1, wrap=WORD, font="Verdana 12")
         self.text_news.insert(END, read_news()[0]+'\n\n') # write date
         self.text_news.insert(END, read_news()[1][self.settings.language]) # write news in block
         self.text_news.config(state=DISABLED) # update config
