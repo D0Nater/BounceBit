@@ -10,7 +10,7 @@ Program for listen music free
 ![alt text](Screenshots/BounceBit_screen4.png "Song Info")
 
 # New
-   Vrsion 0.2
+   Version 0.2
 1. Program was optimized
 2. More information about songs
 3. Testing of playlist creation has started
