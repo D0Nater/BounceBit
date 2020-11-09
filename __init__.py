@@ -19,7 +19,6 @@ Packages: (
     time,
     lxml 4.5.0,
     json,
-    numpy 1.17.4,
     pyglet 1.5.7,
     base64,
     tkinter,
