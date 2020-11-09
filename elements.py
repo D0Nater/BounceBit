@@ -19,7 +19,6 @@ from os import path
 
 """ For Pictures """
 from PIL import Image, ImageTk
-from numpy import array as nump_array
 
 """ For encode/decode db4 """
 from settings import encode_text, decode_text
@@ -105,7 +104,6 @@ def parse_new_news():
             text = json.loads(decode_text(tree.xpath(f'//*[@id="LC1"]/text()')[0]).replace("'", '"'))
 
         except Exception as error:
-            print(error)
             with open('Databases/database4', encoding='utf-8') as json_db:
                 text = json.loads(decode_text(json_db.read()).replace("'", '"'))
 
@@ -137,40 +135,34 @@ def read_news():
 def clear_list_of_songs():
     global list_of_songs_class
     for song in list_of_songs_class:
+        song.del_class()
         del song
     clear_ram()
-    list_of_songs_class = []
+    list_of_songs_class.clear()
 
 
-def del_picture_background(file, color, background):
-    clear_ram()
-    data = nump_array(Image.open(file).convert('RGB'))
-    data[(data == (46,46,46)).all(axis=-1)] = background
-    data[(data == (255,255, 255)).all(axis=-1)] = color
-    return ImageTk.PhotoImage(Image.fromarray(data, mode='RGB'))
-
-
-def update_program():
-    pass
+class LoadPicture:
+    def load_picture(self, file):
+        return ImageTk.PhotoImage(Image.open(file % ('Light/' if self.settings.theme == 'light' else '')))
 
 
 """ Elements for main program """
-VERSION = '0.1'
+VERSION = '0.2'
 AUTHOR = 'D0Nater'
 GITHUB = 'https://github.com/D0Nater/BounceBit/'
 PROGRAM_NAME = 'Bounce Bit'
 
-song_play_now = {"play": 0, "name": "", "author": "", "time": "", "url": "", "song_id": None, "num": 0}
+song_play_now = {"play": 0, "name": "", "author": "", "time": "", "url": "", "song_id": None, "num": 0, "loaded": False}
 
 song_time_now = '00:00'
 
-past_song = {"class": None, "past_lib": None, "lib_now": None}
+past_song = {"class": None, "song_id": None, "past_lib": None, "lib_now": None}
 
 list_of_music = {}
 
 list_of_songs_class = []
 
-list_of_play = {}
+list_of_play = {'classes': []}
 
 themes = {
     'dark': {
@@ -279,6 +271,16 @@ languages = {
     "Классика": {
         "ru": "Классика",
         "en": "Classical"
+    },
+
+    # Playlists #
+    "create_pl": {
+        "ru": "Создать Плейлист",
+        "en": "Create Playlist"
+    },
+    "pl_name": {
+        "ru": "Название Плейлиста",
+        "en": "Playlist Name"
     },
 
     # Other #
