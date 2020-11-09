@@ -273,6 +273,25 @@ languages = {
         "en": "Classical"
     },
 
+    # Song info #
+    "Трек": {
+        "ru": "Трек",
+        "en": "Track"
+    },
+    "Артист": {
+        "ru": "Артист",
+        "en": "Artist"
+    },
+    "Размер": {
+        "ru": "Размер",
+        "en": "Size"
+    },
+    "Текст": {
+        "ru": "Текст",
+        "en": "Text"
+    },
+    
+
     # Playlists #
     "create_pl": {
         "ru": "Создать Плейлист",
