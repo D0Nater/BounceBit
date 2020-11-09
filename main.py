@@ -377,14 +377,14 @@ class MoreSongInfo:
         self.song_info_canvas.create_window(canvas.winfo_width()/2/2+45, 6, window=Button(image=image_close, width=17, height=17, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], command=lambda: self.close_song_info()), anchor=NE)
 
         # Song name #
-        self.song_name_draw = self.song_info_canvas.create_text(40, 40, text='Трек:', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+        self.song_name_draw = self.song_info_canvas.create_text(40, 40, text=languages['Трек'][settings.language]+':', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
         self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_name_draw)[2]+15, 41, text=self.song_name, fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
 
         # Artist #
-        self.song_artist_draw = self.song_info_canvas.create_text(40, 80, text='Артист:', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+        self.song_artist_draw = self.song_info_canvas.create_text(40, 80, text=languages['Артист'][settings.language]+':', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
         # Song size #
-        self.song_artist_draw = self.song_info_canvas.create_text(40, 120, text='Размер:', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+        self.song_artist_draw = self.song_info_canvas.create_text(40, 120, text=languages['Размер'][settings.language]+':', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
         root.update()
 
@@ -404,7 +404,7 @@ class MoreSongInfo:
         # Loading Song text #
         if self.song_text != '':
             # Song size #
-            self.song_artist_draw = self.song_info_canvas.create_text(40, 160, text='Текст:', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+            self.song_artist_draw = self.song_info_canvas.create_text(40, 160, text=languages['Текст'][settings.language]+':', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
             self.song_text_draw = Text(width=37, height=22, bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=1, wrap=WORD, font="Verdana 12")
             self.song_text_draw.insert(END, self.song_text) # write text in block
