@@ -2,7 +2,7 @@
 
 Name: BounceBit
 
-Version: 0.1
+Version: 0.2
 
 Author: D0Nater
 
@@ -13,20 +13,21 @@ Date: 14.10.2020 (day/month/year)
 Lang: Python 3.6.7
 
 Packages: (
-	gc,
-	os,
-	PIL,
-	time,
-	lxml 4.5.0,
-	json,
-	numpy 1.17.4,
-	pyglet 1.5.7,
-	base64,
-	tkinter,
-	sqlite3,
-	mutagen 1.45.1,
-	requests 2.23.0,
-	threading
+    gc,
+    os,
+    PIL,
+    time,
+    lxml 4.5.0,
+    json,
+    numpy 1.17.4,
+    pyglet 1.5.7,
+    base64,
+    tkinter,
+    sqlite3,
+    mutagen 1.45.1,
+    requests 2.23.0,
+    pyperclip,
+    threading
 )
 
 """
