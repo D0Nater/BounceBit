@@ -7,6 +7,18 @@ Program for listen music free
 
 ![alt text](Screenshots/BounceBit_screen3.png "Genre")
 
+![alt text](Screenshots/BounceBit_screen4.png "Song Info")
+
+# New
+   Vrsion 0.2
+1. Program was optimized
+2. More information about songs
+3. Testing of playlist creation has started
+4. Copying news
+5. New images without background
+6. Removed function for deleting image background
+7. Fixed some bugs
+
 # Packages
 <code> pip install lxml </code> <br>
 <code> pip install numpy </code> <br>
