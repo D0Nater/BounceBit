@@ -10,6 +10,7 @@ from os import path, mkdir, remove
 from base64 import b64decode, b64encode
 
 text_for_readme = """ %s v%s
+
  Author: %s
  GitHub: %s
 
@@ -92,10 +93,8 @@ class Settings:
             conn = sqlite3.connect('Databases/database1.sqlite')
             cursor = conn.cursor()
 
-        try:
-            cursor.execute('CREATE TABLE settings (setting, param)')
-        except:
-            pass
+        try: cursor.execute('CREATE TABLE settings (setting, param)')
+        except: pass
 
         def check_setting(name, param):
             if cursor.execute('SELECT * FROM settings WHERE setting=?', (encode_text(name),)).fetchone() is None:
