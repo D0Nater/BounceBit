@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-""" For database """
+""" For databases """
 import sqlite3
 
 """ For files """
@@ -19,6 +19,42 @@ import lxml.html
 
 """ For encode/decode db4 """
 from settings import encode_text, decode_text
+
+
+def parse_data(url):
+    try:
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
+        api = requests.get(url, headers=headers)
+
+        return lxml.html.document_fromstring(api.text)
+    except requests.exceptions.ConnectionError:
+        raise ConnectionError
+
+
+def music_pages(tree, page, xpath_text):
+        # Pages #
+        try:
+            pages_music_json = []
+
+            # page now (default 1) #
+            pages_music_json.append(page)
+
+            # other pages #
+            for num in range((2 if int(page) > 1 else 1), 6):
+                try:
+                    pages_music_json.append(tree.xpath(xpath_text % num)[0])
+                except:
+                    pass
+
+            # delete last button #
+            if pages_music_json[-1] == 'Следующая':
+                (pages_music_json).pop()
+
+        except:
+            pass
+        
+        # sorted and return pages #
+        return sorted(pages_music_json)
 
 
 def error_correction():
@@ -50,7 +86,7 @@ def error_correction():
             conn = sqlite3.connect(f'Databases/{db_name}')
             cursor = conn.cursor()
 
-        try: cursor.execute('CREATE TABLE user_music (name, author, url, song_time, num, song_id)')
+        try: cursor.execute('CREATE TABLE user_music (name, author, url, song_time, num, song_id, data_key)')
         except: pass
 
         try: cursor.execute('CREATE TABLE user_albums (name, params, num)')
@@ -106,12 +142,7 @@ class Music:
                 top_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "error": None}
                 
                 # parse site #
-                headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
-                api = requests.get('https://zaycev.net/', headers=headers)
-
-                top_music_json['error'] = None
-
-                tree = lxml.html.document_fromstring(api.text)
+                tree = parse_data('https://zaycev.net/')
 
                 # music #
                 for num in range(1, 61):
@@ -119,6 +150,7 @@ class Music:
                         "name": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
                         "author": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
                         "url": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-url')[0],
+                        "data_key": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-dkey')[0],
                         "song_time": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[2]/text()')[0],
                         "song_id": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-id')[0]
                     }
@@ -126,9 +158,11 @@ class Music:
                     top_music_json['music']['num'] += 1
                     del new_song
 
+                top_music_json['error'] = None
+
                 del tree
 
-        except requests.exceptions.ConnectionError:
+        except ConnectionError:
             top_music_json['error'] = "connect_error"
 
         return top_music_json
@@ -138,10 +172,7 @@ class Music:
         search_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "pages": [], "error": None}
         try:
             # parse site #
-            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
-            api = requests.get(f'https://zaycev.net/search.html?page={page}&query_search={text}', headers=headers)
-
-            tree = lxml.html.document_fromstring(api.text)
+            tree = parse_data(f'https://zaycev.net/search.html?page={page}&query_search={text}')
 
             # music #
             for num in range(1, 41):
@@ -150,6 +181,7 @@ class Music:
                         "name": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
                         "author": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
                         "url": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-url')[0],
+                        "data_key": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-dkey')[0],
                         "song_time": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[2]/text()')[0],
                         "song_id": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-id')[0]
                     }
@@ -160,32 +192,13 @@ class Music:
                     break
 
             # Pages #
-            try:
-                # page now (default 1) #
-                search_music_json['pages'].append(tree.xpath('//*[@id="search-page"]/div/div/div[3]/div/span/span/text()')[0])
-
-                # other pages #
-                for num in range((2 if int(page) > 1 else 1), 6):
-                    try:
-                        search_music_json['pages'].append(tree.xpath(f'//*[@id="search-page"]/div/div/div[3]/div/a[{num}]/span/text()')[0])
-                    except:
-                        pass
-
-                # delete last button #
-                if search_music_json['pages'][-1] == 'Следующая':
-                    (search_music_json['pages']).pop()
-
-                # sorted numbers #
-                search_music_json['pages'] = sorted(search_music_json['pages'])
-
-            except:
-                pass
+            search_music_json['pages'] = music_pages(tree, page, '//*[@id="search-page"]/div/div/div[3]/div/a[%s]/span/text()')
 
             search_music_json['error'] = None
 
             del tree
 
-        except requests.exceptions.ConnectionError:
+        except ConnectionError:
             search_music_json['error'] = "connect_error"
 
         return search_music_json
@@ -195,10 +208,7 @@ class Music:
         genre_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "pages": [], "error": None}
         try:
             # parse site #
-            headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
-            api = requests.get(f'https://zaycev.net/genres/{genre}/index_{page}.html?spa=false&page={page}', headers=headers)
-
-            tree = lxml.html.document_fromstring(api.text)
+            tree = parse_data(f'https://zaycev.net/genres/{genre}/index_{page}.html?spa=false&page={page}')
 
             # music #
             for num in range(1, 41):
@@ -207,6 +217,7 @@ class Music:
                         "name": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
                         "author": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
                         "url": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-url')[0],
+                        "data_key": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-dkey')[0],
                         "song_time": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[2]/text()')[0],
                         "song_id": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-id')[0]
                     }
@@ -217,35 +228,43 @@ class Music:
                     break
 
             # Pages #
-            try:
-                # page now #
-                genre_music_json['pages'].append(page)
-
-                # other pages #
-                for num in range((1 if int(page) is 1 else 2), 6):
-                    try:
-                        genre_music_json['pages'].append(tree.xpath(f'//*[@id="page-body"]/div[2]/div/div[2]/div/div/div/section/div[@class="pager clearfix"]/a[{num}]/span/text()')[0])
-                    except:
-                        pass
-
-                # delete last button #
-                if genre_music_json['pages'][-1] == 'Следующая':
-                    (genre_music_json['pages']).pop()
-
-                # sorted numbers #
-                genre_music_json['pages'] = sorted(genre_music_json['pages'])
-
-            except:
-                pass
+            genre_music_json['pages'] = music_pages(tree, page, '//*[@id="page-body"]/div[2]/div/div[2]/div/div/div/section/div[@class="pager clearfix"]/a[%s]/span/text()')
 
             genre_music_json['error'] = None
 
             del tree
 
-        except requests.exceptions.ConnectionError:
+        except ConnectionError:
             genre_music_json['error'] = "connect_error"
 
         return genre_music_json
+
+    def more_song_info(data_key):
+        clear_ram()
+        more_song_info_json = {'artist': '', 'size': '', 'text': '', 'error': None}
+        try:
+            data_key = data_key.split('.')[0]
+
+            # parse site #
+            tree = parse_data(f'https://zaycev.net/pages{data_key}.shtml')
+
+            # Artist #
+            more_song_info_json['artist'] = tree.xpath('//*[@id="audiotrack-info"]/div[1]/p[1]/a/@href')
+
+            # Song size #
+            more_song_info_json['size'] = tree.xpath('//*[@id="audiotrack-info"]/div[1]/div[2]/p[1]/text()')[0].split(' ')[1]
+
+            # Song text #
+            try:
+                more_song_info_json['text'] = tree.xpath('//*[@id="audiotrack-block"]/div[3]/div[2]/div/div[@class="audiotrack-lyrics__text text-expander__text"]/text()')[0]
+            except:
+                pass
+
+        except ConnectionError:
+            more_song_info_json['error'] = "connect_error"
+
+        return more_song_info_json
+
 
     def read_music(db_name, error):
         error_correction()
@@ -263,7 +282,7 @@ class Music:
         # read db #
         for num in range(0, cursor.execute('SELECT count(*) FROM user_music ORDER BY song_time').fetchone()[0]):
             song_data = cursor.execute('SELECT * FROM user_music WHERE num=?', (music_list[-num-1],)).fetchone()
-            song_data = {'name': decode_text(song_data[0]), 'author': decode_text(song_data[1]), 'url': decode_text(song_data[2]), 'song_time': decode_text(song_data[3]), 'song_id': decode_text(song_data[5])}
+            song_data = {'name': decode_text(song_data[0]), 'author': decode_text(song_data[1]), 'url': decode_text(song_data[2]), 'song_time': decode_text(song_data[3]), 'song_id': decode_text(song_data[5]), 'data_key': decode_text(song_data[6])}
             json_text['music'][f'song{num}'] = song_data
             json_text['music']['num'] += 1
 
@@ -297,7 +316,7 @@ class Music:
         except:
             song_num = cursor.execute('SELECT count(*) FROM user_music ORDER BY song_id').fetchone()[0]
 
-        cursor.execute('INSERT INTO user_music VALUES (?,?,?,?,?,?)', (encode_text(song_data[0]), encode_text(song_data[1]), encode_text(song_data[2]), encode_text(song_data[3]), song_num, encode_text(song_data[4])))
+        cursor.execute('INSERT INTO user_music VALUES (?,?,?,?,?,?,?)', (encode_text(song_data[0]), encode_text(song_data[1]), encode_text(song_data[2]), encode_text(song_data[3]), song_num, encode_text(song_data[4]), encode_text(song_data[5])))
 
         conn.commit()
         conn.close()
@@ -310,42 +329,6 @@ class Music:
         cursor = conn.cursor()
 
         cursor.execute('DELETE FROM user_music WHERE song_id=?', (encode_text(song_id),))
-
-        conn.commit()
-        conn.close()
-        clear_ram()
-
-
-class Albums:
-    def check_album(self, db_name, album_data):
-        for num in range(data['music_albums']['num']):
-            if data['music_albums'][f'album{num+1}']['name'] == self.name and data['music_albums'][f'album{num+1}']['author'] == self.author:
-                return '1'
-        return '0'
-
-    def add_album(self, db_name, album_data):
-        error_correction()
-
-        conn = sqlite3.connect(f'Databases/{db_name}')
-        cursor = conn.cursor()
-
-        try:
-            song_num = cursor.execute('SELECT * FROM user_albums ORDER BY num DESC LIMIT 1').fetchone()[4]+1
-        except:
-            song_num = cursor.execute('SELECT count(*) FROM user_albums ORDER BY song_time').fetchone()[0]
-        cursor.execute('INSERT INTO user_albums VALUES (?,?,?,?,?)', (encode_text(song_data[0]), encode_text(song_data[1]), encode_text(song_data[2]), encode_text(song_data[3]), song_num))
-
-        conn.commit()
-        conn.close()
-        clear_ram()
-
-    def delete_album(self, db_name, data):
-        error_correction()
-
-        conn = sqlite3.connect(f'Databases/{db_name}')
-        cursor = conn.cursor()
-
-        cursor.execute('DELETE FROM user_albums WHERE (name=?) AND (author=?)', (encode_text(song_data[0]), encode_text(song_data[1]), encode_text(song_data[2])))
 
         conn.commit()
         conn.close()
