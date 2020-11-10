@@ -326,7 +326,7 @@ class Song:
                 click_save = 1
 
         def more_click():
-            MoreSongInfo(self.song_data).song_info_draw()
+            more_info_interface.song_info_draw(self.song_data)
 
         # button 'play' #
         if song_play_now['play'] and song_play_now['song_id'] == self.song_data[4]:
@@ -354,16 +354,16 @@ class Song:
         more_button_draw = canvas.create_window(canvas.bbox(save_button_draw)[2]+17, self.y+1, window=Button(image=image_more_info, command=lambda: more_click(), width=12, height=16, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE)) # draw button
 
 
-class MoreSongInfo:
-    def __init__(self, data):
-        self.data = data
-
+class MoreInfoInterface:
     def close_song_info(self):
+        globals()['scroll_win'] = True
         self.song_info_canvas.delete("all")
         self.song_info_canvas.destroy()
         del self.song_info_canvas
 
-    def song_info_draw(self):
+    def song_info_draw(self, data):
+        self.data = data
+
         # Draw window #
         self.song_info_canvas = Canvas(root, width=canvas.winfo_width()/2/2+50, height=canvas.winfo_height()-40, bg=themes[settings.theme]['second_color'], highlightthickness=0)
         self.song_info_canvas.place(x=settings.width/2-50, y=canvas.bbox("all")[1]+90, anchor=N)
@@ -399,18 +399,19 @@ class MoreSongInfo:
         self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_artist_draw)[2]+13, 81, window=Button(text=self.song_author, bd=0, fg='cyan', bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], activeforeground=themes[settings.theme]['text_color'], font="Verdana 12"), anchor=W)
 
         # Loading Song size #
-        self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_artist_draw)[2]+13, 121, window=Button(text=self.song_size+' мб', bd=0, fg=themes[settings.theme]['text_color'], bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], activeforeground=themes[settings.theme]['text_color'], font="Verdana 12"), anchor=W)
+        self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_artist_draw)[2]+13, 121, window=Button(text=self.song_size+' mb', bd=0, fg=themes[settings.theme]['text_color'], bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], activeforeground=themes[settings.theme]['text_color'], font="Verdana 12"), anchor=W)
 
         # Loading Song text #
         if self.song_text != '':
-            # Song size #
-            self.song_artist_draw = self.song_info_canvas.create_text(40, 160, text=languages['Текст'][settings.language]+':', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+            self.song_info_canvas.create_text(40, 160, text=languages['Текст'][settings.language]+':', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
             self.song_text_draw = Text(width=37, height=22, bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=1, wrap=WORD, font="Verdana 12")
             self.song_text_draw.insert(END, self.song_text) # write text in block
             self.song_text_draw.config(state=DISABLED) # update config
 
             self.song_info_canvas.create_window(40, 180, window=self.song_text_draw, anchor=NW)
+
+        globals()['scroll_win'] = False
 
 
 class SettingsInterface:
@@ -523,8 +524,6 @@ class MusicInterface:
             new_song.draw_music(new_song, self.lib)
 
             list_of_songs_class.append(new_song)
-
-            # globals()['list_of_music']['music'][f'song{song_num}']['class'] = new_song
 
             if song_play_now['song_id'] in list_of_ids:
                 past_song['class'] = new_song
@@ -645,13 +644,13 @@ class MusicInterface:
             # Pages #
             self.draw_pages()
 
-            line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
-
             # Update window #
             self.root.update()
             self.canvas.config(scrollregion=self.canvas.bbox('all'))
 
             self.update_buttons()
+
+            line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
         else:
             # Write error #
             self.canvas.create_text(14, 120, text=languages[self.all_data['error']][settings.language], fill='grey50', anchor=W, font="Verdana 12")
@@ -717,12 +716,14 @@ class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
         globals()['player'] = MyPlayer() # player (pyglet)
         globals()['song_line'] = SongLine(self.root, self.update_buttons) # line for songs
 
+        globals()['more_info_interface'] = MoreInfoInterface()
+
         # Start window #
         self.root.mainloop()
 
     def on_mousewheel(self, event):
         """ Scroll """
-        if self.canvas.bbox('all')[3] > self.settings.height-210:
+        if scroll_win and self.canvas.bbox('all')[3] > self.settings.height-210:
             self.canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
     def update_buttons(self):
