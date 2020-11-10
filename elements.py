@@ -164,6 +164,8 @@ list_of_songs_class = []
 
 list_of_play = {'classes': []}
 
+scroll_win = True
+
 themes = {
     'dark': {
         'background': 'grey18',
@@ -290,7 +292,6 @@ languages = {
         "ru": "Текст",
         "en": "Text"
     },
-    
 
     # Playlists #
     "create_pl": {
