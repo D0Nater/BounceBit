@@ -33,9 +33,8 @@ def parse_data(url):
 
 def music_pages(tree, page, xpath_text):
         # Pages #
+        pages_music_json = []
         try:
-            pages_music_json = []
-
             # page now (default 1) #
             pages_music_json.append(page)
 
@@ -241,24 +240,19 @@ class Music:
 
     def more_song_info(data_key):
         clear_ram()
-        more_song_info_json = {'artist': '', 'size': '', 'text': '', 'error': None}
+        more_song_info_json = {'size': '', 'text': '', 'error': None}
         try:
             data_key = data_key.split('.')[0]
 
             # parse site #
             tree = parse_data(f'https://zaycev.net/pages{data_key}.shtml')
 
-            # Artist #
-            more_song_info_json['artist'] = tree.xpath('//*[@id="audiotrack-info"]/div[1]/p[1]/a/@href')
-
             # Song size #
             more_song_info_json['size'] = tree.xpath('//*[@id="audiotrack-info"]/div[1]/div[2]/p[1]/text()')[0].split(' ')[1]
 
             # Song text #
-            try:
-                more_song_info_json['text'] = tree.xpath('//*[@id="audiotrack-block"]/div[3]/div[2]/div/div[@class="audiotrack-lyrics__text text-expander__text"]/text()')[0]
-            except:
-                pass
+            try: more_song_info_json['text'] = tree.xpath('//*[@id="audiotrack-block"]/div[3]/div[2]/div/div[@class="audiotrack-lyrics__text text-expander__text"]/text()')[0]
+            except: pass
 
         except ConnectionError:
             more_song_info_json['error'] = "connect_error"
