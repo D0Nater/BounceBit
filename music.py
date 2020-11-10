@@ -78,7 +78,7 @@ def error_correction():
             cursor = conn.cursor()
 
         try:
-            cursor.execute('SELECT * FROM user_albums WHERE name=?', (encode_text("test_name"),)).fetchone()
+            cursor.execute('SELECT * FROM user_playlists WHERE name=?', (encode_text("test_name"),)).fetchone()
         except sqlite3.DatabaseError:
             conn.close()
             remove(f'Databases/{db_name}')
@@ -88,7 +88,7 @@ def error_correction():
         try: cursor.execute('CREATE TABLE user_music (name, author, url, song_time, num, song_id, data_key)')
         except: pass
 
-        try: cursor.execute('CREATE TABLE user_albums (name, params, num)')
+        try: cursor.execute('CREATE TABLE user_playlists (name, music)')
         except: pass
 
         conn.commit()
@@ -259,7 +259,6 @@ class Music:
 
         return more_song_info_json
 
-
     def read_music(db_name, error):
         error_correction()
 
@@ -293,7 +292,7 @@ class Music:
         conn = sqlite3.connect(f'Databases/{db_name}')
         cursor = conn.cursor()
 
-        answ = 0 if (cursor.execute('SELECT * FROM user_music WHERE song_id=?', (encode_text(song_id),))).fetchone() == None else 1
+        answ = 0 if (cursor.execute('SELECT * FROM user_music WHERE song_id=?', (encode_text(song_id),))).fetchone() is None else 1
 
         conn.close()
         return answ
@@ -304,7 +303,7 @@ class Music:
         conn = sqlite3.connect(f'Databases/{db_name}')
         cursor = conn.cursor()
 
-        # new song_num for database #
+        # new song num for database #
         try:
             song_num = cursor.execute('SELECT * FROM user_music ORDER BY num DESC LIMIT 1').fetchone()[4]+1
         except:
@@ -325,5 +324,58 @@ class Music:
         cursor.execute('DELETE FROM user_music WHERE song_id=?', (encode_text(song_id),))
 
         conn.commit()
+        conn.close()
+        clear_ram()
+
+
+class Playlist:
+    def check_playlist_in_db(db_name, playlist_name):
+        """ Check playlist in database """
+        error_correction()
+
+        conn = sqlite3.connect(f'Databases/{db_name}')
+        cursor = conn.cursor()
+
+        answ = 0 if (cursor.execute('SELECT * FROM user_playlists WHERE name=?', (encode_text(playlist_name),))).fetchone() is None else 1
+
+        conn.close()
+        return answ
+
+    def get_playlists(db_name):
+        error_correction()
+
+        conn = sqlite3.connect(f'Databases/{db_name}')
+        cursor = conn.cursor()
+
+        playlists = []
+
+        for playlist_name in cursor.execute("SELECT name FROM user_playlists ORDER BY music"):
+            playlists.append(decode_text(playlist_name[0]))
+
+        conn.close()
+        return playlists
+
+    def add_playlist(db_name, playlist_name):
+        error_correction()
+
+        conn = sqlite3.connect(f'Databases/{db_name}')
+        cursor = conn.cursor()
+
+        cursor.execute('INSERT INTO user_playlists VALUES (?,?)', (encode_text(playlist_name), encode_text(r'{}')))
+
+        conn.commit()
+        conn.close()
+        clear_ram()
+
+    def delete_playlist(db_name, playlist_name):
+        error_correction()
+
+        conn = sqlite3.connect(f'Databases/{db_name}')
+        cursor = conn.cursor()
+
+        cursor.execute('DELETE FROM user_playlists WHERE name=?', (encode_text(playlist_name),))
+
+        conn.commit()
+
         conn.close()
         clear_ram()
