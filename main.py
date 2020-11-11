@@ -351,22 +351,23 @@ class MoreInfoInterface:
         self.num_of_wins = 0
 
     def close_song_info(self):
-        try:
-            globals()['scroll_win'] = True
+        if self.num_of_wins:
+            try:
+                globals()['scroll_win'] = True
 
-            self.song_info_canvas.delete("all")
-            self.song_info_canvas.destroy()
+                self.song_info_canvas.delete("all")
+                self.song_info_canvas.destroy()
 
-            del self.song_info_canvas
+                del self.song_info_canvas
 
-            self.num_of_wins -= 1
-        except AttributeError:
-            pass
+                self.num_of_wins -= 1
+            except AttributeError:
+                pass
 
     def song_info_draw(self, data):
         # Delete past window #
-        if self.num_of_wins:
-            self.close_song_info()
+        self.close_song_info()
+        playlist_interface.close_playlist()
 
         # Create new window #
         self.num_of_wins += 1
@@ -415,13 +416,55 @@ class MoreInfoInterface:
         globals()['scroll_win'] = False
 
 
+class PlaylistInterface:
+    def __init__(self):
+        self.num_of_wins = 0
+
+    def close_playlist(self):
+        if self.num_of_wins:
+            try:
+                globals()['scroll_win'] = True
+
+                self.playlist_canvas.delete("all")
+                self.playlist_canvas.destroy()
+
+                del self.playlist_canvas
+
+                self.num_of_wins -= 1
+            except AttributeError:
+                pass
+
+    def playlist_draw(self, playlist_name):
+        self.playlist_name = playlist_name
+
+        # Delete past window #
+        self.close_playlist()
+        more_info_interface.close_song_info()
+
+        # Create new window #
+        self.num_of_wins += 1
+
+        # Draw window #
+        self.playlist_canvas = Canvas(root, width=canvas.winfo_width()/1.5, height=canvas.winfo_height()-40, bg=themes[settings.theme]['second_color'], highlightthickness=0)
+        self.playlist_canvas.place(x=settings.width/2-50, y=canvas.bbox("all")[1]+90, anchor=N)
+
+        # Playlist name #
+        self.playlists_name_draw = self.playlist_canvas.create_text(40, 39, text=languages['Плейлист'][settings.language]+' - ', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+        self.playlist_canvas.create_text(self.playlist_canvas.bbox(self.playlists_name_draw)[2], 40, text=self.playlist_name, fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+
+        # button 'close' #
+        self.playlist_canvas.create_window(canvas.winfo_width()/1.5-4, 6, window=Button(image=image_close, width=17, height=17, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], command=lambda: self.close_playlist()), anchor=NE)
+
+        globals()['scroll_win'] = False
+
+
 class DrawPlaylist:
     def __init__(self, playlist_name, y):
         self.playlist_name = playlist_name
         self.y = y
 
         # Draw name #
-        new_playlist = canvas.create_text(20, self.y, text=playlist_name, fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+        new_playlist = canvas.create_text(20, self.y, text=self.playlist_name, fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
         # button 'delete' #
         button_delete = canvas.create_window(canvas.bbox(new_playlist)[2]+17, canvas.bbox(new_playlist)[3]+1, anchor=SW, window=Button(image=image_close, width=20, height=20, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE, \
@@ -429,16 +472,15 @@ class DrawPlaylist:
 
         # button 'more' #
         button_more = canvas.create_window(canvas.bbox(button_delete)[2]+13, canvas.bbox(new_playlist)[3], anchor=SW, window=Button(image=image_more, width=20, height=20, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE, \
-            command=lambda: print('button more')))
+            command=lambda: playlist_interface.playlist_draw(self.playlist_name)))
 
     def delete(self):
         Playlist.delete_playlist("database2.sqlite", self.playlist_name)
-        print(f'playlist {self.playlist_name} was deleted')
 
         globals()['scroll_win'] = True
 
 
-class PlaylistInterface:
+class DrawPlaylists:
     def __init__(self, lib_name):
         self.num_of_wins = 0
         self.lib_name = lib_name
@@ -535,6 +577,7 @@ class SettingsInterface:
         clear_ram()
         self.canvas.delete("all")
         more_info_interface.close_song_info()
+        playlist_interface.close_playlist()
 
         # delete logo #
         try: del self.image_logo
@@ -660,7 +703,7 @@ class MusicInterface:
 
     def draw_playlists(self):
         if self.lib.split(' ')[0] == 'Избранное':
-            playlists = PlaylistInterface(self.lib_name)
+            playlists = DrawPlaylists(self.lib_name)
             playlists.draw_new_playlist()
             self.y = playlists.get_y_pos()
 
@@ -691,6 +734,7 @@ class MusicInterface:
         clear_ram()
         self.canvas.delete("all")
         more_info_interface.close_song_info()
+        playlist_interface.close_playlist()
         Thread(target=clear_list_of_songs).start() # delete past data
 
         self.lib = lib
@@ -812,6 +856,7 @@ class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
         globals()['song_line'] = SongLine(self.root, self.update_buttons) # line for songs
 
         globals()['more_info_interface'] = MoreInfoInterface()
+        globals()['playlist_interface'] = PlaylistInterface()
 
         # Start window #
         self.root.mainloop()
