@@ -558,7 +558,6 @@ class SettingsInterface:
 
             # update all #
             line_for_song['bg'] = themes[self.settings.theme]['second_color']
-            line_for_song['activebackground'] = themes[self.settings.theme]['second_color'], 
             self.main_menu['bg'] = themes[self.settings.theme]['second_color']
             self.canvas['bg'] = themes[self.settings.theme]['background']
 
