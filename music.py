@@ -3,6 +3,9 @@
 """ For databases """
 import sqlite3
 
+""" For music in playlists """
+import json
+
 """ For files """
 from os import path, mkdir, remove
 
@@ -355,13 +358,26 @@ class Playlist:
         conn.close()
         return playlists
 
-    def add_playlist(db_name, playlist_name):
+    def get_music(db_name, playlist_name):
         error_correction()
 
         conn = sqlite3.connect(f'Databases/{db_name}')
         cursor = conn.cursor()
 
-        cursor.execute('INSERT INTO user_playlists VALUES (?,?)', (encode_text(playlist_name), encode_text(r'{}')))
+        music_data = decode_text(cursor.execute('SELECT music FROM user_playlists WHERE name=?', (encode_text(playlist_name),)).fetchone()[0])
+
+        music_data = json.dumps(music_data)
+
+        conn.close()
+        return music_data
+
+    def add_playlist(db_name, playlist_name, music_data={}):
+        error_correction()
+
+        conn = sqlite3.connect(f'Databases/{db_name}')
+        cursor = conn.cursor()
+
+        cursor.execute('INSERT INTO user_playlists VALUES (?,?)', (encode_text(playlist_name), encode_text(f'{music_data}')))
 
         conn.commit()
         conn.close()
