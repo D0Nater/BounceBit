@@ -434,6 +434,10 @@ class PlaylistInterface:
             except AttributeError:
                 pass
 
+    def draw_music(self):
+        for song in range(int(self.music_data['music_num'])):
+            print(song)
+
     def delete_playlist(self):
         self.playlist_class.delete_playlist(self.music_data)
 
@@ -472,6 +476,10 @@ class PlaylistInterface:
 
         # button 'close' #
         self.playlist_canvas.create_window(canvas.winfo_width()/1.5-4, 6, window=Button(image=image_close, width=17, height=17, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], command=lambda: self.close_playlist()), anchor=NE)
+
+        root.update()
+
+        self.draw_music()
 
         globals()['scroll_win'] = False
 
@@ -523,7 +531,7 @@ class DrawPlaylists:
     def get_y_pos(self):
         return self.y
 
-    def clear_all(self):
+    def clear_all(self, draw=True):
         try:
             canvas.delete(self.playlist_text)
 
@@ -531,7 +539,8 @@ class DrawPlaylists:
             canvas.delete(self.create_button)
             canvas.delete(self.cancel_button)
 
-            self.draw_new_playlist()
+            if draw:
+                self.draw_new_playlist()
         except AttributeError:
             pass
 
@@ -544,13 +553,17 @@ class DrawPlaylists:
         self.draw_playlists()
 
     def save_playlist(self):
-        name = self.playlist_name.get(1.0, "end-1c")
+        name = self.set_playlist_name.get(1.0, "end-1c").replace("\n", "-")
         # Write new playlist in db #
         if not Playlist.check_playlist_in_db("database2.sqlite", name) and name is not "":
-            Playlist.add_playlist("database2.sqlite", name.replace("\n", "-"))
-            print('playlist was created')
+            Playlist.add_playlist("database2.sqlite", name)
+
+            self.clear_all(draw=False)
+
+            new_playlist = DrawPlaylist(name, canvas.bbox(self.lib_name)[3]+60)
+            new_playlist.set_class(new_playlist)
         else:
-            print('playlist wasn\'t created')
+            pass
 
     def draw_playlists(self):
         # Draw all created playlists #
@@ -574,8 +587,8 @@ class DrawPlaylists:
         self.playlist_text = canvas.create_text(canvas.bbox(self.lib_name)[0], canvas.bbox(self.lib_name)[3]+60, text=languages['pl_name'][settings.language], fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
         # Draw block for set playlist name #
-        self.playlist_name = Text(width=18, height=1.4, bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], selectbackground='red', insertbackground=themes[settings.theme]['text_color'], wrap=NONE, font="Verdana 11")
-        self.playlist_name_draw = canvas.create_window(canvas.bbox(self.playlist_text)[2]+15, canvas.bbox(self.playlist_text)[3]-9, window=self.playlist_name, anchor=W)
+        self.set_playlist_name = Text(width=18, height=1.4, bg=themes[settings.theme]['background'], fg=themes[settings.theme]['text_color'], selectbackground='red', insertbackground=themes[settings.theme]['text_color'], wrap=NONE, font="Verdana 11")
+        self.playlist_name_draw = canvas.create_window(canvas.bbox(self.playlist_text)[2]+15, canvas.bbox(self.playlist_text)[3]-9, window=self.set_playlist_name, anchor=W)
 
         # Draw button for create playlist #
         self.create_button = canvas.create_window(canvas.bbox(self.playlist_name_draw)[2]+12, canvas.bbox(self.playlist_name_draw)[3]-3, anchor=SW, window=Button(image=image_ok, width=18, height=16, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE, \
@@ -828,7 +841,7 @@ class MusicInterface:
             line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
         else:
             # Write error #
-            self.canvas.create_text(14, 120, text=languages[self.all_data['error']][settings.language], fill='grey50', anchor=W, font="Verdana 12")
+            self.canvas.create_text(14, self.y, text=languages[self.all_data['error']][settings.language], fill='grey50', anchor=W, font="Verdana 12")
 
 
 class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
