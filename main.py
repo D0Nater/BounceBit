@@ -434,7 +434,14 @@ class PlaylistInterface:
             except AttributeError:
                 pass
 
-    def playlist_draw(self, playlist_name):
+    def delete_playlist(self):
+        Playlist.delete_playlist("database2.sqlite", self.playlist_name)
+        self.close_playlist()
+        self.playlist_class.delete_playlist()
+        globals()['scroll_win'] = True
+
+    def playlist_draw(self, playlist_class, playlist_name):
+        self.playlist_class = playlist_class
         self.playlist_name = playlist_name
 
         # Delete past window #
@@ -450,7 +457,10 @@ class PlaylistInterface:
 
         # Playlist name #
         self.playlists_name_draw = self.playlist_canvas.create_text(40, 39, text=languages['Плейлист'][settings.language]+' - ', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
-        self.playlist_canvas.create_text(self.playlist_canvas.bbox(self.playlists_name_draw)[2], 40, text=self.playlist_name, fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+        self.playlists_name_draw = self.playlist_canvas.create_text(self.playlist_canvas.bbox(self.playlists_name_draw)[2], 40, text=self.playlist_name, fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+
+        # button 'delete' #
+        self.playlist_canvas.create_window(self.playlist_canvas.bbox(self.playlists_name_draw)[2]+15, 41, window=Button(image=image_trashcan, width=18, height=18, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], command=lambda: self.delete_playlist()), anchor=W)
 
         # button 'close' #
         self.playlist_canvas.create_window(canvas.winfo_width()/1.5-4, 6, window=Button(image=image_close, width=17, height=17, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], command=lambda: self.close_playlist()), anchor=NE)
@@ -464,20 +474,22 @@ class DrawPlaylist:
         self.y = y
 
         # Draw name #
-        new_playlist = canvas.create_text(20, self.y, text=self.playlist_name, fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
-
-        # button 'delete' #
-        button_delete = canvas.create_window(canvas.bbox(new_playlist)[2]+17, canvas.bbox(new_playlist)[3]+1, anchor=SW, window=Button(image=image_close, width=20, height=20, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE, \
-            command=lambda: self.delete()))
+        self.new_playlist = canvas.create_text(20, self.y, text=self.playlist_name, fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
         # button 'more' #
-        button_more = canvas.create_window(canvas.bbox(button_delete)[2]+13, canvas.bbox(new_playlist)[3], anchor=SW, window=Button(image=image_more, width=20, height=20, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE, \
-            command=lambda: playlist_interface.playlist_draw(self.playlist_name)))
+        self.button_more = canvas.create_window(canvas.bbox(self.new_playlist)[2]+13, canvas.bbox(self.new_playlist)[3]+2, anchor=SW, window=Button(image=image_more, width=20, height=20, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE, \
+            command=lambda: playlist_interface.playlist_draw(self.playlist_class, self.playlist_name)))
 
-    def delete(self):
-        Playlist.delete_playlist("database2.sqlite", self.playlist_name)
+    def set_class(self, playlist_class):
+        self.playlist_class = playlist_class
 
-        globals()['scroll_win'] = True
+    def delete_playlist(self):
+        canvas.delete(self.new_playlist)
+        canvas.delete(self.button_more)
+
+        self.new_playlist = canvas.create_text(20, self.y, text='\u0336'.join(self.playlist_name)+'\u0336', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
+
+        self.button_more = canvas.create_window(canvas.bbox(self.new_playlist)[2]+13, canvas.bbox(self.new_playlist)[3]+2, anchor=SW, window=Button(image=image_trashcan, width=20, height=20, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE))
 
 
 class DrawPlaylists:
@@ -525,7 +537,8 @@ class DrawPlaylists:
 
         # Draw playlists #
         for playlist_name in playlists:
-            DrawPlaylist(playlist_name, self.y)
+            new_playlist = DrawPlaylist(playlist_name, self.y)
+            new_playlist.set_class(new_playlist)
 
             self.y += 40
 
@@ -901,6 +914,7 @@ class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
         globals()['image_close'] = self.load_picture("pictures/%sclose_button.png")
 
         globals()['image_copy'] = self.load_picture("pictures/%scopy_button.png")
+        globals()['image_trashcan'] = self.load_picture("pictures/%strashcan_button.png")
 
 
 if __name__ == '__main__':
