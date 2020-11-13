@@ -6,6 +6,9 @@ import sqlite3
 """ For files """
 from os import path, mkdir, remove
 
+""" For get metrics """
+from win32api import GetSystemMetrics
+
 """ For decoding and encoding text """
 from base64 import b64decode, b64encode
 
@@ -28,7 +31,7 @@ text_for_readme = """ %s v%s
      |
      |___database1  -  Settings
      |
-     |___database2  -  Added Music
+     |___database2  -  Added Music & Playlists
      |
      |___database3  -  Saved Music
      |
@@ -36,6 +39,7 @@ text_for_readme = """ %s v%s
      |
      |___Download_Music  -  Folder With Your Music
 """
+
 
 def decode_text(text):
     try:
@@ -64,9 +68,9 @@ def encode_text(text):
 
 
 class Settings:
-    def __init__(self, width, height, language, theme):
-        self.width = int(width)
-        self.height = int(height)
+    def __init__(self, language, theme):
+        self.width = GetSystemMetrics(0)
+        self.height = GetSystemMetrics(1)
         self.language = language
         self.theme = theme
 
@@ -86,7 +90,7 @@ class Settings:
         cursor = conn.cursor()
 
         try:
-            cursor.execute('SELECT * FROM settings WHERE setting=?', (encode_text("width"),)).fetchone()
+            cursor.execute('SELECT * FROM settings WHERE setting=?', (encode_text("language"),)).fetchone()
         except sqlite3.DatabaseError:
             conn.close()
             remove('Databases/database1.sqlite')
@@ -100,8 +104,6 @@ class Settings:
             if cursor.execute('SELECT * FROM settings WHERE setting=?', (encode_text(name),)).fetchone() is None:
                 cursor.execute('INSERT INTO settings VALUES (?,?)', (encode_text(name), encode_text(param))) 
 
-        check_setting("width", self.width)
-        check_setting("height", self.height)
         check_setting("language", self.language)
         check_setting("theme", self.theme)
 
@@ -117,8 +119,6 @@ class Settings:
         conn = sqlite3.connect('Databases/database1.sqlite')
         cursor = conn.cursor()
 
-        cursor.execute('UPDATE settings SET param=? WHERE setting=?', (encode_text(self.width), encode_text("width")))
-        cursor.execute('UPDATE settings SET param=? WHERE setting=?', (encode_text(self.height), encode_text("height")))
         cursor.execute('UPDATE settings SET param=? WHERE setting=?', (encode_text(self.language), encode_text("language")))
         cursor.execute('UPDATE settings SET param=? WHERE setting=?', (encode_text(self.theme), encode_text("theme")))
 
@@ -134,8 +134,6 @@ class Settings:
         conn = sqlite3.connect('Databases/database1.sqlite')
         cursor = conn.cursor()
 
-        self.width = int(decode_text(cursor.execute('SELECT param FROM settings WHERE setting=?', (encode_text("width"),)).fetchone()[0]))
-        self.height = int(decode_text(cursor.execute('SELECT param FROM settings WHERE setting=?', (encode_text("height"),)).fetchone()[0]))
         self.language = decode_text(cursor.execute('SELECT param FROM settings WHERE setting=?', (encode_text("language"),)).fetchone()[0])
         self.theme = decode_text(cursor.execute('SELECT param FROM settings WHERE setting=?', (encode_text("theme"),)).fetchone()[0])
 
