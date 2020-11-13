@@ -211,7 +211,7 @@ class SongLine:
             # Button 'after song' #
             after_song_button = line_for_song.create_window(line_for_song.bbox(play_button_draw)[2]+21, 37, window=Button(image=image_after_song, command=lambda: self.behind_after_music(1), width=17, height=19, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE))
 
-            line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
+            line_for_song.create_window(settings.width/2, 12, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
 
             if song_play_now['play'] and not change_settings:
                 Thread(target=song_line.song_time_thread, daemon=True).start()
@@ -291,12 +291,12 @@ class Song:
             nonlocal click_add
 
             if click_add:
-                # Add song #
+                # Del song #
                 Music.delete_song("database2.sqlite", self.song_data[4])
                 button['image'] = image_add
                 click_add = 0
             else:
-                # Del song #
+                # Add song #
                 Music.add_song("database2.sqlite", self.song_data)
                 button['image'] = image_add_click
                 click_add = 1
@@ -305,13 +305,13 @@ class Song:
             nonlocal click_save
 
             if click_save:
-                # Download song #
+                # Del song #
                 Music.delete_music(self.song_data[4])
                 Music.delete_song("database3.sqlite", self.song_data[4])
                 button['image'] = image_save
                 click_save = 0
             else:
-                # Del song #
+                # Download song #
                 Thread(target=Music.download_music, args=(self.song_data[4], self.song_data[2])).start()
                 Music.add_song("database3.sqlite", self.song_data)
                 button['image'] = image_save_click
@@ -381,7 +381,7 @@ class MoreInfoInterface:
 
         # Song name #
         self.song_name_draw = self.song_info_canvas.create_text(40, 40, text=languages['Трек'][settings.language]+':', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
-        self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_name_draw)[2]+15, 41, text=data[0], fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
+        self.song_name_draw = self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_name_draw)[2]+15, 41, text=data[0], fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
 
         # Artist #
         self.song_artist_draw = self.song_info_canvas.create_text(40, 80, text=languages['Артист'][settings.language]+':', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
@@ -395,8 +395,15 @@ class MoreInfoInterface:
 
         root.update()
 
+        # Button for add to playlist #
+        self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_name_draw)[2]+15, 41, window=Button(image=image_new_playlist, width=28, height=28, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], command=lambda: print('add song')), anchor=W)
+
         # Search data #
         self.song_data = Music.more_song_info(data[5])
+
+        if self.song_data['error'] is not None:
+            # Write error #
+            self.song_info_canvas.create_text(14, self.y, text=languages[self.song_data['error']][settings.language], fill='grey50', anchor=W, font="Verdana 12")
 
         # Draw Song size #
         self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_size_draw)[2]+11, self.song_info_canvas.bbox(self.song_size_draw)[1]+3, text=self.song_data['size']+' mb', fill=themes[settings.theme]['text_color'], anchor=NW, font="Verdana 12")
@@ -412,6 +419,7 @@ class MoreInfoInterface:
         self.song_text_draw.insert(END, self.song_data['text']) # write text in block
         self.song_text_draw.config(state=DISABLED) # update config
         self.song_info_canvas.create_window(40, 200, window=self.song_text_draw, anchor=NW) # draw text block
+
 
         globals()['scroll_win'] = False
 
@@ -454,8 +462,6 @@ class PlaylistInterface:
         self.playlist_class = playlist_class
         self.music_data = Playlist.get_music("database2.sqlite", self.playlist_name)
 
-        print(self.music_data)
-
         # Delete past window #
         self.close_playlist()
         more_info_interface.close_song_info()
@@ -465,7 +471,7 @@ class PlaylistInterface:
 
         # Draw window #
         self.playlist_canvas = Canvas(root, width=canvas.winfo_width()/1.5, height=canvas.winfo_height()-40, bg=themes[settings.theme]['second_color'], highlightthickness=0)
-        self.playlist_canvas.place(x=settings.width/2-50, y=canvas.bbox("all")[1]+90, anchor=N)
+        self.playlist_canvas.place(x=settings.width/2, y=canvas.bbox("all")[1]+90, anchor=N)
 
         # Playlist name #
         self.playlists_name_draw = self.playlist_canvas.create_text(40, 34, text=languages['Плейлист'][settings.language]+' - ', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
@@ -728,7 +734,7 @@ class MusicInterface:
         text_e_draw = self.canvas.create_window(self.canvas.bbox(search_draw)[2]+105, self.canvas.bbox(search_draw)[3]-9, window=text_e)
 
         # Draw button for search #
-        self.canvas.create_window(self.canvas.bbox(text_e_draw)[2]+17, self.canvas.bbox(search_draw)[3]-9, window=Button(image=image_search, width=16, height=16, bd=0, bg=themes[self.settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE, \
+        self.canvas.create_window(self.canvas.bbox(text_e_draw)[2]+17, self.canvas.bbox(search_draw)[3]-9, window=Button(image=image_search, width=16, height=16, bd=0, bg=themes[self.settings.theme]['background'], activebackground=themes[self.settings.theme]['background'], relief=RIDGE, \
             command=lambda: self.music_interface('Поиск 1', None, text_e.get(1.0, 'end-1c'))))
 
     def draw_genres(self):
@@ -768,7 +774,7 @@ class MusicInterface:
                 self.args = args
 
             def draw_button(self, x, y):
-                canvas.create_window(x, y, window=Button(text=self.page_num, width=2, height=1, bd=0, bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], font="Verdana 12", relief=RIDGE, \
+                canvas.create_window(x, y, window=Button(text=self.page_num, width=2, height=1, bd=0, bg=themes[self.settings.theme]['second_color'], fg=themes[self.settings.theme]['text_color'], font="Verdana 12", relief=RIDGE, \
                     command=lambda: self.func(*self.args)))
 
         page_x = self.canvas.bbox(self.lib_name)[2]+35
@@ -808,7 +814,7 @@ class MusicInterface:
         # loading #
         load_text = self.canvas.create_text(14, 15, text=languages['Загрузка'][self.settings.language]+"...", fill=themes[self.settings.theme]['text_color'], anchor=W, font="Verdana 13")
         self.root.update()
-        time_sleep(0.1)
+        # time_sleep(0.1)
 
         # Search data #
         if self.all_data is None:
@@ -817,7 +823,7 @@ class MusicInterface:
         self.canvas.delete(load_text)
 
         # Lib name #
-        self.lib_name = canvas.create_text(14, 15, text=lib_name_text, fill=themes[self.settings.theme]['text_color'], anchor=W, font="Verdana 13")
+        self.lib_name = self.canvas.create_text(14, 15, text=lib_name_text, fill=themes[self.settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
         # Search line #
         self.draw_search()
@@ -841,10 +847,10 @@ class MusicInterface:
 
             self.update_buttons()
 
-            line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
+            line_for_song.create_window(self.settings.width/2, 12, window=Button(text="", width=int(self.settings.width/3), height=1, bd=0, bg=themes[self.settings.theme]['second_color'], activebackground=themes[self.settings.theme]['second_color'], relief=RIDGE, anchor=S))
         else:
             # Write error #
-            self.canvas.create_text(14, self.y, text=languages[self.all_data['error']][settings.language], fill='grey50', anchor=W, font="Verdana 12")
+            self.canvas.create_text(14, self.y, text=languages[self.all_data['error']][self.settings.language], fill='grey50', anchor=W, font="Verdana 12")
 
 
 class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
@@ -857,7 +863,7 @@ class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
         self.root.title("")
 
         # Program Settings #
-        self.settings = Settings(self.root.winfo_screenwidth(), self.root.winfo_screenheight(), 'en', 'dark') # default settings
+        self.settings = Settings('en', 'dark') # default settings
         self.settings.update_settings() # read database
         self.settings.create_readme(PROGRAM_NAME, VERSION, AUTHOR, GITHUB) # create readme.txt
 
@@ -889,7 +895,7 @@ class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
         line_for_song.pack()
 
         # Create and draw logo #
-        self.image_logo = ImageTk.PhotoImage(Image.open("pictures/main_logo1.jpg").resize((self.canvas.winfo_reqwidth(), self.canvas.winfo_reqheight()), Image.ANTIALIAS))
+        self.image_logo = ImageTk.PhotoImage(Image.open("pictures/main_logo1.jpg").resize((self.settings.width, self.canvas.winfo_reqheight()), Image.ANTIALIAS))
         self.canvas.create_image(0, 0, image=self.image_logo, anchor=NW)
 
         # Loading Buttons #
