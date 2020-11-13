@@ -146,7 +146,9 @@ class SongLine:
             self.update_buttons()
 
     def loading_song(self):
+        line_for_song.delete('all')
         line_for_song.create_text(30, 40, text=languages['Загрузка'][settings.language]+"...", fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
+        line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
         self.root.update()
 
     def draw_music_line(self, change_settings=False):
@@ -211,7 +213,7 @@ class SongLine:
             # Button 'after song' #
             after_song_button = line_for_song.create_window(line_for_song.bbox(play_button_draw)[2]+21, 37, window=Button(image=image_after_song, command=lambda: self.behind_after_music(1), width=17, height=19, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE))
 
-            line_for_song.create_window(settings.width/2, 12, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
+            line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
 
             if song_play_now['play'] and not change_settings:
                 Thread(target=song_line.song_time_thread, daemon=True).start()
@@ -401,10 +403,6 @@ class MoreInfoInterface:
         # Search data #
         self.song_data = Music.more_song_info(data[5])
 
-        if self.song_data['error'] is not None:
-            # Write error #
-            self.song_info_canvas.create_text(14, self.y, text=languages[self.song_data['error']][settings.language], fill='grey50', anchor=W, font="Verdana 12")
-
         # Draw Song size #
         self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_size_draw)[2]+11, self.song_info_canvas.bbox(self.song_size_draw)[1]+3, text=self.song_data['size']+' mb', fill=themes[settings.theme]['text_color'], anchor=NW, font="Verdana 12")
 
@@ -419,7 +417,6 @@ class MoreInfoInterface:
         self.song_text_draw.insert(END, self.song_data['text']) # write text in block
         self.song_text_draw.config(state=DISABLED) # update config
         self.song_info_canvas.create_window(40, 200, window=self.song_text_draw, anchor=NW) # draw text block
-
 
         globals()['scroll_win'] = False
 
@@ -774,7 +771,7 @@ class MusicInterface:
                 self.args = args
 
             def draw_button(self, x, y):
-                canvas.create_window(x, y, window=Button(text=self.page_num, width=2, height=1, bd=0, bg=themes[self.settings.theme]['second_color'], fg=themes[self.settings.theme]['text_color'], font="Verdana 12", relief=RIDGE, \
+                canvas.create_window(x, y, window=Button(text=self.page_num, width=2, height=1, bd=0, bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], font="Verdana 12", relief=RIDGE, \
                     command=lambda: self.func(*self.args)))
 
         page_x = self.canvas.bbox(self.lib_name)[2]+35
@@ -847,7 +844,7 @@ class MusicInterface:
 
             self.update_buttons()
 
-            line_for_song.create_window(self.settings.width/2, 12, window=Button(text="", width=int(self.settings.width/3), height=1, bd=0, bg=themes[self.settings.theme]['second_color'], activebackground=themes[self.settings.theme]['second_color'], relief=RIDGE, anchor=S))
+            line_for_song.create_window(self.settings.width/2, 11, window=Button(text="", width=int(self.settings.width/3), height=1, bd=0, bg=themes[self.settings.theme]['second_color'], activebackground=themes[self.settings.theme]['second_color'], relief=RIDGE, anchor=S))
         else:
             # Write error #
             self.canvas.create_text(14, self.y, text=languages[self.all_data['error']][self.settings.language], fill='grey50', anchor=W, font="Verdana 12")
@@ -868,7 +865,7 @@ class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
         self.settings.create_readme(PROGRAM_NAME, VERSION, AUTHOR, GITHUB) # create readme.txt
 
         # Window Settings #
-        self.root.iconbitmap(default="pictures/program_icon.ico")
+        self.root.iconbitmap(default=resource_path(path.join('pictures', "program_icon.ico")))
         self.root.geometry(f"{self.settings.width-50}x{self.settings.height-100}")
         self.root.minsize(width=180, height=45)
         self.root.state('zoomed')
@@ -895,7 +892,7 @@ class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
         line_for_song.pack()
 
         # Create and draw logo #
-        self.image_logo = ImageTk.PhotoImage(Image.open("pictures/main_logo1.jpg").resize((self.settings.width, self.canvas.winfo_reqheight()), Image.ANTIALIAS))
+        self.image_logo = ImageTk.PhotoImage(Image.open(resource_path(path.join('pictures', "main_logo1.jpg"))).resize((self.settings.width, self.canvas.winfo_reqheight()), Image.ANTIALIAS))
         self.canvas.create_image(0, 0, image=self.image_logo, anchor=NW)
 
         # Loading Buttons #
@@ -938,32 +935,32 @@ class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
             command=lambda: self.settings_interface()).place(x=544, y=53)
 
     def update_pictures(self):
-        globals()['image_play'] = self.load_picture("pictures/%splay_button.png")
-        globals()['image_pause'] = self.load_picture("pictures/%spause_button.png")
+        globals()['image_play'] = self.load_picture("play_button.png")
+        globals()['image_pause'] = self.load_picture("pause_button.png")
 
-        globals()['image_add'] = self.load_picture("pictures/%sadd_button.png")
-        globals()['image_add_click'] = self.load_picture("pictures/%sadd_button_click.png")
+        globals()['image_add'] = self.load_picture("add_button.png")
+        globals()['image_add_click'] = self.load_picture("add_button_click.png")
 
-        globals()['image_save'] = self.load_picture("pictures/%ssave_button.png")
-        globals()['image_save_click'] = self.load_picture("pictures/%ssave_button_click.png")
+        globals()['image_save'] = self.load_picture("save_button.png")
+        globals()['image_save_click'] = self.load_picture("save_button_click.png")
 
-        globals()['image_behind_song'] = self.load_picture("pictures/%sbehind_song_button.png")
-        globals()['image_after_song'] = self.load_picture("pictures/%safter_song_button.png")
+        globals()['image_behind_song'] = self.load_picture("behind_song_button.png")
+        globals()['image_after_song'] = self.load_picture("after_song_button.png")
 
-        globals()['image_more'] = self.load_picture("pictures/%smore_button.png")
-        globals()['image_more_info'] = self.load_picture("pictures/%smore_music_button.png")
+        globals()['image_more'] = self.load_picture("more_button.png")
+        globals()['image_more_info'] = self.load_picture("more_music_button.png")
 
-        globals()['image_search'] = self.load_picture("pictures/%ssearch_button.png")
-        globals()['image_new_playlist'] = self.load_picture("pictures/%snew_playlist_button.png")
+        globals()['image_search'] = self.load_picture("search_button.png")
+        globals()['image_new_playlist'] = self.load_picture("new_playlist_button.png")
 
-        globals()['image_ok'] = self.load_picture("pictures/%sok_button.png")
-        globals()['image_close'] = self.load_picture("pictures/%sclose_button.png")
+        globals()['image_ok'] = self.load_picture("ok_button.png")
+        globals()['image_close'] = self.load_picture("close_button.png")
 
-        globals()['image_copy'] = self.load_picture("pictures/%scopy_button.png")
-        globals()['image_trashcan'] = self.load_picture("pictures/%strashcan_button.png")
+        globals()['image_copy'] = self.load_picture("copy_button.png")
+        globals()['image_trashcan'] = self.load_picture("trashcan_button.png")
 
-        globals()['image_edit'] = self.load_picture("pictures/%sedit_button.png")
-        globals()['image_update'] = self.load_picture("pictures/%supdate_button.png")
+        globals()['image_edit'] = self.load_picture("edit_button.png")
+        globals()['image_update'] = self.load_picture("update_button.png")
 
 
 if __name__ == '__main__':
