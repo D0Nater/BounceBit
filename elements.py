@@ -12,6 +12,7 @@ import pyglet.media as media
 from time import sleep as time_sleep
 
 """ For news """
+import sys
 import json
 import requests
 import lxml.html
@@ -69,6 +70,22 @@ class MyPlayer:
         self.player.delete()
 
 
+def resource_path(relative):
+    # For EXE file #
+    if hasattr(sys, "_MEIPASS"):
+        return path.join(sys._MEIPASS, relative)
+    return path.join(relative)
+
+
+class LoadPicture:
+    def load_picture(self, file):
+        folder = ('pictures/Light/' if self.settings.theme == 'light' else 'pictures')
+
+        file = resource_path(path.join(folder, file))
+
+        return ImageTk.PhotoImage(Image.open(file))
+
+
 def check_errors_db4():
     # check dir #
     if not path.exists('Databases'):
@@ -76,16 +93,15 @@ def check_errors_db4():
 
     # check json file #
     if not path.exists('Databases/database4'):
-        print('none file')
         with open('Databases/database4', 'w+') as json_db:
-            json_db.write(encode_text('{"text":{"ru":"","en":""},"id":""}'))
+            json_db.write(encode_text('{"text":{"ru":"","en":""},"id":"","date":""}'))
     else:
         try:
             with open('Databases/database4') as json_db:
                 json.loads(decode_text(json_db.read()).replace("'", '"'))
         except:
             with open('Databases/database4', 'w+') as json_db:
-                json_db.write(encode_text('{"text":{"ru":"","en":""},"id":""}'))
+                json_db.write(encode_text('{"text":{"ru":"","en":""},"id":"","date":""}'))
 
 
 def parse_new_news():
@@ -139,11 +155,6 @@ def clear_list_of_songs():
         del song
     clear_ram()
     list_of_songs_class.clear()
-
-
-class LoadPicture:
-    def load_picture(self, file):
-        return ImageTk.PhotoImage(Image.open(file % ('Light/' if self.settings.theme == 'light' else '')))
 
 
 """ Elements for main program """
@@ -284,6 +295,10 @@ languages = {
         "ru": "Артист",
         "en": "Artist"
     },
+    "Длительность": {
+        "ru": "Длительность",
+        "en": "Duration"
+    },
     "Размер": {
         "ru": "Размер",
         "en": "Size"
@@ -294,6 +309,14 @@ languages = {
     },
 
     # Playlists #
+    "Плейлист": {
+        "ru": "Плейлист",
+        "en": "Playlist"
+    },
+    "add_song": {
+        "ru": "Добавить трек",
+        "en": "Add track"
+    },
     "create_pl": {
         "ru": "Создать Плейлист",
         "en": "Create Playlist"
@@ -301,6 +324,10 @@ languages = {
     "pl_name": {
         "ru": "Название Плейлиста",
         "en": "Playlist Name"
+    },
+    "del_pl": {
+        "ru": "Удалить плейлист?",
+        "en": "Delete playlist?"
     },
 
     # Other #
@@ -333,9 +360,5 @@ languages = {
     "connect_error": {
         "ru": "Упс, не удалось подключиться к интернету ;(",
         "en": "Oops, could not connect to the internet ;("
-    },
-    "none_error": {
-        "ru": "Упс, ничего не найдено ;(",
-        "en": "Oops, not found ;("
     }
 }
