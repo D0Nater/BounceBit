@@ -2,9 +2,8 @@
 
 block_cipher = None
 
-
 a = Analysis(['main.py'],
-             pathex=['C:/MyPrograms/Python/Work/BounceBit'],
+             pathex=['C:/BounceBit'],
              binaries=[],
              datas=[
                ('pictures/main_logo1.jpg', 'pictures'),
