@@ -366,18 +366,16 @@ class Playlist:
 
         music_data = decode_text(cursor.execute('SELECT music FROM user_playlists WHERE name=?', (encode_text(playlist_name),)).fetchone()[0])
 
-        music_data = json.dumps(music_data)
-
         conn.close()
-        return music_data
+        return json.loads(music_data)
 
-    def add_playlist(db_name, playlist_name, music_data={}):
+    def add_playlist(db_name, playlist_name, music_data={"music_num":0}):
         error_correction()
 
         conn = sqlite3.connect(f'Databases/{db_name}')
         cursor = conn.cursor()
 
-        cursor.execute('INSERT INTO user_playlists VALUES (?,?)', (encode_text(playlist_name), encode_text(f'{music_data}')))
+        cursor.execute('INSERT INTO user_playlists VALUES (?,?)', (encode_text(playlist_name), encode_text(json.dumps(music_data))))
 
         conn.commit()
         conn.close()
