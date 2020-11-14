@@ -15,12 +15,14 @@
 
 """ For Graphical Interface """
 from tkinter import *
+from tkinter import filedialog
 
 """ For download and listen music """
 from threading import Thread
 
 """ For files """
-from os import path, remove
+from shutil import copyfile
+from os import path, mkdir, remove, getcwd
 
 """ For clear RAM """
 from gc import collect as clear_ram
@@ -332,9 +334,9 @@ class Song:
 
         # button 'add' #
         if click_add:
-            add_button = Button(image=image_add_click, command=lambda: add_click(add_button), width=18, height=17, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE)
+            add_button = Button(image=image_add_click, command=lambda: add_click(add_button), width=17, height=17, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE)
         else:
-            add_button = Button(image=image_add, command=lambda: add_click(add_button), width=18, height=17, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE)
+            add_button = Button(image=image_add, command=lambda: add_click(add_button), width=17, height=17, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE)
         add_button_draw = canvas.create_window(canvas.bbox(play_button_draw)[2]+40, self.y, window=add_button) # draw button
 
         # button 'download' #
@@ -398,7 +400,7 @@ class MoreInfoInterface:
         root.update()
 
         # Button for add to playlist #
-        self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_name_draw)[2]+15, 41, window=Button(image=image_new_playlist, width=28, height=28, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], command=lambda: print('add song')), anchor=W)
+        self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_name_draw)[2]+15, 41, window=Button(image=image_new_playlist, width=27, height=27, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], command=lambda: print('add song')), anchor=W)
 
         # Search data #
         self.song_data = Music.more_song_info(data[5])
@@ -553,7 +555,7 @@ class DrawPlaylists:
     def draw_new_playlist(self):
         # Create playlist text #
         self.playlist_text = canvas.create_text(canvas.bbox(self.lib_name)[0], canvas.bbox(self.lib_name)[3]+60, text=languages['create_pl'][settings.language], fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
-        self.playlist_button = canvas.create_window(canvas.bbox(self.playlist_text)[2]+30, canvas.bbox(self.lib_name)[3]+61, window=Button(image=image_new_playlist, width=28, height=28, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE, \
+        self.playlist_button = canvas.create_window(canvas.bbox(self.playlist_text)[2]+30, canvas.bbox(self.lib_name)[3]+61, window=Button(image=image_new_playlist, width=27, height=27, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], relief=RIDGE, \
             command=lambda: self.draw_create_playlist()))
 
         self.draw_playlists()
@@ -628,6 +630,41 @@ class SettingsInterface:
 
         self.settings_interface()
 
+    def load_background(self):
+        def copy_image(img):
+            new_bg = 'Background/%s' % img.split('/')[-1]
+
+            if not path.exists('Background'):
+                mkdir('Background')
+
+            if not path.exists(new_bg):
+                copyfile(img, new_bg)
+
+            if settings.bg_image != 'None':
+                remove(settings.bg_image)
+
+            settings.bg_image = getcwd().replace('\\', '/') + '/' + new_bg
+
+            settings.change_settings()
+
+            globals()['image_bg'] = ImageTk.PhotoImage(Image.open(settings.bg_image).resize((settings.width, canvas.winfo_reqheight()), Image.ANTIALIAS))
+
+
+        bg_image = self.root.filename = filedialog.askopenfilename(title="Select image", filetypes=(("jpeg files","*.jpg"), ("png files","*.png"), ("all files","*.*")))
+        
+        if bg_image:
+            copy_image(bg_image)
+
+            self.settings_interface()
+
+    def del_background(self):
+        remove(settings.bg_image)
+        settings.bg_image = 'None'
+        self.settings.change_settings()
+        self.settings_interface()
+
+        del globals()['image_bg']
+
     def settings_interface(self):
         clear_ram()
         self.canvas.delete("all")
@@ -647,15 +684,23 @@ class SettingsInterface:
         # Themes #
         self.theme_text = self.canvas.create_text(15, 87, text=languages['Тема'][self.settings.language], anchor=W, fill=themes[self.settings.theme]['text_color'], font="Verdana 13")
 
-        self.d_theme = self.canvas.create_window(self.canvas.bbox(self.theme_text)[2]+20, 88, anchor=W, window=Button(text='', background=themes['dark']['background'], activebackground=themes['dark']['second_color'], command=lambda: self.change_settings('theme', 'dark'), bd=1, width=2, height=1))
-        self.l_theme = self.canvas.create_window(self.canvas.bbox(self.d_theme)[2]+20, 88, anchor=W, window=Button(text='', background=themes['light']['background'], activebackground=themes['light']['second_color'], command=lambda: self.change_settings('theme', 'light'), bd=1, width=2, height=1))
-        self.p_theme = self.canvas.create_window(self.canvas.bbox(self.l_theme)[2]+20, 88, anchor=W, window=Button(text='', background=themes['purple']['background'], activebackground=themes['purple']['second_color'], command=lambda: self.change_settings('theme', 'purple'), bd=1, width=2, height=1))
-        self.g_theme = self.canvas.create_window(self.canvas.bbox(self.p_theme)[2]+20, 88, anchor=W, window=Button(text='', background=themes['green']['background'], activebackground=themes['green']['second_color'], command=lambda: self.change_settings('theme', 'green'), bd=1, width=2, height=1))
+        self.d_theme = self.canvas.create_window(self.canvas.bbox(self.theme_text)[2]+20, 88, anchor=W, window=Button(background=themes['dark']['background'], activebackground=themes['dark']['second_color'], command=lambda: self.change_settings('theme', 'dark'), bd=1, width=2, height=1))
+        self.l_theme = self.canvas.create_window(self.canvas.bbox(self.d_theme)[2]+20, 88, anchor=W, window=Button(background=themes['light']['background'], activebackground=themes['light']['second_color'], command=lambda: self.change_settings('theme', 'light'), bd=1, width=2, height=1))
+        self.p_theme = self.canvas.create_window(self.canvas.bbox(self.l_theme)[2]+20, 88, anchor=W, window=Button(background=themes['purple']['background'], activebackground=themes['purple']['second_color'], command=lambda: self.change_settings('theme', 'purple'), bd=1, width=2, height=1))
+        self.g_theme = self.canvas.create_window(self.canvas.bbox(self.p_theme)[2]+20, 88, anchor=W, window=Button(background=themes['green']['background'], activebackground=themes['green']['second_color'], command=lambda: self.change_settings('theme', 'green'), bd=1, width=2, height=1))
+
+        # Background picture #
+        self.bg_text = self.canvas.create_text(15, 140, text=languages['Фон'][self.settings.language], anchor=W, fill=themes[self.settings.theme]['text_color'], font="Verdana 13")
+        self.bg_button = self.canvas.create_window(self.canvas.bbox(self.bg_text)[2]+20, 141, anchor=W, window=Button(text=languages['load_img'][self.settings.language], command=lambda: self.load_background(), bg=themes[self.settings.theme]['background'], fg=themes[self.settings.theme]['text_color'], bd=1, width=21))
+        self.bg_file = self.canvas.create_text(self.canvas.bbox(self.bg_button)[2]+5, 140, text=' - '+settings.bg_image.split('/')[-1], anchor=W, fill=themes[self.settings.theme]['text_color'], font="Verdana 12")
+
+        if settings.bg_image != 'None':
+            self.del_bg = self.canvas.create_window(self.canvas.bbox(self.bg_file)[2]+13, 141, window=Button(image=image_trashcan, width=17, height=17, bd=0, bg=themes[settings.theme]['background'], activebackground=themes[settings.theme]['background'], command=lambda: self.del_background()), anchor=W)
 
         # Languages #
-        self.lang_text = self.canvas.create_text(15, 140, text=languages['Язык'][self.settings.language], anchor=W, fill=themes[self.settings.theme]['text_color'], font="Verdana 13")
-        self.ru_lang = self.canvas.create_window(self.canvas.bbox(self.lang_text)[2]+70, 141, window=Button(text="Русский", command=lambda: self.change_settings('lang', 'ru'), bg=themes[self.settings.theme]['background'], fg=themes[self.settings.theme]['text_color'], bd=1, width=15))
-        self.canvas.create_window(self.canvas.bbox(self.ru_lang)[2]+55, 141, window=Button(text="English", command=lambda: self.change_settings('lang', 'en'), bg=themes[self.settings.theme]['background'], fg=themes[self.settings.theme]['text_color'], bd=1, width=15))
+        self.lang_text = self.canvas.create_text(15, 190, text=languages['Язык'][self.settings.language], anchor=W, fill=themes[self.settings.theme]['text_color'], font="Verdana 13")
+        self.ru_lang = self.canvas.create_window(self.canvas.bbox(self.lang_text)[2]+20, 191, anchor=W, window=Button(text="Русский", command=lambda: self.change_settings('lang', 'ru'), bg=themes[self.settings.theme]['background'], fg=themes[self.settings.theme]['text_color'], bd=1, width=15))
+        self.en_lang = self.canvas.create_window(self.canvas.bbox(self.ru_lang)[2]-1, 191, anchor=W, window=Button(text="English", command=lambda: self.change_settings('lang', 'en'), bg=themes[self.settings.theme]['background'], fg=themes[self.settings.theme]['text_color'], bd=1, width=15))
 
         # News #
         self.news_text = self.canvas.create_text(135, 240, text=languages['Новости'][self.settings.language], fill=themes[self.settings.theme]['text_color'], font="Verdana 14")
@@ -724,6 +769,11 @@ class MusicInterface:
             self.y += 40
 
     def draw_search(self):
+        # self.canvas.create_rectangle(self.canvas.bbox(self.lib_name)[0]-5, self.canvas.bbox(self.lib_name)[3]+8, 300, 70,
+        #     fill=themes[self.settings.theme]['background'],
+        #     outline=themes[self.settings.theme]['second_color'],
+        #     width=2)
+
         # Search #
         search_draw = self.canvas.create_text(self.canvas.bbox(self.lib_name)[0], self.canvas.bbox(self.lib_name)[3]+25, text=languages['Поиск'][self.settings.language], fill=themes[self.settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
@@ -735,6 +785,7 @@ class MusicInterface:
         # Draw button for search #
         self.canvas.create_window(self.canvas.bbox(text_e_draw)[2]+17, self.canvas.bbox(search_draw)[3]-9, window=Button(image=image_search, width=16, height=16, bd=0, bg=themes[self.settings.theme]['background'], activebackground=themes[self.settings.theme]['background'], relief=RIDGE, \
             command=lambda: self.music_interface('Поиск 1', None, text_e.get(1.0, 'end-1c'))))
+
 
     def draw_genres(self):
         if self.lib.split(' ')[0] == 'Рекомендации' or self.lib.split(' ')[0] == 'Жанр' or self.lib.split(' ')[0] == 'Поиск':
@@ -810,10 +861,14 @@ class MusicInterface:
         try: del self.image_logo
         except: pass
 
+        # Create background #
+        if settings.bg_image != 'None':
+            try: self.canvas.create_image(0, 0, image=image_bg, anchor=NW)
+            except: pass
+
         # loading #
         load_text = self.canvas.create_text(14, 15, text=languages['Загрузка'][self.settings.language]+"...", fill=themes[self.settings.theme]['text_color'], anchor=W, font="Verdana 13")
         self.root.update()
-        # time_sleep(0.1)
 
         # Search data #
         if self.all_data is None:
@@ -881,6 +936,10 @@ class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
         self.main_menu.create_text(145, 27, text=f"v{VERSION}", anchor=W, fill="red") # version
         self.main_menu.pack()
 
+        # Background canvas #
+        # self.canvas = Canvas(self.root, width=self.settings.width, height=self.settings.height-220, highlightthickness=0)
+        # self.canvas.pack()
+
         # Main canvas #
         self.canvas = Canvas(self.root, width=self.settings.width, height=self.settings.height-220, yscrollcommand=self.vscrollbar.set, bg=themes[self.settings.theme]['background'], highlightthickness=0)
         self.canvas.configure(scrollregion=self.canvas.bbox("all"))
@@ -896,6 +955,10 @@ class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
         # Create and draw logo #
         self.image_logo = ImageTk.PhotoImage(Image.open(resource_path(path.join('pictures', 'main_logo1.jpg'))).resize((self.settings.width, self.canvas.winfo_reqheight()), Image.ANTIALIAS))
         self.canvas.create_image(0, 0, image=self.image_logo, anchor=NW)
+
+        # Load background #
+        if self.settings.bg_image != 'None':
+            globals()['image_bg'] = ImageTk.PhotoImage(Image.open(self.settings.bg_image).resize((self.settings.width, self.canvas.winfo_reqheight()), Image.ANTIALIAS))
 
         # Loading Buttons #
         self.update_pictures()
