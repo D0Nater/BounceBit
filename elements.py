@@ -178,19 +178,28 @@ scroll_win = True
 
 themes = {
     'dark': {
-        'background': 'grey18',
-        'second_color': 'grey14',
-        'text_color': 'white'
+        'background': 'grey17',
+        'second_color': 'grey13',
+        'text_color': 'white',
+        'text_second_color': 'grey55'
     },
     'light': {
         'background': 'floral white',
-        'second_color': 'grey80',
-        'text_color': 'grey11'
+        'second_color': 'grey75',
+        'text_color': 'grey5',
+        'text_second_color': 'grey40'
     },
     'purple': {
         'background': '#7D007D',
         'second_color': '#690069',
-        'text_color': 'white'
+        'text_color': 'white',
+        'text_second_color': 'grey60'
+    },
+    'green': {
+        'background': '#1E8C46',
+        'second_color': '#1E7346',
+        'text_color': 'white',
+        'text_second_color': 'grey80'
     }
 }
 
