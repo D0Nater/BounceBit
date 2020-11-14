@@ -646,9 +646,11 @@ class SettingsInterface:
         
         # Themes #
         self.theme_text = self.canvas.create_text(15, 87, text=languages['Тема'][self.settings.language], anchor=W, fill=themes[self.settings.theme]['text_color'], font="Verdana 13")
-        self.d_theme = self.canvas.create_window(self.canvas.bbox(self.theme_text)[2]+70, 88, window=Button(text=languages['Темная'][self.settings.language], command=lambda: self.change_settings('theme', 'dark'), bg=themes[self.settings.theme]['background'], fg=themes[self.settings.theme]['text_color'], bd=1, width=15))
-        self.l_theme = self.canvas.create_window(self.canvas.bbox(self.d_theme)[2]+55, 88, window=Button(text=languages['Светлая'][self.settings.language], command=lambda: self.change_settings('theme', 'light'), bg=themes[self.settings.theme]['background'], fg=themes[self.settings.theme]['text_color'], bd=1, width=15))
-        self.canvas.create_window(self.canvas.bbox(self.l_theme)[2]+55, 88, window=Button(text=languages['Пурпурная'][self.settings.language], command=lambda: self.change_settings('theme', 'purple'), bg=themes[self.settings.theme]['background'], fg=themes[self.settings.theme]['text_color'], bd=1, width=15))
+
+        self.d_theme = self.canvas.create_window(self.canvas.bbox(self.theme_text)[2]+20, 88, anchor=W, window=Button(text='', background=themes['dark']['background'], activebackground=themes['dark']['second_color'], command=lambda: self.change_settings('theme', 'dark'), bd=1, width=2, height=1))
+        self.l_theme = self.canvas.create_window(self.canvas.bbox(self.d_theme)[2]+20, 88, anchor=W, window=Button(text='', background=themes['light']['background'], activebackground=themes['light']['second_color'], command=lambda: self.change_settings('theme', 'light'), bd=1, width=2, height=1))
+        self.p_theme = self.canvas.create_window(self.canvas.bbox(self.l_theme)[2]+20, 88, anchor=W, window=Button(text='', background=themes['purple']['background'], activebackground=themes['purple']['second_color'], command=lambda: self.change_settings('theme', 'purple'), bd=1, width=2, height=1))
+        self.g_theme = self.canvas.create_window(self.canvas.bbox(self.p_theme)[2]+20, 88, anchor=W, window=Button(text='', background=themes['green']['background'], activebackground=themes['green']['second_color'], command=lambda: self.change_settings('theme', 'green'), bd=1, width=2, height=1))
 
         # Languages #
         self.lang_text = self.canvas.create_text(15, 140, text=languages['Язык'][self.settings.language], anchor=W, fill=themes[self.settings.theme]['text_color'], font="Verdana 13")
@@ -706,7 +708,7 @@ class MusicInterface:
 
             # Draw song name and author #
             name_draw = self.canvas.create_text(20, self.y, text=f"{song_name}  -  ", fill=themes[self.settings.theme]['text_color'], anchor=W, font="Verdana 12")
-            author_draw = self.canvas.create_text(self.canvas.bbox(name_draw)[2], self.y, text=song_author, fill='grey50', anchor=W, font="Verdana 12")
+            author_draw = self.canvas.create_text(self.canvas.bbox(name_draw)[2], self.y, text=song_author, fill=themes[self.settings.theme]['text_second_color'], anchor=W, font="Verdana 12")
 
             del song_name, song_author
 
@@ -892,7 +894,7 @@ class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
         line_for_song.pack()
 
         # Create and draw logo #
-        self.image_logo = ImageTk.PhotoImage(Image.open(resource_path(path.join('pictures', "main_logo1.jpg"))).resize((self.settings.width, self.canvas.winfo_reqheight()), Image.ANTIALIAS))
+        self.image_logo = ImageTk.PhotoImage(Image.open(resource_path(path.join('pictures', 'main_logo1.jpg'))).resize((self.settings.width, self.canvas.winfo_reqheight()), Image.ANTIALIAS))
         self.canvas.create_image(0, 0, image=self.image_logo, anchor=NW)
 
         # Loading Buttons #
