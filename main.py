@@ -59,7 +59,7 @@ class SongLine:
 
         self.time_line_bbox = line_for_song.bbox(self.time_line)
 
-        num_for_time_line = (60*song_time_official[0] + song_time_official[1]+1) / 160
+        num_for_time_line = 160 / (60*song_time_official[0] + song_time_official[1]+1)
 
         if song_time_now == '00:00':
             # if play new song #
@@ -80,8 +80,8 @@ class SongLine:
                 line_for_song.delete(self.time)
                 line_for_song.delete(self.time_line_now)
 
-                self.time = line_for_song.create_text(self.x_time, 37, text=song_time_now, fill='grey50', anchor=W, font="Verdana 10")
-                self.time_line_now = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, self.time_line_bbox[0]+num_for_time_line_now+8, line_for_song.bbox(self.time)[3]-7, width=4, fill='black')
+                self.time = line_for_song.create_text(self.x_time, 37, text=song_time_now, fill=themes[settings.theme]['text_second_color'], anchor=W, font="Verdana 10")
+                self.time_line_now = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, self.time_line_bbox[0]+num_for_time_line_now+3, line_for_song.bbox(self.time)[3]-7, width=4, fill='black')
 
             else:
                 return
@@ -123,6 +123,7 @@ class SongLine:
 
             # update song time #
             globals()['song_time_now'] = '00:00'
+            line_for_song.delete(self.time_line_now)
 
             # stop music #
             player.stop()
@@ -150,7 +151,9 @@ class SongLine:
     def loading_song(self):
         line_for_song.delete('all')
         line_for_song.create_text(30, 40, text=languages['Загрузка'][settings.language]+"...", fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
-        line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
+
+        globals()['just_line'] = Canvas(self.root, width=settings.width, height=25, bg=themes[settings.theme]['second_color'], bd=0, highlightthickness=0)
+        just_line.place(x=0, y=settings.height-143)
         self.root.update()
 
     def draw_music_line(self, change_settings=False):
@@ -180,14 +183,14 @@ class SongLine:
         if song_play_now['song_id'] is not None:
             # Song info #
             self.song_name = line_for_song.create_text(30, 32, text=song_play_now['name'], fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 12")
-            self.song_author = line_for_song.create_text(30, 52, text=song_play_now['author'], fill='grey50', anchor=W, font="Verdana 12")
+            self.song_author = line_for_song.create_text(30, 52, text=song_play_now['author'], fill=themes[settings.theme]['text_second_color'], anchor=W, font="Verdana 12")
 
             # time now #
             self.x_time = line_for_song.bbox(self.song_name)[2]+23 if line_for_song.bbox(self.song_name)[2] > line_for_song.bbox(self.song_author)[2] else line_for_song.bbox(self.song_author)[2]+23
-            self.time = line_for_song.create_text(self.x_time, 37, text=song_time_now, fill='grey50', anchor=W, font="Verdana 10")
+            self.time = line_for_song.create_text(self.x_time, 37, text=song_time_now, fill=themes[settings.theme]['text_second_color'], anchor=W, font="Verdana 10")
 
             # time line #
-            self.time_line = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, line_for_song.bbox(self.time)[2]+168, line_for_song.bbox(self.time)[3]-7, width=4, fill='grey11')
+            self.time_line = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, line_for_song.bbox(self.time)[2]+168, line_for_song.bbox(self.time)[3]-7, width=4, fill=themes[settings.theme]['text_second_color'])
             
             try:
                 self.time_line_now = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, self.time_line_bbox[0]+globals()['num_for_time_line_now']+8, line_for_song.bbox(self.time)[3]-7, width=4, fill='black')
@@ -200,7 +203,7 @@ class SongLine:
             self.song_id_now = song_play_now['song_id']
 
             # song time #
-            self.song_time = line_for_song.create_text(line_for_song.bbox(self.time_line)[2]+8, line_for_song.bbox(self.time_line)[1]+4, text=song_play_now['time'], fill='grey50', anchor=W, font="Verdana 10")
+            self.song_time = line_for_song.create_text(line_for_song.bbox(self.time_line)[2]+8, line_for_song.bbox(self.time_line)[1]+4, text=song_play_now['time'], fill=themes[settings.theme]['text_second_color'], anchor=W, font="Verdana 10")
 
             # Button 'behind song' #
             behind_song_button = line_for_song.create_window(line_for_song.bbox(self.song_time)[2]+30, 37, window=Button(image=image_behind_song, command=lambda: self.behind_after_music(-1), width=17, height=19, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE))
@@ -213,9 +216,10 @@ class SongLine:
             play_button_draw = line_for_song.create_window(line_for_song.bbox(behind_song_button)[2]+20, 38, window=play_button)
 
             # Button 'after song' #
-            after_song_button = line_for_song.create_window(line_for_song.bbox(play_button_draw)[2]+21, 37, window=Button(image=image_after_song, command=lambda: self.behind_after_music(1), width=17, height=19, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE))
+            after_song_button = line_for_song.create_window(line_for_song.bbox(play_button_draw)[2]+20, 37, window=Button(image=image_after_song, command=lambda: self.behind_after_music(1), width=17, height=19, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE))
 
-            line_for_song.create_window(settings.width/2, 11, window=Button(text="", width=int(settings.width/3), height=1, bd=0, bg=themes[settings.theme]['second_color'], activebackground=themes[settings.theme]['second_color'], relief=RIDGE, anchor=S))
+            globals()['just_line'] = Canvas(self.root, width=settings.width, height=25, bg=themes[settings.theme]['second_color'], bd=0, highlightthickness=0)
+            just_line.place(x=0, y=settings.height-143)
 
             if song_play_now['play'] and not change_settings:
                 Thread(target=song_line.song_time_thread, daemon=True).start()
@@ -361,8 +365,10 @@ class MoreInfoInterface:
 
                 self.song_info_canvas.delete("all")
                 self.song_info_canvas.destroy()
+                self.song_text_draw.destroy()
 
                 del self.song_info_canvas
+                del self.song_text_draw
 
                 self.num_of_wins -= 1
             except AttributeError:
@@ -415,10 +421,10 @@ class MoreInfoInterface:
         self.song_info_canvas.create_text(40, 180, text=languages['Текст'][settings.language]+':', fill=themes[settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
         # Draw Block for text #
-        self.song_text_draw = Text(width=37, height=22, bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=1, wrap=WORD, font="Verdana 12") # create text block
+        self.song_text_draw = Text(bg=themes[settings.theme]['second_color'], fg=themes[settings.theme]['text_color'], bd=1, wrap=WORD, font="Verdana 12") # create text block
         self.song_text_draw.insert(END, self.song_data['text']) # write text in block
         self.song_text_draw.config(state=DISABLED) # update config
-        self.song_info_canvas.create_window(40, 200, window=self.song_text_draw, anchor=NW) # draw text block
+        self.song_text_draw.place(x=settings.width/2-49, y=300, anchor=N, width=self.song_info_canvas.winfo_width()-74, height=self.song_info_canvas.winfo_height()/2)
 
         globals()['scroll_win'] = False
 
@@ -670,6 +676,7 @@ class SettingsInterface:
         self.canvas.delete("all")
         more_info_interface.close_song_info()
         playlist_interface.close_playlist()
+        globals()['list_of_ids'] = []
 
         # delete logo #
         try: del self.image_logo
@@ -769,11 +776,6 @@ class MusicInterface:
             self.y += 40
 
     def draw_search(self):
-        # self.canvas.create_rectangle(self.canvas.bbox(self.lib_name)[0]-5, self.canvas.bbox(self.lib_name)[3]+8, 300, 70,
-        #     fill=themes[self.settings.theme]['background'],
-        #     outline=themes[self.settings.theme]['second_color'],
-        #     width=2)
-
         # Search #
         search_draw = self.canvas.create_text(self.canvas.bbox(self.lib_name)[0], self.canvas.bbox(self.lib_name)[3]+25, text=languages['Поиск'][self.settings.language], fill=themes[self.settings.theme]['text_color'], anchor=W, font="Verdana 13")
 
@@ -901,7 +903,10 @@ class MusicInterface:
 
             self.update_buttons()
 
-            line_for_song.create_window(self.settings.width/2, 11, window=Button(text="", width=int(self.settings.width/3), height=1, bd=0, bg=themes[self.settings.theme]['second_color'], activebackground=themes[self.settings.theme]['second_color'], relief=RIDGE, anchor=S))
+            globals()['just_line'] = Canvas(self.root, width=self.settings.width, height=25, bg=themes[self.settings.theme]['second_color'], bd=0, highlightthickness=0)
+            just_line.place(x=0, y=self.settings.height-143)
+
+            # line_for_song.create_window(self.settings.width/2, 11, window=Button(text="", width=int(self.settings.width/3), height=1, bd=0, bg=themes[self.settings.theme]['second_color'], activebackground=themes[self.settings.theme]['second_color'], relief=RIDGE, anchor=S))
         else:
             # Write error #
             self.canvas.create_text(14, self.y, text=languages[self.all_data['error']][self.settings.language], fill='grey50', anchor=W, font="Verdana 12")
