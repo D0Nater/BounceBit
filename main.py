@@ -935,6 +935,8 @@ class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
             command=lambda: self.settings_interface()).place(x=544, y=53)
 
     def update_pictures(self):
+        self.folder = ('pictures/Light/' if self.settings.theme == 'light' else 'pictures')
+
         globals()['image_play'] = self.load_picture("play_button.png")
         globals()['image_pause'] = self.load_picture("pause_button.png")
 
