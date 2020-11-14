@@ -81,7 +81,7 @@ class SongLine:
                 line_for_song.delete(self.time_line_now)
 
                 self.time = line_for_song.create_text(self.x_time, 37, text=song_time_now, fill=themes[settings.theme]['text_second_color'], anchor=W, font="Verdana 10")
-                self.time_line_now = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, self.time_line_bbox[0]+num_for_time_line_now+3, line_for_song.bbox(self.time)[3]-7, width=4, fill='black')
+                self.time_line_now = line_for_song.create_line(line_for_song.bbox(self.time)[2]+8, line_for_song.bbox(self.time)[3]-7, self.time_line_bbox[0]+num_for_time_line_now+5, line_for_song.bbox(self.time)[3]-7, width=4, fill='black')
 
             else:
                 return
@@ -114,7 +114,7 @@ class SongLine:
                 globals()['list_of_play']['classes'][list_of_ids.index(past_song['song_id'])].draw_music(past_song['class'], past_song['past_lib'])
 
             # update data #
-            globals()['past_song']['class'] = globals()['list_of_play']['classes'][song_num] # list_of_play['music'][f'song{song_num}']['class']
+            globals()['past_song']['class'] = list_of_play['classes'][song_num]
             globals()['past_song']['song_id'] = song_play_now['song_id']
 
             # update new song #
