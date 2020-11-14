@@ -625,6 +625,9 @@ class SettingsInterface:
             self.main_menu['bg'] = themes[self.settings.theme]['second_color']
             self.canvas['bg'] = themes[self.settings.theme]['background']
 
+            globals()['just_line'] = Canvas(self.root, width=self.settings.width, height=25, bg=themes[self.settings.theme]['second_color'], bd=0, highlightthickness=0)
+            just_line.place(x=0, y=self.settings.height-143)
+
             self.update_pictures()
             self.update_buttons()
             song_line.draw_music_line(change_settings=True)
@@ -653,8 +656,7 @@ class SettingsInterface:
 
             settings.change_settings()
 
-            globals()['image_bg'] = ImageTk.PhotoImage(Image.open(settings.bg_image).resize((settings.width, canvas.winfo_reqheight()), Image.ANTIALIAS))
-
+            globals()['image_bg'] = ImageTk.PhotoImage(Image.open(self.settings.bg_image).resize((self.settings.width, self.canvas.winfo_reqheight()), Image.ANTIALIAS))
 
         bg_image = self.root.filename = filedialog.askopenfilename(title="Select image", filetypes=(("jpeg files","*.jpg"), ("png files","*.png"), ("all files","*.*")))
         
@@ -905,8 +907,6 @@ class MusicInterface:
 
             globals()['just_line'] = Canvas(self.root, width=self.settings.width, height=25, bg=themes[self.settings.theme]['second_color'], bd=0, highlightthickness=0)
             just_line.place(x=0, y=self.settings.height-143)
-
-            # line_for_song.create_window(self.settings.width/2, 11, window=Button(text="", width=int(self.settings.width/3), height=1, bd=0, bg=themes[self.settings.theme]['second_color'], activebackground=themes[self.settings.theme]['second_color'], relief=RIDGE, anchor=S))
         else:
             # Write error #
             self.canvas.create_text(14, self.y, text=languages[self.all_data['error']][self.settings.language], fill='grey50', anchor=W, font="Verdana 12")
@@ -940,10 +940,6 @@ class BounceBit(SettingsInterface, MusicInterface, LoadPicture):
         self.main_menu.create_text(10, 25, text=PROGRAM_NAME, fill="red", anchor=W, font="Aharoni 20") # program name
         self.main_menu.create_text(145, 27, text=f"v{VERSION}", anchor=W, fill="red") # version
         self.main_menu.pack()
-
-        # Background canvas #
-        # self.canvas = Canvas(self.root, width=self.settings.width, height=self.settings.height-220, highlightthickness=0)
-        # self.canvas.pack()
 
         # Main canvas #
         self.canvas = Canvas(self.root, width=self.settings.width, height=self.settings.height-220, yscrollcommand=self.vscrollbar.set, bg=themes[self.settings.theme]['background'], highlightthickness=0)
