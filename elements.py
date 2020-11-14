@@ -12,16 +12,17 @@ import pyglet.media as media
 from time import sleep as time_sleep
 
 """ For news """
-import sys
 import json
 import requests
 import lxml.html
 from os import path
 
 """ For Pictures """
+import sys
 from PIL import Image, ImageTk
 
 """ For encode/decode db4 """
+from music import parse_data
 from settings import encode_text, decode_text
 
 
@@ -79,9 +80,7 @@ def resource_path(relative):
 
 class LoadPicture:
     def load_picture(self, file):
-        folder = ('pictures/Light/' if self.settings.theme == 'light' else 'pictures')
-
-        file = resource_path(path.join(folder, file))
+        file = resource_path(path.join(self.folder, file))
 
         return ImageTk.PhotoImage(Image.open(file))
 
@@ -181,27 +180,17 @@ themes = {
     'dark': {
         'background': 'grey18',
         'second_color': 'grey14',
-        'text_color': 'white',
-        'highlightcolor': 'red',
-        'button_color': (255, 255, 255),
-        'button_background': (46, 46, 46),
-        'button_second_color': (36,36,36)
+        'text_color': 'white'
     },
     'light': {
         'background': 'floral white',
         'second_color': 'grey80',
-        'text_color': 'grey11',
-        'button_color': (28, 28, 28),
-        'button_background': (250, 250, 250),
-        'button_second_color': (204, 204, 204)
+        'text_color': 'grey11'
     },
     'purple': {
-        'background': '#800080',
-        'second_color': 'magenta4',
-        'text_color': 'white',
-        'button_color': (255, 255, 255),
-        'button_background': (128, 0, 128),
-        'button_second_color': (139, 0, 139)
+        'background': '#7D007D',
+        'second_color': '#690069',
+        'text_color': 'white'
     }
 }
 
