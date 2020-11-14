@@ -312,7 +312,7 @@ languages = {
     "pl_name": {
         "ru": "Название Плейлиста",
         "en": "Playlist Name"
-    }
+    },
 
     # Other #
     "Загрузка": {
