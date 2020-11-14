@@ -227,27 +227,21 @@ languages = {
         "ru": "Сохранить",
         "en": "Save"
     },
-    "Язык": {
-        "ru": "Язык",
-        "en": "Lang"
-    },
-
-    # Themes #
     "Тема": {
         "ru": "Тема",
         "en": "Theme"
     },
-    "Темная": {
-        "ru": "Темная",
-        "en": "Dark"
+    "Фон": {
+        "ru": "Фон",
+        "en": "Background"
     },
-    "Светлая": {
-        "ru": "Светлая",
-        "en": "Light"
+    "load_img": {
+        "ru": "Загрузить изображение",
+        "en": "Load picture"
     },
-    "Пурпурная": {
-        "ru": "Пурпурная",
-        "en": "Purple"
+    "Язык": {
+        "ru": "Язык",
+        "en": "Lang"
     },
 
     # Music genres #
@@ -311,10 +305,6 @@ languages = {
         "ru": "Плейлист",
         "en": "Playlist"
     },
-    "add_song": {
-        "ru": "Добавить трек",
-        "en": "Add track"
-    },
     "create_pl": {
         "ru": "Создать Плейлист",
         "en": "Create Playlist"
@@ -322,11 +312,7 @@ languages = {
     "pl_name": {
         "ru": "Название Плейлиста",
         "en": "Playlist Name"
-    },
-    "del_pl": {
-        "ru": "Удалить плейлист?",
-        "en": "Delete playlist?"
-    },
+    }
 
     # Other #
     "Загрузка": {
