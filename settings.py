@@ -73,6 +73,7 @@ class Settings:
         self.height = GetSystemMetrics(1)
         self.language = language
         self.theme = theme
+        self.bg_image = None
 
     def create_readme(self, PROGRAM_NAME, VERSION, AUTHOR, GITHUB):
         with open("Databases/README.md", "w+") as file:
@@ -106,6 +107,7 @@ class Settings:
 
         check_setting("language", self.language)
         check_setting("theme", self.theme)
+        check_setting("bg_image", self.bg_image)
 
         conn.commit()
         conn.close()
@@ -121,6 +123,7 @@ class Settings:
 
         cursor.execute('UPDATE settings SET param=? WHERE setting=?', (encode_text(self.language), encode_text("language")))
         cursor.execute('UPDATE settings SET param=? WHERE setting=?', (encode_text(self.theme), encode_text("theme")))
+        cursor.execute('UPDATE settings SET param=? WHERE setting=?', (encode_text(self.bg_image), encode_text("bg_image")))
 
         conn.commit()
         conn.close()
@@ -136,5 +139,6 @@ class Settings:
 
         self.language = decode_text(cursor.execute('SELECT param FROM settings WHERE setting=?', (encode_text("language"),)).fetchone()[0])
         self.theme = decode_text(cursor.execute('SELECT param FROM settings WHERE setting=?', (encode_text("theme"),)).fetchone()[0])
+        self.bg_image = decode_text(cursor.execute('SELECT param FROM settings WHERE setting=?', (encode_text("bg_image"),)).fetchone()[0])
 
         conn.close()
