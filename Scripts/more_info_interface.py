@@ -5,7 +5,7 @@ from tkinter import *
 
 """ Other Scripts """
 from Scripts.elements import *
-from Scripts.music import Music
+from Scripts.parse_music import ParseMusic
 
 """ Images """
 from Scripts.images import MyImage
@@ -71,7 +71,7 @@ class MoreInfoInterface:
         self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_name_draw)[2]+15, 41, window=Button(image=MyImage.NEW_PLAYLIST, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: print("add song")), anchor=W)
 
         # Search data #
-        self.song_data = Music.more_song_info(data[5])
+        self.song_data = ParseMusic.more_song_info(data[5])
 
         # Draw Song size #
         self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_size_draw)[2]+11, self.song_info_canvas.bbox(self.song_size_draw)[1]+3, text=self.song_data["size"]+" mb", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 12")
