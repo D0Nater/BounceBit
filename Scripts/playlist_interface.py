@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 
-
 """ For Graphical Interface """
 from tkinter import *
 
 """ Other Scripts """
 from Scripts.elements import *
-from Scripts.music import Playlist
+from Scripts.playlist_storage import PlaylistStorage
 
 """ Images """
 from Scripts.images import MyImage
@@ -43,7 +42,7 @@ class PlaylistInterface:
     def delete_playlist(self):
         self.playlist_class.delete_playlist(self.music_data)
 
-        Playlist.delete_playlist("database2.sqlite", self.playlist_name)
+        PlaylistStorage.delete_playlist("database2.sqlite", self.playlist_name)
         self.close_playlist()
 
         Main.SCROLL_WIN = True
@@ -51,7 +50,7 @@ class PlaylistInterface:
     def playlist_draw(self, playlist_class, playlist_name):
         self.playlist_name = playlist_name
         self.playlist_class = playlist_class
-        self.music_data = Playlist.get_music("database2.sqlite", self.playlist_name)
+        self.music_data = PlaylistStorage.get_music("database2.sqlite", self.playlist_name)
 
         # Delete past window #
         self.close_playlist()
@@ -102,7 +101,7 @@ class DrawPlaylist:
         Main.DATA_CANVAS.delete(self.draw_playlist_name)
         Main.DATA_CANVAS.delete(self.button_recovery)
 
-        Playlist.add_playlist("database2.sqlite", self.playlist_name, self.music_data)
+        PlaylistStorage.add_playlist("database2.sqlite", self.playlist_name, self.music_data)
 
         self.draw_playlist_name = Main.DATA_CANVAS.create_text(20, self.y, text=self.playlist_name, fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
 
@@ -156,8 +155,8 @@ class DrawPlaylists:
         name = self.set_playlist_name.get(1.0, "end-1c").replace("\n", "-")
         if len(name) > 1:
             # Write new playlist in db #
-            if not Playlist.check_playlist_in_db("database2.sqlite", name) and name is not "":
-                Playlist.add_playlist("database2.sqlite", name)
+            if not PlaylistStorage.check_playlist_in_db("database2.sqlite", name) and name is not "":
+                PlaylistStorage.add_playlist("database2.sqlite", name)
 
                 self.clear_all(draw=False)
 
@@ -168,7 +167,7 @@ class DrawPlaylists:
 
     def draw_playlists(self):
         # Draw all created playlists #
-        playlists = Playlist.get_playlists("database2.sqlite")[::-1]
+        playlists = PlaylistStorage.get_playlists("database2.sqlite")[::-1]
 
         self.y = Main.DATA_CANVAS.bbox(self.playlist_text)[3]+34
 
