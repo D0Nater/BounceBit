@@ -4,7 +4,7 @@
 from tkinter import *
 
 """ For take Data """
-from Scripts.music import Music
+from Scripts.music_storage import MusicStorage
 
 """ Interfaces """
 from Scripts.music_interface import MusicInterface
@@ -29,10 +29,10 @@ class Menu(MusicInterface):
 
     def update_buttons(self):
         self.download_music_button = Button(text=languages["Загруженное"][Main.SETTINGS.language], bg=themes[Main.SETTINGS.theme]["second_color"], fg=themes[Main.SETTINGS.theme]["text_color"], bd=1, width=25, \
-            command=lambda: self.music_interface("Загруженное", Music.read_music("database3.sqlite", "load_error"))).place(x=-1, y=53)
+            command=lambda: self.music_interface("Загруженное", MusicStorage.read_music("database3.sqlite", "load_error"))).place(x=-1, y=53)
 
         self.selected_music_button = Button(text=languages["Избранное"][Main.SETTINGS.language], bg=themes[Main.SETTINGS.theme]["second_color"], fg=themes[Main.SETTINGS.theme]["text_color"], bd=1, width=25, \
-            command=lambda: self.music_interface("Избранное", Music.read_music("database2.sqlite", "add_error"))).place(x=181, y=53)
+            command=lambda: self.music_interface("Избранное", MusicStorage.read_music("database2.sqlite", "add_error"))).place(x=181, y=53)
 
         self.recommended_music_button = Button(text=languages["Рекомендации"][Main.SETTINGS.language], bg=themes[Main.SETTINGS.theme]["second_color"], fg=themes[Main.SETTINGS.theme]["text_color"], bd=1, width=25, \
             command=lambda: self.music_interface("Рекомендации", None)).place(x=363, y=53)
