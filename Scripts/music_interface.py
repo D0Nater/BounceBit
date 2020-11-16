@@ -11,7 +11,7 @@ from gc import collect as clear_ram
 
 """ Other Scripts """
 from Scripts.elements import *
-from Scripts.music import Music
+from Scripts.parse_music import ParseMusic
 from Scripts.draw_song import Song
 from Scripts.playlist_interface import DrawPlaylists
 
@@ -25,13 +25,13 @@ from Scripts.main import Main
 class MusicInterface:
     def search_data(self):
         if self.lib.split(" ")[0] == "Рекомендации":
-            return Music.top_music()
+            return ParseMusic.top_music()
 
         elif self.lib.split(" ")[0] == "Поиск":
-            return Music.search_music(self.search_text, self.lib.split(" ")[1])
+            return ParseMusic.search_music(self.search_text, self.lib.split(" ")[1])
 
         elif self.lib.split(" ")[0] == "Жанр":
-            return Music.genres_music(languages[self.lib.split(" ")[1]]["en"].lower(), self.lib.split(" ")[2])
+            return ParseMusic.genres_music(languages[self.lib.split(" ")[1]]["en"].lower(), self.lib.split(" ")[2])
 
     def draw_music(self):
         Main.LIST_OF_MUSIC = self.all_data
