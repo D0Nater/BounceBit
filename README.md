@@ -11,7 +11,7 @@ Program for listen music free
 
 # Create EXE
 1. Download git repository
-2. In file 'main.spec' edit pathex - set path to main file
+2. In file 'BounceBit.spec' edit pathex - set path to main file
 3. Install all packages
 4. Install <a href="https://pypi.org/project/pyinstaller/">Pyintaller</a>
 5. Open command line and go to folder with main file
