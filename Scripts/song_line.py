@@ -18,7 +18,7 @@ from time import sleep as time_sleep
 
 """ Other Scripts """
 from Scripts.elements import *
-from Scripts.music import Music
+from Scripts.music_storage import MusicStorage
 
 """ Images """
 from Scripts.images import MyImage
@@ -118,7 +118,7 @@ class SongLine:
             if not path.exists("Databases/Download_Music/%s.mp3" % Main.SONG_PLAY_NOW["song_id"]):
                 # download song #
                 Main.SONG_LINE.loading_song()
-                Music.download_music(Main.SONG_PLAY_NOW["song_id"], Main.SONG_PLAY_NOW["url"])
+                MusicStorage.download_music(Main.SONG_PLAY_NOW["song_id"], Main.SONG_PLAY_NOW["url"])
 
             # write new song #
             Main.PLAYER.new_song(Main.SONG_PLAY_NOW["song_id"])
