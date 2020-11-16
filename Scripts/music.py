@@ -34,28 +34,28 @@ def parse_data(url):
 
 
 def music_pages(tree, page, xpath_text):
-        # Pages #
-        pages_music_json = []
-        try:
-            # page now (default 1) #
-            pages_music_json.append(page)
+    # Pages #
+    pages_music_json = []
+    try:
+        # page now (default 1) #
+        pages_music_json.append(page)
 
-            # other pages #
-            for num in range((2 if int(page) > 1 else 1), 6):
-                try:
-                    pages_music_json.append(tree.xpath(xpath_text % num)[0])
-                except:
-                    pass
+        # other pages #
+        for num in range((2 if int(page) > 1 else 1), 6):
+            try:
+                pages_music_json.append(tree.xpath(xpath_text % num)[0])
+            except:
+                pass
 
-            # delete last button #
-            if pages_music_json[-1] == "Следующая":
-                (pages_music_json).pop()
+        # delete last button #
+        if pages_music_json[-1] == "Следующая":
+            (pages_music_json).pop()
 
-        except:
-            pass
-        
-        # sorted and return pages #
-        return sorted(pages_music_json)
+    except:
+        pass
+
+    # sorted and return pages #
+    return sorted(pages_music_json)
 
 
 def error_correction():
