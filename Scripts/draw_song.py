@@ -14,7 +14,7 @@ from pyperclip import copy as copy_text
 
 """ Other Scripts """
 from Scripts.elements import *
-from Scripts.music import Music
+from Scripts.music_storage import MusicStorage
 
 """ Images """
 from Scripts.images import MyImage
@@ -45,8 +45,8 @@ class Song:
 
         # for buttons #
         click_play = 0
-        click_add = Music.check_song_in_db("database2.sqlite", self.song_data[4])
-        click_save = Music.check_song_in_db("database3.sqlite", self.song_data[4])
+        click_add = MusicStorage.check_song_in_db("database2.sqlite", self.song_data[4])
+        click_save = MusicStorage.check_song_in_db("database3.sqlite", self.song_data[4])
 
         def play_click(button):
             nonlocal click_play
@@ -60,7 +60,7 @@ class Song:
                     if not path.exists(f"Databases/Download_Music/{self.song_data[4]}.mp3"):
                         # download song #
                         Main.SONG_LINE.loading_song()
-                        Music.download_music(self.song_data[4], self.song_data[2])
+                        MusicStorage.download_music(self.song_data[4], self.song_data[2])
 
                     Main.PLAYER.stop()
                     globals()["song_time_now"] = "00:00"
@@ -95,12 +95,12 @@ class Song:
 
             if click_add:
                 # Del song #
-                Music.delete_song("database2.sqlite", self.song_data[4])
+                MusicStorage.delete_song("database2.sqlite", self.song_data[4])
                 button["image"] = MyImage.ADD
                 click_add = 0
             else:
                 # Add song #
-                Music.add_song("database2.sqlite", self.song_data)
+                MusicStorage.add_song("database2.sqlite", self.song_data)
                 button["image"] = MyImage.ADD_CLICK
                 click_add = 1
 
@@ -109,14 +109,14 @@ class Song:
 
             if click_save:
                 # Del song #
-                Music.delete_music(self.song_data[4])
-                Music.delete_song("database3.sqlite", self.song_data[4])
+                MusicStorage.delete_music(self.song_data[4])
+                MusicStorage.delete_song("database3.sqlite", self.song_data[4])
                 button["image"] = MyImage.SAVE
                 click_save = 0
             else:
                 # Download song #
-                Thread(target=Music.download_music, args=(self.song_data[4], self.song_data[2])).start()
-                Music.add_song("database3.sqlite", self.song_data)
+                Thread(target=MusicStorage.download_music, args=(self.song_data[4], self.song_data[2])).start()
+                MusicStorage.add_song("database3.sqlite", self.song_data)
                 button["image"] = MyImage.SAVE_CLICK
                 click_save = 1
 
