@@ -62,9 +62,12 @@ class SettingsInterface(LoadBackground):
     def settings_interface(self):
         clear_ram()
         Main.DATA_CANVAS.delete("all")
+
+        # close all #
         Main.SETTINGS_INTERFACE.del_news_block()
         Main.MORE_INFO_INTERFACE.close_song_info()
         Main.PLAYLIST_INTERFACE.close_playlist()
+        Main.MORE_SETTINGS.close_window()
 
         Main.PAST_SONG["lib_now"] = "Settings"
         Main.LIST_OF_IDS = []
