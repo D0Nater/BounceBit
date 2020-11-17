@@ -55,26 +55,23 @@ class SongLine(SongManage):
             # if play new song #
             num_for_time_line_now = 0 # default time line
 
-        while Main.SONG_PLAY_NOW["play"]:
+        while Main.SONG_PLAY_NOW["play"] and song_id_now == Main.SONG_PLAY_NOW["song_id"]:
             Main.SONG_TIME_NOW = time.strftime("%M:%S", time.gmtime(60*min_song + sec_song))
             sec_song += 1
 
-            num_for_time_line_now += num_for_time_line
-
             # after song #
-            if (song_duration_str == Main.SONG_TIME_NOW) and (song_id_now == Main.SONG_PLAY_NOW["song_id"]):
+            if song_duration_str == Main.SONG_TIME_NOW:
                 self.behind_after_music(1)
                 return
 
-            elif (song_duration_str != Main.SONG_TIME_NOW) and (song_id_now == Main.SONG_PLAY_NOW["song_id"]):
+            elif song_duration_str != Main.SONG_TIME_NOW:
                 Main.SONG_LINE_CANVAS.delete(self.time)
                 Main.SONG_LINE_CANVAS.delete(self.time_line_now)
 
                 self.time = Main.SONG_LINE_CANVAS.create_text(self.x_time, 42, text=Main.SONG_TIME_NOW, fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=W, font="Verdana 10")
                 self.time_line_now = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, self.time_line_bbox[0]+num_for_time_line_now+5, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, width=4, fill="black")
-
-            else:
-                return
+                
+                num_for_time_line_now += num_for_time_line
 
             time_sleep(1)
 
@@ -115,13 +112,13 @@ class SongLine(SongManage):
 
         # time now #
         self.x_time = Main.SONG_LINE_CANVAS.bbox(self.song_name)[2]+23 if Main.SONG_LINE_CANVAS.bbox(self.song_name)[2] > Main.SONG_LINE_CANVAS.bbox(self.song_author)[2] else Main.SONG_LINE_CANVAS.bbox(self.song_author)[2]+23
-        self.time = Main.SONG_LINE_CANVAS.create_text(self.x_time, 42, text=song_time_now, fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=W, font="Verdana 10")
+        self.time = Main.SONG_LINE_CANVAS.create_text(self.x_time, 42, text=Main.SONG_TIME_NOW, fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=W, font="Verdana 10")
 
         # time line #
         self.time_line = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, Main.SONG_LINE_CANVAS.bbox(self.time)[2]+168, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, width=4, fill=themes[Main.SETTINGS.theme]["text_second_color"])
         
         try:
-            self.time_line_now = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, self.time_line_bbox[0]+globals()["num_for_time_line_now"]+8, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, width=4, fill="black")
+            self.time_line_now = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, self.time_line_bbox[0]+globals()["num_for_time_line_now"]+5, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, width=4, fill="black")
         except:
             self.time_line_now = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time_line)[2], Main.SONG_LINE_CANVAS.bbox(self.time_line)[3]-7, 0, Main.SONG_LINE_CANVAS.bbox(self.time_line)[3]-7, width=4, fill="black")
 
@@ -131,7 +128,7 @@ class SongLine(SongManage):
         self.song_id_now = Main.SONG_PLAY_NOW["song_id"]
 
         # song time #
-        self.song_time = Main.SONG_LINE_CANVAS.create_text(Main.SONG_LINE_CANVAS.bbox(self.time_line)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.time_line)[1]+4, text=Main.SONG_PLAY_NOW["time"], fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=W, font="Verdana 10")
+        self.song_time = Main.SONG_LINE_CANVAS.create_text(Main.SONG_LINE_CANVAS.bbox(self.time_line)[2]+7, Main.SONG_LINE_CANVAS.bbox(self.time_line)[1]+4, text=Main.SONG_PLAY_NOW["time"], fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=W, font="Verdana 10")
 
         # Button "behind song" #
         self.behind_song_button = Main.SONG_LINE_CANVAS.create_window(Main.SONG_LINE_CANVAS.bbox(self.song_time)[2]+30, Main.SONG_LINE_CANVAS.bbox(self.song_time)[1]+8, window=Button(image=MyImage.BEHIND_SONG, command=lambda: self.behind_after_music(-1), width=17, height=19, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE))
