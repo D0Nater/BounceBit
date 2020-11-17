@@ -84,10 +84,6 @@ languages = {
         "ru": "Фон",
         "en": "Background"
     },
-    "more": {
-        "ru": "Больше",
-        "en": "More"
-    },
     "load_img": {
         "ru": "Загрузить изображение",
         "en": "Load picture"
@@ -95,6 +91,14 @@ languages = {
     "Язык": {
         "ru": "Язык",
         "en": "Lang"
+    },
+    "more": {
+        "ru": "Больше",
+        "en": "More"
+    },
+    "key_e": {
+        "ru": "Назначение клавиш",
+        "en": "Key assignment"
     },
 
     # Music genres #
@@ -167,6 +171,20 @@ languages = {
         "en": "Playlist Name"
     },
 
+    # Errors #
+    "load_error": {
+        "ru": "Упс, ничего не загружено ;(",
+        "en": "Oops, nothing uploaded ;("
+    },
+    "add_error": {
+        "ru": "Упс, сюда ничего не добавлено ;(",
+        "en": "Oops, nothing added here ;("
+    },
+    "connect_error": {
+        "ru": "Упс, не удалось подключиться к интернету ;(",
+        "en": "Oops, could not connect to the internet ;("
+    },
+
     # Other #
     "Загрузка": {
         "ru": "Загрузка",
@@ -184,18 +202,8 @@ languages = {
         "ru": "страница",
         "en": "page"
     },
-
-    # Errors #
-    "load_error": {
-        "ru": "Упс, ничего не загружено ;(",
-        "en": "Oops, nothing uploaded ;("
-    },
-    "add_error": {
-        "ru": "Упс, сюда ничего не добавлено ;(",
-        "en": "Oops, nothing added here ;("
-    },
-    "connect_error": {
-        "ru": "Упс, не удалось подключиться к интернету ;(",
-        "en": "Oops, could not connect to the internet ;("
+    "key_assignmet": {
+        "ru": "Клавишы\n\n< SPACE > - Плей/Пауза\n\n< RIGHT > - Следующая песня\n\n< LEFT > - Предыдущая песня\n\n< Shift > - Информация о песне",
+        "en": "Keyboard keys\n\n< SPACE > - Play/Pause\n\n< RIGHT > - After song\n\n< LEFT > - Behind song\n\n< Shift > - Information about song"
     }
 }
