@@ -13,11 +13,8 @@ from os import path, mkdir, remove
 from gc import collect as clear_ram
 
 """ For download music """
-from mutagen.easyid3 import EasyID3
-
-""" For Parse """
 import requests
-import lxml.html
+from mutagen.easyid3 import EasyID3
 
 """ For encode/decode db4 """
 from Scripts.settings import encode_text, decode_text
@@ -61,8 +58,8 @@ def error_correction():
         conn.commit()
         conn.close()
 
-    check_db("database2.sqlite") # add music
-    check_db("database3.sqlite") # download music
+    check_db("database2.sqlite") # added music & playlists
+    check_db("database3.sqlite") # downloaded music
 
 
 class MusicStorage:
@@ -70,19 +67,21 @@ class MusicStorage:
         if not path.exists("Databases/Download_Music"):
             mkdir("Databases/Download_Music")
 
-        if not path.exists(f"Databases/Download_Music/{song_id}.mp3"):
-            with open(f"Databases/Download_Music/{song_id}.mp3", "wb") as f:
-                response = requests.get(requests.get(f"https://zaycev.net{url}").json()["url"], stream=True)
-                total_length = response.headers.get("content-length")
+        if path.exists(f"Databases/Download_Music/{song_id}.mp3"):
+            return
 
-                if total_length is None:
-                    f.write(response.content)
-                else:
-                    dl = 0
-                    total_length = int(total_length)
-                    for data in response.iter_content(chunk_size=4096):
-                        dl += len(data)
-                        f.write(data)
+        with open(f"Databases/Download_Music/{song_id}.mp3", "wb") as f:
+            response = requests.get(requests.get(f"https://zaycev.net{url}").json()["url"], stream=True)
+            total_length = response.headers.get("content-length")
+
+            if total_length is None:
+                f.write(response.content)
+            else:
+                dl = 0
+                total_length = int(total_length)
+                for data in response.iter_content(chunk_size=4096):
+                    dl += len(data)
+                    f.write(data)
 
         # music params #
         audio = EasyID3(f"Databases/Download_Music/{song_id}.mp3")
@@ -103,7 +102,7 @@ class MusicStorage:
         conn = sqlite3.connect(f"Databases/{db_name}")
         cursor = conn.cursor()
 
-        json_text = {"music": {"num": 0}, "music_albums": {"num": 0}, "error": None}
+        json_text = {"music": {"num": 0}, "error": None}
 
         music_list = []
         for i in cursor.execute("SELECT * FROM user_music ORDER BY song_time"):
