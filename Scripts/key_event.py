@@ -14,8 +14,6 @@ class KeyEvent:
         Main.ROOT.bind('<Shift_L>', self.more_info)
         Main.ROOT.bind('<Shift_R>', self.more_info)
 
-        Main.ROOT.bind('<Key>', self.print_event)
-
     def play_pause(self, event):
         if Main.SONG_PLAY_NOW["song_id"]:
             Main.SONG_LINE.click_play()
@@ -34,6 +32,3 @@ class KeyEvent:
     def after_music(self, event):
         if Main.SONG_PLAY_NOW["song_id"]:
             Main.SONG_LINE.behind_after_music(1)
-
-    def print_event(self, event):
-        print(event)
