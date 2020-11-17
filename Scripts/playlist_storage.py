@@ -6,18 +6,8 @@ import sqlite3
 """ For music in playlists """
 import json
 
-""" For files """
-from os import path, mkdir, remove
-
 """ For clear RAM """
 from gc import collect as clear_ram
-
-""" For download music """
-from mutagen.easyid3 import EasyID3
-
-""" For Parse """
-import requests
-import lxml.html
 
 """ For encode/decode db4 """
 from Scripts.settings import encode_text, decode_text
