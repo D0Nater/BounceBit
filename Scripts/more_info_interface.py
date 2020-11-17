@@ -16,7 +16,6 @@ from Scripts.main import Main
 
 class MoreInfoInterface:
     """ Draw window with more song info """
-
     def __init__(self):
         self.num_of_wins = 0
 
@@ -36,7 +35,7 @@ class MoreInfoInterface:
             except AttributeError:
                 pass
 
-    def song_info_draw(self, data):
+    def song_info_draw(self, data, searched_data=None):
         # Delete past window #
         self.close_song_info()
         Main.PLAYLIST_INTERFACE.close_playlist()
@@ -48,7 +47,7 @@ class MoreInfoInterface:
         self.song_info_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/2/2+50, height=Main.DATA_CANVAS.winfo_height()-40, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=0)
         self.song_info_canvas.place(x=Main.SETTINGS.width/2-50, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
 
-        # button "close" #
+        # button 'close' #
         self.song_info_canvas.create_window(Main.DATA_CANVAS.winfo_width()/2/2+45, 6, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_song_info()), anchor=NE)
 
         # Song name #
@@ -67,14 +66,15 @@ class MoreInfoInterface:
 
         Main.ROOT.update()
 
+        if not searched_data:
+            # Search data #
+            self.searched_data = ParseMusic.more_song_info(data[5])
+
         # Button for add to playlist #
         self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_name_draw)[2]+15, 41, window=Button(image=MyImage.NEW_PLAYLIST, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: print("add song")), anchor=W)
 
-        # Search data #
-        self.song_data = ParseMusic.more_song_info(data[5])
-
         # Draw Song size #
-        self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_size_draw)[2]+11, self.song_info_canvas.bbox(self.song_size_draw)[1]+3, text=self.song_data["size"]+" mb", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 12")
+        self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_size_draw)[2]+11, self.song_info_canvas.bbox(self.song_size_draw)[1]+3, text=self.searched_data["size"]+" mb", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 12")
 
         # Draw Song duration #
         self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_duration_draw)[2]+11, self.song_info_canvas.bbox(self.song_duration_draw)[1]+2, text=data[3], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 12")
@@ -84,7 +84,7 @@ class MoreInfoInterface:
 
         # Draw Block for text #
         self.song_text_draw = Text(bg=themes[Main.SETTINGS.theme]["second_color"], fg=themes[Main.SETTINGS.theme]["text_color"], bd=1, wrap=WORD, font="Verdana 12") # create text block
-        self.song_text_draw.insert(END, self.song_data["text"]) # write text in block
+        self.song_text_draw.insert(END, self.searched_data["text"]) # write text in block
         self.song_text_draw.config(state=DISABLED) # update config
         self.song_text_draw.place(x=Main.SETTINGS.width/2-49, y=300, width=self.song_info_canvas.winfo_width()-74, height=self.song_info_canvas.winfo_height()/2, anchor=N)
 
