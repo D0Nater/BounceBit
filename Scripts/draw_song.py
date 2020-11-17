@@ -81,6 +81,10 @@ class Song:
                     Main.PAST_SONG["class"] = this_class
                     Main.PAST_SONG["past_lib"] = lib
 
+                # update window with more song info #
+                if Main.MORE_INFO_INTERFACE.num_of_wins:
+                    Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data, Main.MORE_INFO_INTERFACE.searched_data)
+
                 Thread(target=Main.PLAYER.play, daemon=True).start() # play
 
                 click_play = 1
