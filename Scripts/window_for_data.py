@@ -6,6 +6,7 @@ from tkinter import *
 """ Other Scripts """
 from Scripts.playlist_interface import PlaylistInterface
 from Scripts.more_info_interface import MoreInfoInterface
+from Scripts.more_settings_interface import MoreSettingsInterface
 
 from Scripts.elements import *
 
@@ -24,6 +25,7 @@ class WindowForData:
     def __init__(self):
         Main.SCROLL_WIN = True
 
+        Main.MORE_SETTINGS = MoreSettingsInterface()
         Main.PLAYLIST_INTERFACE = PlaylistInterface()
         Main.MORE_INFO_INTERFACE = MoreInfoInterface()
 
