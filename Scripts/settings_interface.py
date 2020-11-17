@@ -18,9 +18,6 @@ from Scripts.news import News
 """ For load background """
 from Scripts.load_bg import LoadBackground
 
-""" More settings info """
-from Scripts.more_settings_interface import MoreSettingsInterface
-
 """ Images """
 from Scripts.images import MyImage
 
@@ -28,7 +25,7 @@ from Scripts.images import MyImage
 from Scripts.main import Main
 
 
-class SettingsInterface(MoreSettingsInterface, LoadBackground):
+class SettingsInterface(LoadBackground):
     def change_settings(self, setting, new_setting):
         # update settings #
         if setting == "theme":
@@ -105,7 +102,7 @@ class SettingsInterface(MoreSettingsInterface, LoadBackground):
 
         # More #
         self.more_text = Main.DATA_CANVAS.create_text(15, 205, text=languages["more"][Main.SETTINGS.language], anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13")
-        self.more_button = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.more_text)[2]+12, 207, anchor=W, window=Button(image=MyImage.MORE, width=20, height=20, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], command=lambda: self.draw_more()))
+        self.more_button = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.more_text)[2]+12, 207, anchor=W, window=Button(image=MyImage.MORE, width=20, height=20, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], command=lambda: Main.MORE_SETTINGS.draw_more()))
 
         # News #
         self.news_text = Main.DATA_CANVAS.create_text(135, 240, text=languages["Новости"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 14")
