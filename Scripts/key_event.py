@@ -7,12 +7,14 @@ from Scripts.main import Main
 class KeyEvent:
     def __init__(self):
         Main.ROOT.bind('<space>', self.play_pause)
-        Main.ROOT.bind('<p>', self.play_pause)
 
         Main.ROOT.bind('<Left>', self.behind_music)
         Main.ROOT.bind('<Right>', self.after_music)
 
-        Main.ROOT.bind('<i>', self.more_info)
+        Main.ROOT.bind('<Shift_L>', self.more_info)
+        Main.ROOT.bind('<Shift_R>', self.more_info)
+
+        Main.ROOT.bind('<Key>', self.print_event)
 
     def play_pause(self, event):
         if Main.SONG_PLAY_NOW["song_id"]:
@@ -32,3 +34,6 @@ class KeyEvent:
     def after_music(self, event):
         if Main.SONG_PLAY_NOW["song_id"]:
             Main.SONG_LINE.behind_after_music(1)
+
+    def print_event(self, event):
+        print(event)
