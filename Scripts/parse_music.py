@@ -55,7 +55,7 @@ def music_pages(tree, page, xpath_text):
     return sorted(pages_music_json)
 
 
-top_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "url": "", "error": None}
+top_music_json = {"music": {"num": 0}, "url": "", "error": None}
 
 
 class ParseMusic:
@@ -64,7 +64,7 @@ class ParseMusic:
         global top_music_json
         try:
             if top_music_json["music"]["num"] is 0:
-                top_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "error": None}
+                top_music_json = {"music": {"num": 0}, "error": None}
                 
                 # parse site #
                 tree = parse_data("https://zaycev.net/")
@@ -74,7 +74,7 @@ class ParseMusic:
                     new_song = {
                         "name": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
                         "author": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
-                        "url": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-url')[0],
+                        "url": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-url')[0].split('/')[-2],
                         "data_key": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-dkey')[0],
                         "song_time": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[2]/text()')[0],
                         "song_id": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-id')[0]
@@ -94,7 +94,7 @@ class ParseMusic:
 
     def search_music(text, page):
         clear_ram()
-        search_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "pages": [], "error": None}
+        search_music_json = {"music": {"num": 0}, "pages": [], "error": None}
         try:
             # parse site #
             tree = parse_data(f'https://zaycev.net/search.html?page={page}&query_search={text}')
@@ -105,7 +105,7 @@ class ParseMusic:
                     new_song = {
                         "name": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
                         "author": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
-                        "url": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-url')[0],
+                        "url": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-url')[0].split('/')[-2],
                         "data_key": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-dkey')[0],
                         "song_time": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[2]/text()')[0],
                         "song_id": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-id')[0]
@@ -130,7 +130,7 @@ class ParseMusic:
 
     def genres_music(genre, page):
         clear_ram()
-        genre_music_json = {"music": {"num": 0}, "music_albums": {"num": 0}, "pages": [], "error": None}
+        genre_music_json = {"music": {"num": 0}, "pages": [], "error": None}
         try:
             # parse site #
             tree = parse_data(f'https://zaycev.net/genres/{genre}/index_{page}.html?spa=false&page={page}')
@@ -141,7 +141,7 @@ class ParseMusic:
                     new_song = {
                         "name": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
                         "author": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
-                        "url": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-url')[0],
+                        "url": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-url')[0].split('/')[-2],
                         "data_key": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-dkey')[0],
                         "song_time": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[2]/text()')[0],
                         "song_id": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-id')[0]
@@ -184,3 +184,4 @@ class ParseMusic:
             more_song_info_json["error"] = "connect_error"
 
         return more_song_info_json
+   
