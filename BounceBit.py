@@ -21,6 +21,7 @@ from os import path
 
 """ For parse news """
 from threading import Thread
+from Scripts.news import News
 from Scripts.elements import *
 
 """ For Player """
@@ -29,8 +30,8 @@ from Scripts.my_player import MyPlayer
 """ For key events """
 from Scripts.key_event import KeyEvent
 
-""" For news """
-from Scripts.news import News
+""" For search update program """
+from Scripts.update_program import UpdateProgram
 
 """ For load Images """
 from Scripts.images import LoadPictures
@@ -84,6 +85,9 @@ class BounceBit:
 
         # Draw line for song #
         Main.SONG_LINE = SongLine()
+
+        # Search updates #
+        Thread(target=UpdateProgram).start()
 
         # Keys settings #
         KeyEvent()
