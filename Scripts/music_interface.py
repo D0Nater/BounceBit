@@ -128,11 +128,16 @@ class MusicInterface:
 
     def music_interface(self, lib, all_data, search_text=""):
         clear_ram()
+        # clear window #
         Main.DATA_CANVAS.delete("all")
+
+        # close all #
         Main.SETTINGS_INTERFACE.del_news_block()
         Main.MORE_INFO_INTERFACE.close_song_info()
         Main.PLAYLIST_INTERFACE.close_playlist()
-        Thread(target=clear_list_of_songs).start() # delete past data
+        Main.MORE_SETTINGS.close_window()
+
+        Thread(target=clear_list_of_songs).start() # delete past songs
 
         self.lib = lib
         self.all_data = all_data
