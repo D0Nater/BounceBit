@@ -71,7 +71,7 @@ class MusicStorage:
             return
 
         with open(f"Databases/Download_Music/{song_id}.mp3", "wb") as f:
-            response = requests.get(requests.get(f"https://zaycev.net{url}").json()["url"], stream=True)
+            response = requests.get(requests.get(f"https://zaycev.net/musicset/play/{url}/{song_id}.json").json()["url"], stream=True)
             total_length = response.headers.get("content-length")
 
             if total_length is None:
