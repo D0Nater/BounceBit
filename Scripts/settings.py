@@ -1,144 +1,130 @@
 # -*- coding: utf-8 -*-
 
-""" For databases """
-import sqlite3
+""" For Graphical Interface """
+from tkinter import *
 
-""" For files """
-from os import path, mkdir, remove
+""" For clear RAM """
+from gc import collect as clear_ram
 
-""" For get metrics """
-from win32api import GetSystemMetrics
+""" For copy text """
+from pyperclip import copy as copy_text
 
-""" For decoding and encoding text """
-from base64 import b64decode, b64encode
+""" Other Scripts """
+from Scripts.elements import *
 
-text_for_readme = """ %s v%s
+""" For news """
+from Scripts.news import News
 
- Author: %s
- GitHub: %s
+""" For load background """
+from Scripts.load_bg import LoadBackground
 
- Language: Python
- Interface: Tkinter
- Media player: Pyglet
+""" Images """
+from Scripts.images import MyImage
 
- Don"t delete files because you will lose data!
-
- BounceBit  -  Main File
- |
- |___Databases  -  Folder With Data
-     |
-     |___README  -  Readme
-     |
-     |___database1  -  Settings
-     |
-     |___database2  -  Added Music & Playlists
-     |
-     |___database3  -  Saved Music
-     |
-     |___database4  -  News
-     |
-     |___Download_Music  -  Folder With Your Music
-"""
+""" Main """
+from Scripts.main import Main
 
 
-def decode_text(text):
-    try:
-        translated = ""
-        i = len(text) - 1
-        while i >= 0:
-            translated = translated + text[i]
-            i = i - 1
-        decode_text = (b64decode(translated)).decode("UTF-8")
-        return decode_text
-    except:
-        return ""
+class SettingsInterface(LoadBackground):
+    def change_settings(self, setting, new_setting):
+        # update settings #
+        if setting == "theme":
+            # change theme #
+            Main.SETTINGS.theme = new_setting
 
+            # update all #
+            Main.SONG_LINE_CANVAS["bg"] = themes[Main.SETTINGS.theme]["second_color"]
+            Main.MENU_CANVAS["bg"] = themes[Main.SETTINGS.theme]["second_color"]
+            Main.DATA_CANVAS["bg"] = themes[Main.SETTINGS.theme]["background"]
 
-def encode_text(text):
-    try:
-        encode_text = (b64encode(str(text).encode("UTF-8"))).decode()
-        translated = ""
-        i = len(encode_text) - 1
-        while i >= 0:
-            translated = translated + encode_text[i]
-            i = i - 1
-        return translated
-    except:
-        return ""
+            Main.JUST_LINE = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=25, bg=themes[Main.SETTINGS.theme]["second_color"], bd=0, highlightthickness=0)
+            Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
 
+            Main.LOAD_IMAGE.upd_images()
+            Main.MENU.update_buttons()
+            Main.SONG_LINE.draw_music_line(change_settings=True)
 
-class Settings:
-    def __init__(self, language, theme):
-        self.width = GetSystemMetrics(0)
-        self.height = GetSystemMetrics(1)
-        self.language = language
-        self.theme = theme
-        self.bg_image = None
+        elif setting == "lang":
+            # change language #
+            Main.SETTINGS.language = new_setting
+            Main.MENU.update_buttons()
 
-    def create_readme(self, PROGRAM_NAME, VERSION, AUTHOR, GITHUB):
-        with open("Databases/README.md", "w+") as file:
-            file.write(text_for_readme % (PROGRAM_NAME, VERSION, AUTHOR, GITHUB))
+        self.settings_interface()
 
-    def error_correction(self):
-        """
-        If file "database1.sqlite" is damaged,
-        settings are reset and new ones are created
-        """
-        if not path.exists("Databases"):
-            mkdir("Databases")
-
-        conn = sqlite3.connect("Databases/database1.sqlite")
-        cursor = conn.cursor()
-
+    def del_news_block(self):
         try:
-            cursor.execute("SELECT * FROM settings WHERE setting=?", (encode_text("language"),)).fetchone()
-        except sqlite3.DatabaseError:
-            conn.close()
-            remove("Databases/database1.sqlite")
-            conn = sqlite3.connect("Databases/database1.sqlite")
-            cursor = conn.cursor()
+            if self.text_news != None:
+                self.text_news.destroy()
+                self.text_news = None
+        except:
+            pass
 
-        try: cursor.execute("CREATE TABLE settings (setting, param)")
+    def settings_interface(self):
+        clear_ram()
+        Main.DATA_CANVAS.delete("all")
+
+        # close all #
+        Main.SETTINGS_INTERFACE.del_news_block()
+        Main.MORE_INFO_INTERFACE.close_song_info()
+        Main.PLAYLIST_INTERFACE.close_playlist()
+        Main.MORE_SETTINGS.close_window()
+
+        Main.PAST_SONG["lib_now"] = "Settings"
+        Main.LIST_OF_IDS = []
+
+        # delete logo #
+        try: del Main.SCREENSAVER
         except: pass
 
-        def check_setting(name, param):
-            if cursor.execute("SELECT * FROM settings WHERE setting=?", (encode_text(name),)).fetchone() is None:
-                cursor.execute("INSERT INTO settings VALUES (?,?)", (encode_text(name), encode_text(param))) 
+        # Settings #
+        self.settings_text = Main.DATA_CANVAS.create_text(15, 19, text=languages["Настройки"][Main.SETTINGS.language], anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13")
 
-        check_setting("language", self.language)
-        check_setting("theme", self.theme)
-        check_setting("bg_image", self.bg_image)
+        # Save #
+        Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.settings_text)[2]+75, 20, window=Button(text=languages["Сохранить"][Main.SETTINGS.language], command=Main.SETTINGS.change_settings, bg=themes[Main.SETTINGS.theme]["background"], fg=themes[Main.SETTINGS.theme]["text_color"], bd=1, width=15))
+        
+        # Themes #
+        self.theme_text = Main.DATA_CANVAS.create_text(15, 65, text=languages["Тема"][Main.SETTINGS.language], anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13")
 
-        conn.commit()
-        conn.close()
+        self.d_theme = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.theme_text)[2]+20, 66, anchor=W, window=Button(background=themes["dark"]["background"], activebackground=themes["dark"]["second_color"], command=lambda: self.change_settings("theme", "dark"), bd=1, width=2, height=1))
+        self.l_theme = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.d_theme)[2]+20, 66, anchor=W, window=Button(background=themes["light"]["background"], activebackground=themes["light"]["second_color"], command=lambda: self.change_settings("theme", "light"), bd=1, width=2, height=1))
+        self.p_theme = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.l_theme)[2]+20, 66, anchor=W, window=Button(background=themes["purple"]["background"], activebackground=themes["purple"]["second_color"], command=lambda: self.change_settings("theme", "purple"), bd=1, width=2, height=1))
+        self.r_theme = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.p_theme)[2]+20, 66, anchor=W, window=Button(background=themes["red"]["background"], activebackground=themes["red"]["second_color"], command=lambda: self.change_settings("theme", "red"), bd=1, width=2, height=1))
+        self.g_theme = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.r_theme)[2]+20, 66, anchor=W, window=Button(background=themes["green"]["background"], activebackground=themes["green"]["second_color"], command=lambda: self.change_settings("theme", "green"), bd=1, width=2, height=1))
 
-    def change_settings(self):
-        """
-        For Button "Save"
-        """
-        self.error_correction()
+        # Background picture #
+        self.bg_text = Main.DATA_CANVAS.create_text(15, 112, text=languages["Фон"][Main.SETTINGS.language], anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13")
+        self.bg_button = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.bg_text)[2]+20, 113, anchor=W, window=Button(text=languages["load_img"][Main.SETTINGS.language], command=lambda: self.load_background(), bg=themes[Main.SETTINGS.theme]["background"], fg=themes[Main.SETTINGS.theme]["text_color"], bd=1, width=21))
+        self.bg_file = Main.DATA_CANVAS.create_text(Main.DATA_CANVAS.bbox(self.bg_button)[2]+5, 112, text=" - "+Main.SETTINGS.bg_image.split("/")[-1], anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 12")
 
-        conn = sqlite3.connect("Databases/database1.sqlite")
-        cursor = conn.cursor()
+        if Main.SETTINGS.bg_image != "None":
+            self.del_bg = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.bg_file)[2]+13, 113, window=Button(image=MyImage.TRASHCAN, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], command=lambda: self.del_background()), anchor=W)
 
-        cursor.execute("UPDATE settings SET param=? WHERE setting=?", (encode_text(self.language), encode_text("language")))
-        cursor.execute("UPDATE settings SET param=? WHERE setting=?", (encode_text(self.theme), encode_text("theme")))
-        cursor.execute("UPDATE settings SET param=? WHERE setting=?", (encode_text(self.bg_image), encode_text("bg_image")))
+        # Languages #
+        self.lang_text = Main.DATA_CANVAS.create_text(15, 160, text=languages["Язык"][Main.SETTINGS.language], anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13")
+        self.ru_lang = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.lang_text)[2]+20, 161, anchor=W, window=Button(text="Русский", width=15, bd=1, bg=themes[Main.SETTINGS.theme]["background"], fg=themes[Main.SETTINGS.theme]["text_color"], command=lambda: self.change_settings("lang", "ru")))
+        self.en_lang = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.ru_lang)[2]-1, 161, anchor=W, window=Button(text="English", width=15, bd=1, bg=themes[Main.SETTINGS.theme]["background"], fg=themes[Main.SETTINGS.theme]["text_color"], command=lambda: self.change_settings("lang", "en")))
 
-        conn.commit()
-        conn.close()
+        # More #
+        self.more_text = Main.DATA_CANVAS.create_text(15, 205, text=languages["more"][Main.SETTINGS.language], anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13")
+        self.more_button = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.more_text)[2]+12, 207, anchor=W, window=Button(image=MyImage.MORE, width=20, height=20, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], command=lambda: Main.MORE_SETTINGS.draw_more()))
 
-    def update_settings(self):
-        """
-        Read database and give params
-        """
-        self.error_correction()
+        # News #
+        self.news_text = Main.DATA_CANVAS.create_text(135, 240, text=languages["Новости"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 14")
 
-        conn = sqlite3.connect("Databases/database1.sqlite")
-        cursor = conn.cursor()
+        # Creat block news #
+        news = News.read_news()
 
-        self.language = decode_text(cursor.execute("SELECT param FROM settings WHERE setting=?", (encode_text("language"),)).fetchone()[0])
-        self.theme = decode_text(cursor.execute("SELECT param FROM settings WHERE setting=?", (encode_text("theme"),)).fetchone()[0])
-        self.bg_image = decode_text(cursor.execute("SELECT param FROM settings WHERE setting=?", (encode_text("bg_image"),)).fetchone()[0])
+        self.text_news = Text(bg=themes[Main.SETTINGS.theme]["background"], fg=themes[Main.SETTINGS.theme]["text_color"], bd=1, wrap=WORD, font="Verdana 12")
+        self.text_news.insert(END, news[0]+"\n\n") # write date
+        self.text_news.insert(END, news[1][Main.SETTINGS.language]) # write news in block
+        self.text_news.config(state=DISABLED) # update config
+        self.text_news.place(x=15, y=Main.DATA_CANVAS.bbox(self.news_text)[3]+95, width=Main.DATA_CANVAS.winfo_width()/2/2, height=Main.DATA_CANVAS.winfo_height()/2, anchor=NW)
 
-        conn.close()
+        # Copy Button #
+        Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.news_text)[2]+10, 240, window=Button(image=MyImage.COPY, width=19, height=19, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], command=lambda: copy_text(self.text_news.get(1.0, "end-1c"))), anchor=W)
+
+        # Update window #
+        Main.ROOT.update()
+        Main.DATA_CANVAS.config(scrollregion=Main.DATA_CANVAS.bbox("all"))
+
+        Main.MENU.update_buttons()
