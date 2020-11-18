@@ -58,8 +58,8 @@ class BounceBit:
         Main.ROOT.title("")
 
         # Settings #
-        Main.SETTINGS = Settings("en", "dark")
-        Main.SETTINGS.update_settings()
+        Main.SETTINGS = Settings("en", "dark") # default settings
+        Main.SETTINGS.update_settings() # get settings from database
 
         # Window settings #
         Main.ROOT.iconbitmap(default=LoadPictures.resource_path(path.join("pictures", "program_icon.ico")))
@@ -69,10 +69,6 @@ class BounceBit:
 
         # Player #
         Main.PLAYER = MyPlayer()
-
-        # Load images #
-        Main.LOAD_IMAGE = LoadPictures()
-        Main.LOAD_IMAGE.upd_images()
 
         # Draw menu #
         Main.MENU = Menu()
@@ -85,6 +81,11 @@ class BounceBit:
 
         # Draw line for song #
         Main.SONG_LINE = SongLine()
+
+        # Load images #
+        Main.LOAD_IMAGE = LoadPictures()
+        Main.LOAD_IMAGE.upd_images()
+        Main.LOAD_IMAGE.load_bg()
 
         # Search updates #
         Thread(target=UpdateProgram).start()
