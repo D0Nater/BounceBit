@@ -25,6 +25,14 @@ from Scripts.images import MyImage
 from Scripts.main import Main
 
 
+class DrawTheme:
+    def __init__(self, x, theme_now):
+        self.draw_theme = Main.DATA_CANVAS.create_window(x, 66, anchor=W, window=Button(background=themes[theme_now]["background"], activebackground=themes[theme_now]["second_color"], command=lambda: Main.SETTINGS_INTERFACE.change_settings("theme", theme_now), bd=1, width=2, height=1))
+
+    def get_x(self):
+        return Main.DATA_CANVAS.bbox(self.draw_theme)[2]+18
+
+
 class SettingsInterface(LoadBackground):
     def change_settings(self, setting, new_setting):
         # update settings #
@@ -85,11 +93,11 @@ class SettingsInterface(LoadBackground):
         # Themes #
         self.theme_text = Main.DATA_CANVAS.create_text(15, 65, text=languages["Тема"][Main.SETTINGS.language], anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13")
 
+        # draw all themes #
         x = Main.DATA_CANVAS.bbox(self.theme_text)[2]+20
         for theme_now in themes:
-            self.draw_theme = Main.DATA_CANVAS.create_window(x, 66, anchor=W, window=Button(background=themes[theme_now]["background"], activebackground=themes[theme_now]["second_color"], command=lambda: self.change_settings("theme", theme_now), bd=1, width=2, height=1))
-
-            x = Main.DATA_CANVAS.bbox(self.draw_theme)[2]+18
+            draw_theme = DrawTheme(x, theme_now)
+            x = draw_theme.get_x()
 
         # Background picture #
         self.bg_text = Main.DATA_CANVAS.create_text(15, 112, text=languages["Фон"][Main.SETTINGS.language], anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13")
