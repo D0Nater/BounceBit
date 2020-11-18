@@ -85,10 +85,11 @@ class SettingsInterface(LoadBackground):
         # Themes #
         self.theme_text = Main.DATA_CANVAS.create_text(15, 65, text=languages["Тема"][Main.SETTINGS.language], anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13")
 
-        self.d_theme = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.theme_text)[2]+20, 66, anchor=W, window=Button(background=themes["dark"]["background"], activebackground=themes["dark"]["second_color"], command=lambda: self.change_settings("theme", "dark"), bd=1, width=2, height=1))
-        self.l_theme = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.d_theme)[2]+20, 66, anchor=W, window=Button(background=themes["light"]["background"], activebackground=themes["light"]["second_color"], command=lambda: self.change_settings("theme", "light"), bd=1, width=2, height=1))
-        self.p_theme = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.l_theme)[2]+20, 66, anchor=W, window=Button(background=themes["purple"]["background"], activebackground=themes["purple"]["second_color"], command=lambda: self.change_settings("theme", "purple"), bd=1, width=2, height=1))
-        self.g_theme = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.p_theme)[2]+20, 66, anchor=W, window=Button(background=themes["green"]["background"], activebackground=themes["green"]["second_color"], command=lambda: self.change_settings("theme", "green"), bd=1, width=2, height=1))
+        x = Main.DATA_CANVAS.bbox(self.theme_text)[2]+20
+        for theme_now in themes:
+            self.draw_theme = Main.DATA_CANVAS.create_window(x, 66, anchor=W, window=Button(background=themes[theme_now]["background"], activebackground=themes[theme_now]["second_color"], command=lambda: self.change_settings("theme", theme_now), bd=1, width=2, height=1))
+
+            x = Main.DATA_CANVAS.bbox(self.draw_theme)[2]+18
 
         # Background picture #
         self.bg_text = Main.DATA_CANVAS.create_text(15, 112, text=languages["Фон"][Main.SETTINGS.language], anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13")
