@@ -71,17 +71,21 @@ class ParseMusic:
 
                 # music #
                 for num in range(1, 61):
-                    new_song = {
-                        "name": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
-                        "author": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
-                        "url": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-url')[0].split('/')[-2],
-                        "data_key": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-dkey')[0],
-                        "song_time": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[2]/text()')[0],
-                        "song_id": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-id')[0]
-                    }
-                    top_music_json["music"][f"song{num-1}"] = new_song
-                    top_music_json["music"]["num"] += 1
-                    del new_song
+                    try:
+                        new_song = {
+                            "name": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
+                            "author": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
+                            "url": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-url')[0].split('/')[-2],
+                            "data_key": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-dkey')[0],
+                            "song_time": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/div[2]/text()')[0],
+                            "song_id": tree.xpath(f'//*[@id="top_1"]/div[2]/div[{num}]/@data-id')[0]
+                        }
+                        top_music_json["music"][f"song{num-1}"] = new_song
+                        top_music_json["music"]["num"] += 1
+                        del new_song
+
+                    except KeyError:
+                        break
 
                 top_music_json["error"] = None
 
@@ -100,20 +104,26 @@ class ParseMusic:
             tree = parse_data(f'https://zaycev.net/search.html?page={page}&query_search={text}')
 
             # music #
+            song_num = 0
             for num in range(1, 41):
                 try:
-                    new_song = {
-                        "name": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
-                        "author": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
-                        "url": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-url')[0].split('/')[-2],
-                        "data_key": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-dkey')[0],
-                        "song_time": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[2]/text()')[0],
-                        "song_id": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-id')[0]
-                    }
-                    search_music_json["music"][f"song{num-1}"] = new_song
-                    search_music_json["music"]["num"] += 1
-                    del new_song
-                except:
+                    if tree.xpath(f'//*[@id="search-results"]/div/div[3]/div[2]/div[1]/div[1]/div[2]/div[{num}]/@class')[0].split(' ')[-1] != "track-is-banned":
+                        new_song = {
+                            "name": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
+                            "author": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
+                            "url": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-url')[0].split('/')[-2],
+                            "data_key": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-dkey')[0],
+                            "song_time": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[2]/text()')[0],
+                            "song_id": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@data-id')[0]
+                        }
+                        search_music_json["music"][f"song{song_num}"] = new_song
+                        search_music_json["music"]["num"] += 1
+                        del new_song
+                        song_num += 1
+                    else:
+                        pass
+
+                except KeyError:
                     break
 
             # Pages #
@@ -136,20 +146,26 @@ class ParseMusic:
             tree = parse_data(f'https://zaycev.net/genres/{genre}/index_{page}.html?spa=false&page={page}')
 
             # music #
+            song_num = 0
             for num in range(1, 41):
                 try:
-                    new_song = {
-                        "name": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
-                        "author": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
-                        "url": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-url')[0].split('/')[-2],
-                        "data_key": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-dkey')[0],
-                        "song_time": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[2]/text()')[0],
-                        "song_id": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-id')[0]
-                    }
-                    genre_music_json["music"][f"song{num-1}"] = new_song
-                    genre_music_json["music"]["num"] += 1
-                    del new_song
-                except:
+                    if tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@class')[0].split(' ')[-1] != "track-is-banned":
+                        new_song = {
+                            "name": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
+                            "author": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
+                            "url": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-url')[0].split('/')[-2],
+                            "data_key": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-dkey')[0],
+                            "song_time": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/div[2]/text()')[0],
+                            "song_id": tree.xpath(f'//*[@id="genre-tracks"]/div[2]/div[1]/div[{num}]/@data-id')[0]
+                        }
+                        genre_music_json["music"][f"song{song_num}"] = new_song
+                        genre_music_json["music"]["num"] += 1
+                        del new_song
+                        song_num += 1
+                    else:
+                        pass
+
+                except KeyError:
                     break
 
             # Pages #
@@ -184,4 +200,3 @@ class ParseMusic:
             more_song_info_json["error"] = "connect_error"
 
         return more_song_info_json
-   
