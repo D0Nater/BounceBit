@@ -44,17 +44,23 @@ themes = {
         "text_color": "white",
         "text_second_color": "grey60"
     },
+    "red": {
+        "background": "#AA1F1F",
+        "second_color": "#821F1F",
+        "text_color": "white",
+        "text_second_color": "grey70"
+    },
     "green": {
         "background": "#1E8C46",
         "second_color": "#1E7346",
         "text_color": "white",
         "text_second_color": "grey80"
     },
-    "red": {
-        "background": "#AA1F1F",
-        "second_color": "#821F1F",
+    "blue": {
+        "background": "#3C5AFA",
+        "second_color": "#323CFA",
         "text_color": "white",
-        "text_second_color": "grey70"
+        "text_second_color": "grey75"
     }
 }
 
