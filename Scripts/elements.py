@@ -52,7 +52,7 @@ themes = {
     },
     "green": {
         "background": "#1E8C46",
-        "second_color": "#1E7346",
+        "second_color": "#1E6E46",
         "text_color": "white",
         "text_second_color": "grey80"
     },
