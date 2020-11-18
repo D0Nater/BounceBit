@@ -52,6 +52,12 @@ class LoadPictures:
             return path.join(sys._MEIPASS, relative)
         return path.join(relative)
 
+    @staticmethod
+    def load_bg():
+        if Main.SETTINGS.bg_image != "None":
+            if path.exists(Main.SETTINGS.bg_image):
+                Main.IMAGE_BG = ImageTk.PhotoImage(Image.open(Main.SETTINGS.bg_image).resize((Main.SETTINGS.width, Main.DATA_CANVAS.winfo_reqheight()), Image.ANTIALIAS))
+
     def load_picture(self, file):
         file = LoadPictures.resource_path(path.join(self.folder, file))
         return ImageTk.PhotoImage(Image.open(file))
