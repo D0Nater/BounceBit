@@ -52,10 +52,14 @@ class Song:
             nonlocal click_play
 
             if click_play:
-                Main.PLAYER.pause()
                 click_play = 0
                 button["image"] = MyImage.PLAY
+
+                Main.PLAYER.pause()
             else:
+                click_play = 1
+                button["image"] = MyImage.PAUSE
+
                 if self.song_data[4] != Main.SONG_PLAY_NOW["song_id"]:
                     # download song #
                     Main.SONG_LINE.loading_song()
@@ -86,9 +90,6 @@ class Song:
                     Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data, Main.MORE_INFO_INTERFACE.searched_data)
 
                 Thread(target=Main.PLAYER.play, daemon=True).start() # play
-
-                click_play = 1
-                button["image"] = MyImage.PAUSE
 
             Main.SONG_PLAY_NOW = {"play": click_play, "name": self.song_data[0], "author": self.song_data[1], "time": self.song_data[3], "url": self.song_data[2], "song_id": self.song_data[4], "num": self.num}
             Main.SONG_LINE.draw_music_line()
