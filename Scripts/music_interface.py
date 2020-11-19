@@ -63,19 +63,25 @@ class MusicInterface:
             self.y += 40
 
     def draw_search(self):
+        def search_interface(event):
+            # press 'enter' #
+            self.music_interface("Поиск 1", None, search_text_var.get())
+
         # Search #
         search_draw = Main.DATA_CANVAS.create_text(Main.DATA_CANVAS.bbox(self.lib_name)[0], Main.DATA_CANVAS.bbox(self.lib_name)[3]+25, text=languages["Поиск"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
 
         # Search line #
-        text = StringVar()
+        search_text_var = StringVar()
 
-        text_entry = Entry(textvariable=text, width=18, bg=themes[Main.SETTINGS.theme]["background"], fg=themes[Main.SETTINGS.theme]["text_color"], selectbackground="red", insertbackground=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 11")
+        text_entry = Entry(textvariable=search_text_var, width=18, bg=themes[Main.SETTINGS.theme]["background"], fg=themes[Main.SETTINGS.theme]["text_color"], selectbackground="red", insertbackground=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 11")
         text_entry.insert(0, self.search_text)
         text_entry_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(search_draw)[2]+19, Main.DATA_CANVAS.bbox(search_draw)[3]-9, window=text_entry, anchor=W)
 
+        text_entry.bind('<Return>', search_interface)
+
         # Draw button for search #
         Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(text_entry_draw)[2]+17, Main.DATA_CANVAS.bbox(search_draw)[3]-9, window=Button(image=MyImage.SEARCH, width=16, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
-            command=lambda: self.music_interface("Поиск 1", None, text.get())))
+            command=lambda: self.music_interface("Поиск 1", None, search_text_var.get())))
 
     def draw_genres(self):
         if self.lib.split(" ")[0] == "Рекомендации" or self.lib.split(" ")[0] == "Жанр" or self.lib.split(" ")[0] == "Поиск":
