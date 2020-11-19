@@ -16,6 +16,9 @@ from pyperclip import copy as copy_text
 from Scripts.elements import *
 from Scripts.music_storage import MusicStorage
 
+""" For Player """
+from Scripts.my_player import MyPlayer
+
 """ Images """
 from Scripts.images import MyImage
 
@@ -61,16 +64,18 @@ class Song:
                 button["image"] = MyImage.PAUSE
 
                 if self.song_data[4] != Main.SONG_PLAY_NOW["song_id"]:
+                    Main.PLAYER.stop()
+
                     # download song #
                     Main.SONG_LINE.loading_song()
                     MusicStorage.download_music(self.song_data[4], self.song_data[2])
 
-                    Main.PLAYER.stop()
+                    del Main.PLAYER
+                    # Player #
+                    Main.PLAYER = MyPlayer() # just for fix bug XD
+
                     Main.SONG_TIME_NOW = "00:00"
                     Main.PLAYER.new_song(self.song_data[4])
-
-                    if Main.SONG_PLAY_NOW["song_id"] is not None:
-                        Main.PLAYER.next_song()
 
                     # update past song #
                     if Main.PAST_SONG["class"] is not None:
@@ -79,7 +84,7 @@ class Song:
 
                     if Main.LIST_OF_PLAY != Main.LIST_OF_MUSIC:
                         Main.LIST_OF_PLAY = Main.LIST_OF_MUSIC.copy()
-                        Main.LIST_OF_PLAY["classes"] = list_of_songs_class
+                        Main.LIST_OF_PLAY["classes"] = list_of_songs_class.copy()
 
                     Main.PAST_SONG["song_id"] = self.song_data[4]
                     Main.PAST_SONG["class"] = this_class
