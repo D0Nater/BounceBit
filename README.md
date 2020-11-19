@@ -23,8 +23,8 @@ Program for listen music free
 1. Program was optimized
 2. More themes
 3. More settings
-4. Copying news
-5. Fixed some bugs
+4. Fixed some bugs
+5. Update notifications
 
 # Packages
 <code> pip install lxml </code> <br>
