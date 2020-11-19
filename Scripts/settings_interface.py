@@ -50,6 +50,7 @@ class SettingsInterface(LoadBackground):
 
             Main.LOAD_IMAGE.upd_images()
             Main.MENU.update_buttons()
+            Main.UPDATE_PROGRAM.update_msg()
             Main.SONG_LINE.draw_music_line(change_settings=True)
 
         elif setting == "lang":
@@ -123,8 +124,7 @@ class SettingsInterface(LoadBackground):
         news = News.read_news()
 
         self.text_news = Text(bg=themes[Main.SETTINGS.theme]["background"], fg=themes[Main.SETTINGS.theme]["text_color"], bd=1, wrap=WORD, font="Verdana 12")
-        self.text_news.insert(END, news[0]+"\n\n") # write date
-        self.text_news.insert(END, news[1][Main.SETTINGS.language]) # write news in block
+        self.text_news.insert(END, news[0]+"\n\n"+news[1][Main.SETTINGS.language]) # write date and news in block
         self.text_news.config(state=DISABLED) # update config
         self.text_news.place(x=15, y=Main.DATA_CANVAS.bbox(self.news_text)[3]+95, width=Main.DATA_CANVAS.winfo_width()/2/2, height=Main.DATA_CANVAS.winfo_height()/2, anchor=NW)
 
