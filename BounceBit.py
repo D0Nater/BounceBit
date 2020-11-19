@@ -88,7 +88,8 @@ class BounceBit:
         Main.LOAD_IMAGE.load_bg()
 
         # Search updates #
-        Thread(target=UpdateProgram).start()
+        Main.UPDATE_PROGRAM = UpdateProgram()
+        Thread(target=Main.UPDATE_PROGRAM.search_upd).start()
 
         # Keys settings #
         KeyEvent()
