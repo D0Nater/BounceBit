@@ -46,6 +46,8 @@ class LoadPictures:
         MyImage.EDIT = self.load_picture("edit_button.png")
         MyImage.UPDATE = self.load_picture("update_button.png")
 
+        MyImage.DOWNLOAD_UPD = self.load_picture("download_upd_button.png")
+
     @staticmethod
     def resource_path(relative):
         if hasattr(sys, "_MEIPASS"):
