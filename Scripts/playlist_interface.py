@@ -153,18 +153,18 @@ class DrawPlaylists:
         self.draw_playlists()
 
     def save_playlist(self, event=""):
-        name = self.playlist_name_var.get().replace("\n", "-")
-        if len(name) > 1:
-            # Write new playlist in db #
-            if not PlaylistStorage.check_playlist_in_db("database2.sqlite", name) and name is not "":
-                PlaylistStorage.add_playlist("database2.sqlite", name)
+        name = self.playlist_name_var.get()
 
-                self.clear_all(draw=False)
+        if not len(name) > 1 or PlaylistStorage.check_playlist_in_db("database2.sqlite", name):
+            return
 
-                new_playlist = DrawPlaylist(name, Main.DATA_CANVAS.bbox(self.lib_name)[3]+60)
-                new_playlist.set_class(new_playlist)
-            else:
-                pass
+        # Write new playlist in db #
+        PlaylistStorage.add_playlist("database2.sqlite", name)
+
+        self.clear_all(draw=False)
+
+        new_playlist = DrawPlaylist(name, Main.DATA_CANVAS.bbox(self.lib_name)[3]+64)
+        new_playlist.set_class(new_playlist)
 
     def draw_playlists(self):
         # Draw all created playlists #
