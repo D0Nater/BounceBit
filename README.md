@@ -19,14 +19,12 @@ Program for listen music free
 7. In folder 'dist' will be BounceBit.exe
 
 # New
-   Version 0.2
+   Version 0.3
 1. Program was optimized
-2. More information about songs
-3. Testing of playlist creation has started
+2. More themes
+3. More settings
 4. Copying news
-5. New images without background
-6. Removed function for deleting image background
-7. Fixed some bugs
+5. Fixed some bugs
 
 # Packages
 <code> pip install lxml </code> <br>
@@ -35,4 +33,5 @@ Program for listen music free
 <code> pip install pyglet </code> <br>
 <code> pip install mutagen </code> <br>
 <code> pip install requests </code> <br>
+<code> pip install pyperclip </code> <br>
 <code> pip install gc-python-utils </code>
