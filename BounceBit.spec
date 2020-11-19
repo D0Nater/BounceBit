@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['BounceBit.py'],
-             pathex=['C:/BounceBit'],
+             pathex=['C:/MyPrograms/Python/Work/BounceBit'],
              binaries=[],
              datas=[
                ('pictures/main_logo1.jpg', 'pictures'),
@@ -37,6 +37,8 @@ a = Analysis(['BounceBit.py'],
                ('pictures/edit_button.png', 'pictures'),
                ('pictures/update_button.png', 'pictures'),
 
+               ('pictures/download_upd_button.png', 'pictures'),
+
                ('pictures/Light/play_button.png', 'pictures/Light'),
                ('pictures/Light/pause_button.png', 'pictures/Light'),
 
@@ -62,7 +64,9 @@ a = Analysis(['BounceBit.py'],
                ('pictures/Light/trashcan_button.png', 'pictures/Light'),
 
                ('pictures/Light/edit_button.png', 'pictures/Light'),
-               ('pictures/Light/update_button.png', 'pictures/Light')
+               ('pictures/Light/update_button.png', 'pictures/Light'),
+
+               ('pictures/Light/download_upd_button.png', 'pictures/Light')
              ],
              hiddenimports=[],
              hookspath=[],
