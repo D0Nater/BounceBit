@@ -14,6 +14,9 @@ from time import sleep as time_sleep
 from Scripts.elements import *
 from Scripts.music_storage import MusicStorage
 
+""" For Player """
+from Scripts.my_player import MyPlayer
+
 """ Main """
 from Scripts.main import Main
 
@@ -51,7 +54,7 @@ class SongManage:
         }
         # update past song #
         if Main.PAST_SONG["song_id"] in Main.LIST_OF_IDS:
-            Main.LIST_OF_PLAY["classes"][Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
+            list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
 
         # update data #
         Main.PAST_SONG["class"] = Main.LIST_OF_PLAY["classes"][song_num]
@@ -59,24 +62,24 @@ class SongManage:
 
         # update new song #
         if Main.PAST_SONG["song_id"] in Main.LIST_OF_IDS:
-            Main.LIST_OF_PLAY["classes"][Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
+            list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
 
         # update song time #
         Main.SONG_TIME_NOW = "00:00"
         Main.SONG_LINE_CANVAS.delete(self.time_line_now)
 
-        # stop music #
         Main.PLAYER.stop()
 
         # download song #
         Main.SONG_LINE.loading_song()
         MusicStorage.download_music(Main.SONG_PLAY_NOW["song_id"], Main.SONG_PLAY_NOW["url"])
 
+        del Main.PLAYER
+        # Player #
+        Main.PLAYER = MyPlayer() # just for fix bug XD
+
         # write new song #
         Main.PLAYER.new_song(Main.SONG_PLAY_NOW["song_id"])
-
-        # play new song #
-        Main.PLAYER.next_song()
 
         if Main.SONG_PLAY_NOW["play"]:
             Thread(target=Main.PLAYER.play, daemon=True).start() # play
