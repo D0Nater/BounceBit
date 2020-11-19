@@ -107,7 +107,7 @@ class ParseMusic:
             song_num = 0
             for num in range(1, 41):
                 try:
-                    if tree.xpath(f'//*[@id="search-results"]/div/div[3]/div[2]/div[1]/div[1]/div[2]/div[{num}]/@class')[0].split(' ')[-1] != "track-is-banned":
+                    if tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/@class')[0].split(' ')[-1] != "track-is-banned":
                         new_song = {
                             "name": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[3]/a/text()')[0],
                             "author": tree.xpath(f'//*[@id="search-results"]/div/div[3]/div/div[1]/div[1]/div[2]/div[{num}]/div[1]/div[2]/div[1]/a/text()')[0],
