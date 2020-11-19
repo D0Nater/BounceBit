@@ -19,18 +19,19 @@ class PlaylistInterface:
         self.num_of_wins = 0
 
     def close_playlist(self):
-        if self.num_of_wins:
-            try:
-                Main.SCROLL_WIN = True
+        if not self.num_of_wins:
+            return
+        try:
+            Main.SCROLL_WIN = True
 
-                self.playlist_canvas.delete("all")
-                self.playlist_canvas.destroy()
+            self.playlist_canvas.delete("all")
+            self.playlist_canvas.destroy()
 
-                del self.playlist_canvas
+            del self.playlist_canvas
 
-                self.num_of_wins -= 1
-            except AttributeError:
-                pass
+            self.num_of_wins -= 1
+        except AttributeError:
+            pass
 
     def draw_music(self):
         if int(self.music_data["music_num"]):
@@ -134,7 +135,7 @@ class DrawPlaylists:
         try:
             Main.DATA_CANVAS.delete(self.playlist_text)
 
-            Main.DATA_CANVAS.delete(self.playlist_name_draw)
+            Main.DATA_CANVAS.delete(self.set_playlist_name_draw)
             Main.DATA_CANVAS.delete(self.create_button)
             Main.DATA_CANVAS.delete(self.cancel_button)
 
@@ -151,8 +152,8 @@ class DrawPlaylists:
 
         self.draw_playlists()
 
-    def save_playlist(self):
-        name = self.set_playlist_name.get(1.0, "end-1c").replace("\n", "-")
+    def save_playlist(self, event=""):
+        name = self.playlist_name_var.get().replace("\n", "-")
         if len(name) > 1:
             # Write new playlist in db #
             if not PlaylistStorage.check_playlist_in_db("database2.sqlite", name) and name is not "":
@@ -187,13 +188,17 @@ class DrawPlaylists:
         self.playlist_text = Main.DATA_CANVAS.create_text(Main.DATA_CANVAS.bbox(self.lib_name)[0], Main.DATA_CANVAS.bbox(self.lib_name)[3]+60, text=languages["pl_name"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
 
         # Draw block for set playlist name #
-        self.set_playlist_name = Text(width=18, height=1.4, bg=themes[Main.SETTINGS.theme]["background"], fg=themes[Main.SETTINGS.theme]["text_color"], selectbackground="red", insertbackground=themes[Main.SETTINGS.theme]["text_color"], wrap=NONE, font="Verdana 11")
-        self.playlist_name_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.playlist_text)[2]+15, Main.DATA_CANVAS.bbox(self.playlist_text)[3]-9, window=self.set_playlist_name, anchor=W)
+        self.playlist_name_var = StringVar()
+
+        self.set_playlist_name = Entry(textvariable=self.playlist_name_var, width=18, bg=themes[Main.SETTINGS.theme]["background"], fg=themes[Main.SETTINGS.theme]["text_color"], selectbackground="red", insertbackground=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 11")
+        self.set_playlist_name_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.playlist_text)[2]+19, Main.DATA_CANVAS.bbox(self.playlist_text)[3]-9, window=self.set_playlist_name, anchor=W)
+
+        self.set_playlist_name.bind("<Return>", self.save_playlist)
 
         # Draw button for create playlist #
-        self.create_button = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.playlist_name_draw)[2]+12, Main.DATA_CANVAS.bbox(self.playlist_name_draw)[3]-3, anchor=SW, window=Button(image=MyImage.OK, width=18, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
+        self.create_button = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.set_playlist_name_draw)[2]+12, Main.DATA_CANVAS.bbox(self.set_playlist_name_draw)[3]-3, anchor=SW, window=Button(image=MyImage.OK, width=18, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
             command=lambda: self.save_playlist()))
 
         # Draw button for cancel #
-        self.cancel_button = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.create_button)[2]+12, Main.DATA_CANVAS.bbox(self.playlist_name_draw)[3]-1, anchor=SW, window=Button(image=MyImage.CLOSE, width=18, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
+        self.cancel_button = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.create_button)[2]+12, Main.DATA_CANVAS.bbox(self.set_playlist_name_draw)[3]-1, anchor=SW, window=Button(image=MyImage.CLOSE, width=18, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
             command=lambda: self.clear_all()))
