@@ -25,13 +25,13 @@ from Scripts.main import Main
 class MusicInterface:
     def search_data(self):
         if self.lib.split(" ")[0] == "Рекомендации":
-            return ParseMusic.top_music()
+            return ParseMusic.top_music(int(self.lib.split(" ")[1]))
 
         elif self.lib.split(" ")[0] == "Поиск":
-            return ParseMusic.search_music(self.search_text, self.lib.split(" ")[1])
+            return ParseMusic.search_music(self.search_text, int(self.lib.split(" ")[1]))
 
         elif self.lib.split(" ")[0] == "Жанр":
-            return ParseMusic.genres_music(languages[self.lib.split(" ")[1]]["en"].lower(), self.lib.split(" ")[2])
+            return ParseMusic.genres_music(self.lib.split(" ")[1], int(self.lib.split(" ")[2]))
 
     def draw_music(self):
         Main.LIST_OF_MUSIC = self.all_data
@@ -39,20 +39,10 @@ class MusicInterface:
         Main.LIST_OF_IDS = [self.all_data["music"][f"song{i}"]["song_id"] for i in range(self.all_data["music"]["num"])]
 
         """ Draw data on page """
-        # music #
         for song_num in range(self.all_data["music"]["num"]):
-            # Song info #
-            song_name = self.all_data["music"][f"song{song_num}"]["name"]
-            song_author = self.all_data["music"][f"song{song_num}"]["author"]
-
-            # Draw song name and author #
-            name_draw = Main.DATA_CANVAS.create_text(20, self.y, text=f"{song_name}  -  ", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 12")
-            author_draw = Main.DATA_CANVAS.create_text(Main.DATA_CANVAS.bbox(name_draw)[2], self.y, text=song_author, fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=W, font="Verdana 12")
-
-            del song_name, song_author
-
-            # Creat buttons for song #
-            new_song = Song(Main.DATA_CANVAS.bbox(author_draw)[2]+34, self.y, song_num, self.all_data["music"][f"song{song_num}"])
+            # draw music #
+            new_song = Song(self.y, song_num, self.all_data["music"][f"song{song_num}"])
+            new_song.draw_name()
             new_song.draw_music(new_song, self.lib)
 
             list_of_songs_class.append(new_song)
@@ -64,7 +54,7 @@ class MusicInterface:
 
     def draw_search(self):
         def search_interface(event):
-            # press 'enter' #
+            # press "enter" #
             self.music_interface("Поиск 1", None, search_text_var.get())
 
         # Search #
@@ -77,7 +67,7 @@ class MusicInterface:
         text_entry.insert(0, self.search_text)
         text_entry_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(search_draw)[2]+19, Main.DATA_CANVAS.bbox(search_draw)[3]-9, window=text_entry, anchor=W)
 
-        text_entry.bind('<Return>', search_interface)
+        text_entry.bind("<Return>", search_interface)
 
         # Draw button for search #
         Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(text_entry_draw)[2]+17, Main.DATA_CANVAS.bbox(search_draw)[3]-9, window=Button(image=MyImage.SEARCH, width=16, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
@@ -132,6 +122,11 @@ class MusicInterface:
         elif self.lib.split(" ")[0] == "Жанр":
             for page_num in self.all_data["pages"]:
                 PageButton(page_num, self.music_interface, ("Жанр %s %s"%(self.lib.split(" ")[1], page_num), None, "")).draw_button(page_x, Main.DATA_CANVAS.bbox(self.lib_name)[3]-9)
+                page_x += 29
+
+        elif self.lib.split(" ")[0] == "Рекомендации":
+            for page_num in self.all_data["pages"]:
+                PageButton(page_num, self.music_interface, (f"Рекомендации {page_num}", None)).draw_button(page_x, Main.DATA_CANVAS.bbox(self.lib_name)[3]-9)
                 page_x += 29
 
     def music_interface(self, lib, all_data, search_text=""):
