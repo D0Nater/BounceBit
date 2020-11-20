@@ -20,20 +20,19 @@ class MoreInfoInterface:
         self.num_of_wins = 0
 
     def close_song_info(self):
-        if self.num_of_wins:
-            try:
-                Main.SCROLL_WIN = True
+        if not self.num_of_wins:
+            return
+        try:
+            Main.SCROLL_WIN = True
 
-                self.song_info_canvas.delete("all")
-                self.song_info_canvas.destroy()
-                self.song_text_draw.destroy()
+            self.song_info_canvas.delete("all")
+            self.song_info_canvas.destroy()
 
-                del self.song_info_canvas
-                del self.song_text_draw
+            del self.song_info_canvas
 
-                self.num_of_wins -= 1
-            except AttributeError:
-                pass
+            self.num_of_wins -= 1
+        except AttributeError:
+            pass
 
     def song_info_draw(self, data, searched_data=None):
         # Delete past window #
@@ -68,7 +67,7 @@ class MoreInfoInterface:
 
         if not searched_data:
             # Search data #
-            self.searched_data = ParseMusic.more_song_info(data[5])
+            self.searched_data = ParseMusic.more_song_info(data[4])
 
         # Button for add to playlist #
         self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_name_draw)[2]+15, 41, window=Button(image=MyImage.NEW_PLAYLIST, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: print("add song")), anchor=W)
@@ -78,14 +77,5 @@ class MoreInfoInterface:
 
         # Draw Song duration #
         self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_duration_draw)[2]+11, self.song_info_canvas.bbox(self.song_duration_draw)[1]+2, text=data[3], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 12")
-
-        # Draw Song text #
-        self.song_info_canvas.create_text(40, 180, text=languages["Текст"][Main.SETTINGS.language]+":", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
-
-        # Draw Block for text #
-        self.song_text_draw = Text(bg=themes[Main.SETTINGS.theme]["second_color"], fg=themes[Main.SETTINGS.theme]["text_color"], bd=1, wrap=WORD, font="Verdana 12") # create text block
-        self.song_text_draw.insert(END, self.searched_data["text"]) # write text in block
-        self.song_text_draw.config(state=DISABLED) # update config
-        self.song_text_draw.place(x=Main.SETTINGS.width/2-49, y=300, width=self.song_info_canvas.winfo_width()-74, height=self.song_info_canvas.winfo_height()/2, anchor=N)
 
         Main.SCROLL_WIN = False
