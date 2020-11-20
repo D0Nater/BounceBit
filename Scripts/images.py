@@ -37,6 +37,9 @@ class LoadPictures:
         MyImage.CYCLE = self.load_picture("cycle_button.png")
         MyImage.CYCLE_CLICK = self.load_picture("cycle_button_click.png")
 
+        MyImage.RANDOM_SONG = self.load_picture("rand_song_button.png")
+        MyImage.RANDOM_SONG_CLICK = self.load_picture("rand_song_button_click.png")
+
         MyImage.SEARCH = self.load_picture("search_button.png")
         MyImage.NEW_PLAYLIST = self.load_picture("new_playlist_button.png")
 
