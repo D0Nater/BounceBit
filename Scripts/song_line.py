@@ -95,11 +95,14 @@ class SongLine(SongManage):
 
         # update past song #
         if Main.PAST_SONG["song_id"] in Main.LIST_OF_IDS:
-            Main.PAST_SONG["class"].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
+            list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
 
         # update window with more song info #
         if Main.MORE_INFO_INTERFACE.num_of_wins:
             Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data, Main.MORE_INFO_INTERFACE.searched_data)
+
+        Main.JUST_LINE = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=25, bg=themes[Main.SETTINGS.theme]["second_color"], bd=0, highlightthickness=0)
+        Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
 
         Main.MENU.update_buttons()
 
