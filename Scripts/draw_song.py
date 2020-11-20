@@ -27,11 +27,10 @@ from Scripts.main import Main
 
 
 class Song:
-    def __init__(self, x, y, num, info):
-        self.x = x
+    def __init__(self, y, num, info):
         self.y = y
         self.num = num
-        self.song_data = [info["name"], info["author"], info["url"], info["song_time"], info["song_id"], info["data_key"]]
+        self.song_data = [info["name"], info["author"], info["url"], info["song_time"], info["song_id"]]
 
     # def __del__(self):
     #     pass
@@ -42,6 +41,16 @@ class Song:
             del self.y
             del self.num
             del self.song_data
+
+    def draw_name(self):
+        song_name = self.song_data[0][:34]+'...' if len(self.song_data[0]) > 34 else self.song_data[0]
+        song_author = self.song_data[1][:34]+'...' if len(self.song_data[1]) > 34 else self.song_data[1]
+
+        # Draw song name and author #
+        self.name_draw = Main.DATA_CANVAS.create_text(20, self.y, text=f"{song_name}  -  ", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 12")
+        self.author_draw = Main.DATA_CANVAS.create_text(Main.DATA_CANVAS.bbox(self.name_draw)[2], self.y, text=song_author, fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=W, font="Verdana 12")
+
+        self.x = Main.DATA_CANVAS.bbox(self.author_draw)[2]+34
 
     def draw_music(self, this_class, lib):
         self.this_class = this_class
@@ -86,6 +95,7 @@ class Song:
                         Main.LIST_OF_PLAY = Main.LIST_OF_MUSIC.copy()
                         Main.LIST_OF_PLAY["classes"] = list_of_songs_class.copy()
 
+                    # update data #
                     Main.PAST_SONG["song_id"] = self.song_data[4]
                     Main.PAST_SONG["class"] = this_class
                     Main.PAST_SONG["past_lib"] = lib
