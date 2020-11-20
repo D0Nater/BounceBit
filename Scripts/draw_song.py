@@ -87,9 +87,9 @@ class Song:
                     Main.PLAYER.new_song(self.song_data[4])
 
                     # update past song #
-                    if Main.PAST_SONG["class"] is not None:
-                        Main.SONG_PLAY_NOW["play"] = 0
-                        Main.PAST_SONG["class"].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["lib_now"])
+                    Main.SONG_PLAY_NOW["play"] = 0
+                    if Main.PAST_SONG["song_id"] in Main.LIST_OF_IDS:
+                        list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
 
                     if Main.LIST_OF_PLAY != Main.LIST_OF_MUSIC:
                         Main.LIST_OF_PLAY = Main.LIST_OF_MUSIC.copy()
@@ -106,7 +106,7 @@ class Song:
 
                 Thread(target=Main.PLAYER.play, daemon=True).start() # play
 
-            Main.SONG_PLAY_NOW = {"play": click_play, "name": self.song_data[0], "author": self.song_data[1], "time": self.song_data[3], "url": self.song_data[2], "song_id": self.song_data[4], "num": self.num}
+            Main.SONG_PLAY_NOW = {"play": click_play, "cycle": Main.SONG_PLAY_NOW["cycle"], "name": self.song_data[0], "author": self.song_data[1], "time": self.song_data[3], "url": self.song_data[2], "song_id": self.song_data[4], "num": self.num}
             Main.SONG_LINE.draw_music_line()
 
         def add_click(button):
