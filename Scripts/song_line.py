@@ -55,14 +55,17 @@ class SongLine(SongManage):
             # if play new song #
             num_for_time_line_now = 0 # default time line
 
-        while Main.SONG_PLAY_NOW["play"] and song_id_now == Main.SONG_PLAY_NOW["song_id"]:
+        while Main.PLAYER_SETTINGS["play"] and song_id_now == Main.SONG_PLAY_NOW["song_id"]:
             Main.SONG_TIME_NOW = time.strftime("%M:%S", time.gmtime(60*min_song + sec_song))
             sec_song += 1
 
             # after song #
             if song_duration_str == Main.SONG_TIME_NOW:
-                if Main.SONG_PLAY_NOW["cycle"]:
+                if Main.PLAYER_SETTINGS["cycle"]:
                     self.behind_after_music(0)
+                    return
+                elif Main.PLAYER_SETTINGS["random_song"]:
+                    self.play_random_song()
                     return
                 self.behind_after_music(1)
                 return
@@ -86,36 +89,6 @@ class SongLine(SongManage):
         Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
 
         Main.ROOT.update()
-
-    def click_play(self):
-        # update button #
-        if Main.SONG_PLAY_NOW["play"]:
-            self.pause_song()
-            self.play_button["image"] = MyImage.PLAY
-        else:
-            self.play_song()
-            self.play_button["image"] = MyImage.PAUSE
-
-        # update past song #
-        if Main.PAST_SONG["song_id"] in Main.LIST_OF_IDS:
-            list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
-
-        # update window with more song info #
-        if Main.MORE_INFO_INTERFACE.num_of_wins:
-            Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data, Main.MORE_INFO_INTERFACE.searched_data)
-
-        Main.JUST_LINE = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=25, bg=themes[Main.SETTINGS.theme]["second_color"], bd=0, highlightthickness=0)
-        Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
-
-        Main.MENU.update_buttons()
-
-    def cycle_song(self):
-        if Main.SONG_PLAY_NOW["cycle"]:
-            Main.SONG_PLAY_NOW["cycle"] = False
-            self.cycle_button["image"] = MyImage.CYCLE
-        else:
-            Main.SONG_PLAY_NOW["cycle"] = True
-            self.cycle_button["image"] = MyImage.CYCLE_CLICK
 
     def draw_music_line(self, change_settings=False):
         clear_ram()
@@ -155,7 +128,7 @@ class SongLine(SongManage):
         self.behind_song_button = Main.SONG_LINE_CANVAS.create_window(Main.SONG_LINE_CANVAS.bbox(self.song_time)[2]+15, Main.SONG_LINE_CANVAS.bbox(self.song_time)[1]+8, anchor=W, window=Button(image=MyImage.BEHIND_SONG, command=lambda: self.behind_after_music(-1), width=17, height=19, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE))
 
         # Button "play/stop" #
-        if Main.SONG_PLAY_NOW["play"]:
+        if Main.PLAYER_SETTINGS["play"]:
             self.play_button = Button(image=MyImage.PAUSE, command=lambda: self.click_play(), width=14, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE)
         else:
             self.play_button = Button(image=MyImage.PLAY, command=lambda: self.click_play(), width=14, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE)
@@ -165,17 +138,24 @@ class SongLine(SongManage):
         self.after_song_button = Main.SONG_LINE_CANVAS.create_window(Main.SONG_LINE_CANVAS.bbox(self.play_button_draw)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.song_time)[1]+8, anchor=W, window=Button(image=MyImage.AFTER_SONG, command=lambda: self.behind_after_music(1), width=19, height=19, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE))
 
         # Button "cycle" #
-        if Main.SONG_PLAY_NOW["cycle"]:
+        if Main.PLAYER_SETTINGS["cycle"]:
             self.cycle_button = Button(image=MyImage.CYCLE_CLICK, command=lambda: self.cycle_song(), width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE)
         else:
             self.cycle_button = Button(image=MyImage.CYCLE, command=lambda: self.cycle_song(), width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE)
         self.cycle_button_draw = Main.SONG_LINE_CANVAS.create_window(Main.SONG_LINE_CANVAS.bbox(self.after_song_button)[2]+13, Main.SONG_LINE_CANVAS.bbox(self.song_time)[1]+10, anchor=W, window=self.cycle_button)
 
+        # Button "random song" #
+        if Main.PLAYER_SETTINGS["random_song"]:
+            self.rand_song_button = Button(image=MyImage.RANDOM_SONG_CLICK, command=lambda: self.random_song(), width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE)
+        else:
+            self.rand_song_button = Button(image=MyImage.RANDOM_SONG, command=lambda: self.random_song(), width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE)
+        self.rand_song_button_draw = Main.SONG_LINE_CANVAS.create_window(Main.SONG_LINE_CANVAS.bbox(self.cycle_button_draw)[2]+9, Main.SONG_LINE_CANVAS.bbox(self.song_time)[1]+9, anchor=W, window=self.rand_song_button)
+
         # Buttom "more info" #
-        self.more_info_button = Main.SONG_LINE_CANVAS.create_window(Main.SONG_LINE_CANVAS.bbox(self.cycle_button_draw)[2]+7, Main.SONG_LINE_CANVAS.bbox(self.song_time)[1]+8, anchor=W, window=Button(image=MyImage.MORE_INFO, command=lambda: Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data), width=17, height=19, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE))
+        self.more_info_button = Main.SONG_LINE_CANVAS.create_window(Main.SONG_LINE_CANVAS.bbox(self.rand_song_button_draw)[2]+7, Main.SONG_LINE_CANVAS.bbox(self.song_time)[1]+8, anchor=W, window=Button(image=MyImage.MORE_INFO, command=lambda: Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data), width=17, height=19, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE))
 
         Main.JUST_LINE = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=25, bg=themes[Main.SETTINGS.theme]["second_color"], bd=0, highlightthickness=0)
         Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
 
-        if Main.SONG_PLAY_NOW["play"] and not change_settings:
+        if Main.PLAYER_SETTINGS["play"] and not change_settings:
             Thread(target=Main.SONG_LINE.song_time_thread, daemon=True).start()
