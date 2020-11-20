@@ -14,7 +14,7 @@ def clear_list_of_songs():
 
 
 """ Elements for main program """
-VERSION = "0.3.1"
+VERSION = "0.4"
 AUTHOR = "D0Nater"
 GITHUB = "https://github.com/D0Nater/BounceBit/"
 PROGRAM_NAME = "Bounce Bit"
@@ -122,27 +122,33 @@ languages = {
     },
     "Поп": {
         "ru": "Поп",
-        "en": "Pop"
+        "en": "Pop",
+        "num": "2"
     },
     "Рок": {
         "ru": "Рок",
-        "en": "Rock"
+        "en": "Rock",
+        "num": "6"
     },
     "Рэп": {
         "ru": "Рэп",
-        "en": "Rap"
+        "en": "Rap",
+        "num": "3"
     },
     "Джаз": {
         "ru": "Джаз",
-        "en": "Jazz"
+        "en": "Jazz",
+        "num": "39"
     },
     "Шансон": {
         "ru": "Шансон",
-        "en": "Shanson"
+        "en": "Shanson",
+        "num": "14"
     },
     "Классика": {
         "ru": "Классика",
-        "en": "Classical"
+        "en": "Classical",
+        "num": "28"
     },
 
     # Song info #
