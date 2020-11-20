@@ -65,6 +65,7 @@ class Song:
 
             if click_play:
                 click_play = 0
+                Main.PLAYER_SETTINGS["play"] = 0
                 button["image"] = MyImage.PLAY
 
                 Main.PLAYER.pause()
@@ -87,11 +88,12 @@ class Song:
                     Main.PLAYER.new_song(self.song_data[4])
 
                     # update past song #
-                    Main.SONG_PLAY_NOW["play"] = 0
+                    Main.PLAYER_SETTINGS["play"] = 0
                     if Main.PAST_SONG["song_id"] in Main.LIST_OF_IDS:
                         list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
 
                     if Main.LIST_OF_PLAY != Main.LIST_OF_MUSIC:
+                        RANDOM_MUSIC_LIST = []
                         Main.LIST_OF_PLAY = Main.LIST_OF_MUSIC.copy()
                         Main.LIST_OF_PLAY["classes"] = list_of_songs_class.copy()
 
@@ -104,9 +106,10 @@ class Song:
                 if Main.MORE_INFO_INTERFACE.num_of_wins:
                     Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data, Main.MORE_INFO_INTERFACE.searched_data)
 
+                Main.PLAYER_SETTINGS["play"] = 1
                 Thread(target=Main.PLAYER.play, daemon=True).start() # play
 
-            Main.SONG_PLAY_NOW = {"play": click_play, "cycle": Main.SONG_PLAY_NOW["cycle"], "name": self.song_data[0], "author": self.song_data[1], "time": self.song_data[3], "url": self.song_data[2], "song_id": self.song_data[4], "num": self.num}
+            Main.SONG_PLAY_NOW = {"name": self.song_data[0], "author": self.song_data[1], "time": self.song_data[3], "url": self.song_data[2], "song_id": self.song_data[4], "num": self.num}
             Main.SONG_LINE.draw_music_line()
 
         def add_click(button):
@@ -143,7 +146,7 @@ class Song:
             Main.MORE_INFO_INTERFACE.song_info_draw(self.song_data)
 
         # button "play" #
-        if Main.SONG_PLAY_NOW["play"] and Main.SONG_PLAY_NOW["song_id"] == self.song_data[4]:
+        if Main.PLAYER_SETTINGS["play"] and Main.SONG_PLAY_NOW["song_id"] == self.song_data[4]:
             click_play = 1
             play_button = Button(image=MyImage.PAUSE, command=lambda: play_click(play_button), width=14, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
         else:
