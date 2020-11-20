@@ -3,9 +3,6 @@
 """ For databases """
 import sqlite3
 
-""" For music in playlists """
-import json
-
 """ For files """
 from os import path, mkdir, remove
 
@@ -49,7 +46,7 @@ def error_correction():
             conn = sqlite3.connect(f"Databases/{db_name}")
             cursor = conn.cursor()
 
-        try: cursor.execute("CREATE TABLE user_music (name, author, url, song_time, num, song_id, data_key)")
+        try: cursor.execute("CREATE TABLE user_music (name, author, url, song_time, num, song_id)")
         except: pass
 
         try: cursor.execute("CREATE TABLE user_playlists (name, music)")
@@ -71,7 +68,7 @@ class MusicStorage:
             return
 
         with open(f"Databases/Download_Music/{song_id}.mp3", "wb") as f:
-            response = requests.get(requests.get(f"https://zaycev.net/musicset/play/{url}/{song_id}.json").json()["url"], stream=True)
+            response = requests.get(url, stream=True)
             total_length = response.headers.get("content-length")
 
             if total_length is None:
@@ -112,7 +109,7 @@ class MusicStorage:
         # read db #
         for num in range(0, cursor.execute("SELECT count(*) FROM user_music ORDER BY song_time").fetchone()[0]):
             song_data = cursor.execute("SELECT * FROM user_music WHERE num=?", (music_list[-num-1],)).fetchone()
-            song_data = {"name": decode_text(song_data[0]), "author": decode_text(song_data[1]), "url": decode_text(song_data[2]), "song_time": decode_text(song_data[3]), "song_id": decode_text(song_data[5]), "data_key": decode_text(song_data[6])}
+            song_data = {"name": decode_text(song_data[0]), "author": decode_text(song_data[1]), "url": decode_text(song_data[2]), "song_time": decode_text(song_data[3]), "song_id": decode_text(song_data[5])}
             json_text["music"][f"song{num}"] = song_data
             json_text["music"]["num"] += 1
 
@@ -146,7 +143,7 @@ class MusicStorage:
         except:
             song_num = cursor.execute("SELECT count(*) FROM user_music ORDER BY song_id").fetchone()[0]
 
-        cursor.execute("INSERT INTO user_music VALUES (?,?,?,?,?,?,?)", (encode_text(song_data[0]), encode_text(song_data[1]), encode_text(song_data[2]), encode_text(song_data[3]), song_num, encode_text(song_data[4]), encode_text(song_data[5])))
+        cursor.execute("INSERT INTO user_music VALUES (?,?,?,?,?,?)", (encode_text(song_data[0]), encode_text(song_data[1]), encode_text(song_data[2]), encode_text(song_data[3]), song_num, encode_text(song_data[4])))
 
         conn.commit()
         conn.close()
