@@ -28,6 +28,9 @@ a = Analysis(['BounceBit.py'],
                ('pictures/cycle_button.png', 'pictures'),
                ('pictures/cycle_button_click.png', 'pictures'),
 
+               ('pictures/rand_song_button.png', 'pictures'),
+               ('pictures/rand_song_button_click.png', 'pictures'),
+
                ('pictures/search_button.png', 'pictures'),
                ('pictures/new_playlist_button.png', 'pictures'),
 
@@ -59,6 +62,9 @@ a = Analysis(['BounceBit.py'],
 
                ('pictures/Light/cycle_button.png', 'pictures/Light'),
                ('pictures/Light/cycle_button_click.png', 'pictures/Light'),
+
+               ('pictures/Light/rand_song_button.png', 'pictures/Light'),
+               ('pictures/Light/rand_song_button_click.png', 'pictures/Light'),
 
                ('pictures/Light/search_button.png', 'pictures/Light'),
                ('pictures/Light/new_playlist_button.png', 'pictures/Light'),
