@@ -3,9 +3,15 @@
 """ For Graphical Interface """
 from tkinter import *
 
+""" For copy text """
+from pyperclip import copy as copy_text
+
 """ Other Scripts """
 from Scripts.elements import *
 from Scripts.parse_music import ParseMusic
+
+""" For song manage """
+from Scripts.song_manage import SongManage
 
 """ Images """
 from Scripts.images import MyImage
@@ -62,6 +68,10 @@ class MoreInfoInterface:
 
         # Song duration #
         self.song_duration_draw = self.song_info_canvas.create_text(40, 140, text=languages["Длительность"][Main.SETTINGS.language]+":", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+
+        # Copy song url #
+        self.song_url_draw = self.song_info_canvas.create_text(40, 170, text="URL", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+        self.song_url_button = self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_url_draw)[2]+15, 170, window=Button(image=MyImage.COPY, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: copy_text(SongManage.song_url(data[4]))), anchor=W)
 
         Main.ROOT.update()
 
