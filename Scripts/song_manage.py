@@ -25,8 +25,15 @@ from Scripts.images import MyImage
 """ Main """
 from Scripts.main import Main
 
+""" For encode song id """
+from Scripts.settings import encode_text
+
 
 class SongManage:
+    @staticmethod
+    def song_url(song_id):
+        return "BounceBit/%s/song" % encode_text(song_id)
+
     def click_play(self):
         def play_song():
             Thread(target=Main.PLAYER.play, daemon=True).start() # play
