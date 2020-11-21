@@ -188,6 +188,10 @@ languages = {
     },
 
     # Errors #
+    "not_found": {
+        "ru": "Упс, ничего не найдено ;(",
+        "en": "Oops, nothing found ;("
+    },
     "load_error": {
         "ru": "Упс, ничего не загружено ;(",
         "en": "Oops, nothing uploaded ;("
