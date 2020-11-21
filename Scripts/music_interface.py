@@ -15,6 +15,9 @@ from Scripts.parse_music import ParseMusic
 from Scripts.draw_song import Song
 from Scripts.playlist_interface import DrawPlaylists
 
+""" For encode song id """
+from Scripts.settings import decode_text
+
 """ Images """
 from Scripts.images import MyImage
 
@@ -22,7 +25,42 @@ from Scripts.images import MyImage
 from Scripts.main import Main
 
 
-class MusicInterface:
+class SearchData:
+    ALL_TAGS = ['song']
+
+    def parse_data(self):
+        parse_data_json = {"music": {"num": 0}, "pages": [], "error": None}
+
+        Main.DATA_CANVAS.delete("all")
+        # loading #
+        load_text = Main.DATA_CANVAS.create_text(14, 15, text=languages["Загрузка"][Main.SETTINGS.language]+"...", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+        Main.ROOT.update()
+
+        try:
+            parse_data_json["music"]["song0"] = ParseMusic.more_song_info(self.song_id)
+            parse_data_json["music"]["num"] = 1
+        except:
+            parse_data_json["error"] = "not_found"
+
+        Main.DATA_CANVAS.delete(load_text)
+
+        return parse_data_json
+
+    def get_text(self, text_str):
+        self.text_arr = text_str.split('/')
+
+        if self.text_arr[-1] not in SearchData.ALL_TAGS:
+            self.music_interface("Поиск 1", None, text_str)
+            return
+
+        try:
+            self.song_id = decode_text(self.text_arr[-2])
+            self.music_interface("Поиск 1", self.parse_data(), text_str)
+        except:
+            pass
+
+
+class MusicInterface(SearchData):
     def search_data(self):
         if self.lib.split(" ")[0] == "Рекомендации":
             return ParseMusic.top_music(int(self.lib.split(" ")[1]))
@@ -55,7 +93,8 @@ class MusicInterface:
     def draw_search(self):
         def search_interface(event):
             # press "enter" #
-            self.music_interface("Поиск 1", None, search_text_var.get())
+            # self.music_interface("Поиск 1", None, search_text_var.get())
+            self.get_text(search_text_var.get())
 
         # Search #
         search_draw = Main.DATA_CANVAS.create_text(Main.DATA_CANVAS.bbox(self.lib_name)[0], Main.DATA_CANVAS.bbox(self.lib_name)[3]+25, text=languages["Поиск"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
@@ -71,7 +110,8 @@ class MusicInterface:
 
         # Draw button for search #
         Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(text_entry_draw)[2]+17, Main.DATA_CANVAS.bbox(search_draw)[3]-9, window=Button(image=MyImage.SEARCH, width=16, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
-            command=lambda: self.music_interface("Поиск 1", None, search_text_var.get())))
+            command=lambda: self.get_text(search_text_var.get())))
+            # command=lambda: self.music_interface("Поиск 1", None, search_text_var.get())))
 
     def draw_genres(self):
         if self.lib.split(" ")[0] == "Рекомендации" or self.lib.split(" ")[0] == "Жанр" or self.lib.split(" ")[0] == "Поиск":
