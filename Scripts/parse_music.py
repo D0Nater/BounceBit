@@ -60,20 +60,20 @@ class ParseMusic:
             # music #
             for num in range(1, 49):
                 try:
-                    new_song = json_loads(tree.xpath(f'//*[@id="pjax-container"]/div/div/ul[@class="tracks__list"]/li[{num}]/@data-musmeta')[0])
+                    song_data = json_loads(tree.xpath(f'//*[@id="pjax-container"]/div/div/ul[@class="tracks__list"]/li[{num}]/@data-musmeta')[0])
 
-                    new_song = {
-                        "name": new_song["title"],
-                        "author": new_song["artist"],
-                        "url": new_song["url"],
+                    song_data = {
+                        "name": song_data["title"],
+                        "author": song_data["artist"],
+                        "url": song_data["url"],
                         "song_time": tree.xpath(f'//*[@id="pjax-container"]/div/div/ul[@class="tracks__list"]/li[{num}]/div[3]/div/div/div[1]/text()')[0],
-                        "song_id": new_song["id"].split("-")[-1]
+                        "song_id": song_data["id"].split("-")[-1]
                     }
 
-                    search_data_json["music"][f"song{num-1}"] = new_song
+                    search_data_json["music"][f"song{num-1}"] = song_data
                     search_data_json["music"]["num"] += 1
 
-                    del new_song
+                    del song_data
 
                 except (KeyError, IndexError):
                     break
@@ -112,8 +112,17 @@ class ParseMusic:
             # parse site #
             tree = parse_data(f"http://m.hitmos.com/song/{song_id}")
 
-            # Song size #
-            more_song_info_json["size"] = tree.xpath('//*[@id="pjax-container"]/div[1]/div/div[2]/div/select/option[2]/text()')[0].split(" ")[-2]
+            song_data = json_loads(tree.xpath(f'//*[@id="pjax-container"]/div[1]/div/div[1]/@data-musmeta')[0])
+
+            return {
+                "name": song_data["title"],
+                "author": song_data["artist"],
+                "url": song_data["url"],
+                "song_time": tree.xpath(f'//*[@id="pjax-container"]/div[1]/div/div[1]/div[3]/div[2]/div/div[1]/text()')[0],
+                "size": tree.xpath('//*[@id="pjax-container"]/div[1]/div/div[2]/div/select/option[2]/text()')[0].split(" ")[-2],
+                "song_id": song_id,
+                "error": None
+            }
 
         except ConnectionError:
             more_song_info_json["error"] = "connect_error"
