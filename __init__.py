@@ -2,7 +2,7 @@
 
 Name: BounceBit
 
-Version: 0.4
+Version: 0.4.1
 
 Author: D0Nater
 
