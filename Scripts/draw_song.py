@@ -76,6 +76,16 @@ class Song:
                 if self.song_data[4] != Main.SONG_PLAY_NOW["song_id"]:
                     Main.PLAYER.stop()
 
+                    # update past song #
+                    Main.PLAYER_SETTINGS["play"] = 0
+                    if Main.PAST_SONG["song_id"] in Main.LIST_OF_IDS:
+                        list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
+
+                    if Main.LIST_OF_PLAY != Main.LIST_OF_MUSIC:
+                        Main.RANDOM_MUSIC_LIST = []
+                        Main.LIST_OF_PLAY = Main.LIST_OF_MUSIC.copy()
+                        Main.LIST_OF_PLAY["classes"] = list_of_songs_class.copy()
+
                     # download song #
                     Main.SONG_LINE.loading_song()
                     MusicStorage.download_music(self.song_data[4], self.song_data[2])
@@ -86,16 +96,6 @@ class Song:
 
                     Main.SONG_TIME_NOW = "00:00"
                     Main.PLAYER.new_song(self.song_data[4])
-
-                    # update past song #
-                    Main.PLAYER_SETTINGS["play"] = 0
-                    if Main.PAST_SONG["song_id"] in Main.LIST_OF_IDS:
-                        list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
-
-                    if Main.LIST_OF_PLAY != Main.LIST_OF_MUSIC:
-                        RANDOM_MUSIC_LIST = []
-                        Main.LIST_OF_PLAY = Main.LIST_OF_MUSIC.copy()
-                        Main.LIST_OF_PLAY["classes"] = list_of_songs_class.copy()
 
                     # update data #
                     Main.PAST_SONG["song_id"] = self.song_data[4]
