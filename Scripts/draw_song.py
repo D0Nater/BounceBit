@@ -9,6 +9,8 @@ from threading import Thread
 """ For files """
 from os import path
 
+import requests
+
 """ For copy text """
 from pyperclip import copy as copy_text
 
@@ -88,14 +90,19 @@ class Song:
 
                     # download song #
                     Main.SONG_LINE.loading_song()
-                    MusicStorage.download_music(self.song_data[4], self.song_data[2])
+                    try:
+                        MusicStorage.download_music(self.song_data[4], self.song_data[2])
+                    except ConnectionError:
+                        Main.SONG_LINE.loading_song(error="connect_error")
+                        return
 
                     del Main.PLAYER
                     # Player #
                     Main.PLAYER = MyPlayer() # just for fix bug XD
 
                     Main.SONG_TIME_NOW = "00:00"
-                    Main.PLAYER.new_song(self.song_data[4])
+                    try: Main.PLAYER.new_song(self.song_data[4])
+                    except EOFError: Main.SONG_LINE.loading_song(error="song_error")
 
                     # update data #
                     Main.PAST_SONG["song_id"] = self.song_data[4]
