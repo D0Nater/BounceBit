@@ -132,6 +132,10 @@ class SongManage:
         if Main.PLAYER_SETTINGS["play"]:
             Thread(target=Main.PLAYER.play, daemon=True).start() # play
 
+        # update buttons #
+        Main.SONG_LINE.draw_music_line()
+        Main.MENU.update_buttons()
+
     def play_random_song(self):
         if Main.RANDOM_MUSIC_LIST == []:
             Main.RANDOM_MUSIC_LIST = [num for num in range(Main.LIST_OF_PLAY["music"]["num"])]
@@ -144,11 +148,7 @@ class SongManage:
 
         self.song_num = rand_choice(Main.RANDOM_MUSIC_LIST)
 
-        self.update_music()
-
-        # update line #
-        Main.SONG_LINE.draw_music_line()
-        Main.MENU.update_buttons()
+        Thread(target=self.update_music, daemon=True).start()
 
     def behind_after_music(self, event):
         # new song num #
@@ -161,8 +161,4 @@ class SongManage:
             # play first song #
             self.song_num = 0
 
-        self.update_music()
-
-        # update line #
-        Main.SONG_LINE.draw_music_line()
-        Main.MENU.update_buttons()
+        Thread(target=self.update_music, daemon=True).start()
