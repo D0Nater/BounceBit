@@ -74,6 +74,10 @@ class Song(SongManage):
                 self.play_button["image"] = MyImage.PLAY
 
                 Main.PLAYER.pause()
+
+                # update buttons #
+                Main.SONG_LINE.draw_music_line()
+                Main.MENU.update_buttons()
             else:
                 click_play = 1
                 Main.PLAYER_SETTINGS["play"] = 1
@@ -88,47 +92,47 @@ class Song(SongManage):
 
                     Main.PAST_SONG["past_lib"] = lib
 
-                    self.update_music()
+                    Thread(target=self.update_music, daemon=True).start()
                 else:
                     Thread(target=Main.PLAYER.play, daemon=True).start() # play
+
+                    # update buttons #
+                    Main.SONG_LINE.draw_music_line()
+                    Main.MENU.update_buttons()
 
                 # update window with more song info #
                 if Main.MORE_INFO_INTERFACE.num_of_wins:
                     Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data, Main.MORE_INFO_INTERFACE.searched_data)
 
-            # update buttons #
-            Main.SONG_LINE.draw_music_line()
-            Main.MENU.update_buttons()
-
         def add_click():
             nonlocal click_add
 
             if click_add:
-                # Del song #
-                MusicStorage.delete_song("database2.sqlite", self.song_data[4])
-                self.add_button["image"] = MyImage.ADD
+                # Delete song #
                 click_add = 0
+                self.add_button["image"] = MyImage.ADD
+                MusicStorage.delete_song("database2.sqlite", self.song_data[4])
             else:
                 # Add song #
-                MusicStorage.add_song("database2.sqlite", self.song_data)
-                self.add_button["image"] = MyImage.ADD_CLICK
                 click_add = 1
+                self.add_button["image"] = MyImage.ADD_CLICK
+                MusicStorage.add_song("database2.sqlite", self.song_data)
 
         def save_click():
             nonlocal click_save
 
             if click_save:
-                # Del song #
+                # Delete song #
+                click_save = 0
+                self.save_button["image"] = MyImage.SAVE
                 MusicStorage.delete_music(self.song_data[4])
                 MusicStorage.delete_song("database3.sqlite", self.song_data[4])
-                self.save_button["image"] = MyImage.SAVE
-                click_save = 0
             else:
                 # Download song #
+                click_save = 1
+                self.save_button["image"] = MyImage.SAVE_CLICK
                 Thread(target=MusicStorage.download_music, args=(self.song_data[4], self.song_data[2])).start()
                 MusicStorage.add_song("database3.sqlite", self.song_data)
-                self.save_button["image"] = MyImage.SAVE_CLICK
-                click_save = 1
 
         def more_click():
             Main.MORE_INFO_INTERFACE.song_info_draw(self.song_data)
