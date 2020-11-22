@@ -81,9 +81,12 @@ class SongLine(SongManage):
 
             time_sleep(1)
 
-    def loading_song(self):
+    def loading_song(self, error=None):
         Main.SONG_LINE_CANVAS.delete("all")
-        Main.SONG_LINE_CANVAS.create_text(30, 40, text=languages["Загрузка"][Main.SETTINGS.language]+"...", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 12")
+
+        text = languages[error][Main.SETTINGS.language] if error else languages["Загрузка"][Main.SETTINGS.language]+"..."
+
+        Main.SONG_LINE_CANVAS.create_text(30, 40, text=text, fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 12")
 
         Main.JUST_LINE = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=25, bg=themes[Main.SETTINGS.theme]["second_color"], bd=0, highlightthickness=0)
         Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
