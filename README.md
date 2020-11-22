@@ -5,7 +5,7 @@ Program for listen music free
 
 ![alt text](Screenshots/BounceBit_screen4.png "Recommendations")
 
-![alt text](Screenshots/BounceBit_screen3.png "Genre")
+![alt text](Screenshots/BounceBit_settings.png "Settings")
 
 # Create EXE
 1. Download git repository
