@@ -109,14 +109,14 @@ class SongManage:
 
         # update song time #
         Main.SONG_TIME_NOW = "00:00"
-        Main.SONG_LINE_CANVAS.delete(self.time_line_now)
+        Main.SONG_LINE_CANVAS.delete(Main.SONG_LINE.time_line_now)
 
         Main.PLAYER.stop()
 
         # download song #
         Main.SONG_LINE.loading_song()
         try:
-            MusicStorage.download_music(self.song_data[4], self.song_data[2])
+            MusicStorage.download_music(Main.PAST_SONG["class"].song_data[4], Main.PAST_SONG["class"].song_data[2])
         except ConnectionError:
             Main.SONG_LINE.loading_song(error="connect_error")
             return
@@ -126,14 +126,11 @@ class SongManage:
         Main.PLAYER = MyPlayer() # just for fix bug XD
 
         # write new song #
-        Main.PLAYER.new_song(Main.SONG_PLAY_NOW["song_id"])
+        try: Main.PLAYER.new_song(Main.SONG_PLAY_NOW["song_id"])
+        except EOFError: Main.SONG_LINE.loading_song(error="song_error")
 
         if Main.PLAYER_SETTINGS["play"]:
             Thread(target=Main.PLAYER.play, daemon=True).start() # play
-
-        # update line #
-        Main.SONG_LINE.draw_music_line()
-        Main.MENU.update_buttons()
 
     def play_random_song(self):
         if Main.RANDOM_MUSIC_LIST == []:
@@ -149,6 +146,10 @@ class SongManage:
 
         self.update_music()
 
+        # update line #
+        Main.SONG_LINE.draw_music_line()
+        Main.MENU.update_buttons()
+
     def behind_after_music(self, event):
         # new song num #
         self.song_num = Main.SONG_PLAY_NOW["num"] + (event)
@@ -161,3 +162,7 @@ class SongManage:
             self.song_num = 0
 
         self.update_music()
+
+        # update line #
+        Main.SONG_LINE.draw_music_line()
+        Main.MENU.update_buttons()
