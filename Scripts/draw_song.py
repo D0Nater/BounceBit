@@ -18,6 +18,9 @@ from pyperclip import copy as copy_text
 from Scripts.elements import *
 from Scripts.music_storage import MusicStorage
 
+""" For song manage """
+from Scripts.song_manage import SongManage
+
 """ For Player """
 from Scripts.my_player import MyPlayer
 
@@ -28,10 +31,10 @@ from Scripts.images import MyImage
 from Scripts.main import Main
 
 
-class Song:
-    def __init__(self, y, num, info):
+class Song(SongManage):
+    def __init__(self, y, song_num, info):
         self.y = y
-        self.num = num
+        self.song_num = song_num
         self.song_data = [info["name"], info["author"], info["url"], info["song_time"], info["song_id"]]
 
     # def __del__(self):
@@ -41,7 +44,7 @@ class Song:
         if self.this_class not in Main.LIST_OF_PLAY["classes"]:
             del self.x
             del self.y
-            del self.num
+            del self.song_num
             del self.song_data
 
     def draw_name(self):
@@ -62,91 +65,69 @@ class Song:
         click_add = MusicStorage.check_song_in_db("database2.sqlite", self.song_data[4])
         click_save = MusicStorage.check_song_in_db("database3.sqlite", self.song_data[4])
 
-        def play_click(button):
+        def play_click():
             nonlocal click_play
 
             if click_play:
                 click_play = 0
                 Main.PLAYER_SETTINGS["play"] = 0
-                button["image"] = MyImage.PLAY
+                self.play_button["image"] = MyImage.PLAY
 
                 Main.PLAYER.pause()
             else:
                 click_play = 1
-                button["image"] = MyImage.PAUSE
+                Main.PLAYER_SETTINGS["play"] = 1
+                self.play_button["image"] = MyImage.PAUSE
 
                 if self.song_data[4] != Main.SONG_PLAY_NOW["song_id"]:
-                    Main.PLAYER.stop()
-
-                    # update past song #
-                    Main.PLAYER_SETTINGS["play"] = 0
-                    if Main.PAST_SONG["song_id"] in Main.LIST_OF_IDS:
-                        list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
-
+                    # update lists #
                     if Main.LIST_OF_PLAY != Main.LIST_OF_MUSIC:
                         Main.RANDOM_MUSIC_LIST = []
                         Main.LIST_OF_PLAY = Main.LIST_OF_MUSIC.copy()
                         Main.LIST_OF_PLAY["classes"] = list_of_songs_class.copy()
 
-                    # download song #
-                    Main.SONG_LINE.loading_song()
-                    try:
-                        MusicStorage.download_music(self.song_data[4], self.song_data[2])
-                    except ConnectionError:
-                        Main.SONG_LINE.loading_song(error="connect_error")
-                        return
-
-                    del Main.PLAYER
-                    # Player #
-                    Main.PLAYER = MyPlayer() # just for fix bug XD
-
-                    Main.SONG_TIME_NOW = "00:00"
-                    try: Main.PLAYER.new_song(self.song_data[4])
-                    except EOFError: Main.SONG_LINE.loading_song(error="song_error")
-
-                    # update data #
-                    Main.PAST_SONG["song_id"] = self.song_data[4]
-                    Main.PAST_SONG["class"] = this_class
                     Main.PAST_SONG["past_lib"] = lib
+
+                    self.update_music()
+                else:
+                    Thread(target=Main.PLAYER.play, daemon=True).start() # play
 
                 # update window with more song info #
                 if Main.MORE_INFO_INTERFACE.num_of_wins:
                     Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data, Main.MORE_INFO_INTERFACE.searched_data)
 
-                Main.PLAYER_SETTINGS["play"] = 1
-                Thread(target=Main.PLAYER.play, daemon=True).start() # play
-
-            Main.SONG_PLAY_NOW = {"name": self.song_data[0], "author": self.song_data[1], "time": self.song_data[3], "url": self.song_data[2], "song_id": self.song_data[4], "num": self.num}
+            # update buttons #
             Main.SONG_LINE.draw_music_line()
+            Main.MENU.update_buttons()
 
-        def add_click(button):
+        def add_click():
             nonlocal click_add
 
             if click_add:
                 # Del song #
                 MusicStorage.delete_song("database2.sqlite", self.song_data[4])
-                button["image"] = MyImage.ADD
+                self.add_button["image"] = MyImage.ADD
                 click_add = 0
             else:
                 # Add song #
                 MusicStorage.add_song("database2.sqlite", self.song_data)
-                button["image"] = MyImage.ADD_CLICK
+                self.add_button["image"] = MyImage.ADD_CLICK
                 click_add = 1
 
-        def save_click(button):
+        def save_click():
             nonlocal click_save
 
             if click_save:
                 # Del song #
                 MusicStorage.delete_music(self.song_data[4])
                 MusicStorage.delete_song("database3.sqlite", self.song_data[4])
-                button["image"] = MyImage.SAVE
+                self.save_button["image"] = MyImage.SAVE
                 click_save = 0
             else:
                 # Download song #
                 Thread(target=MusicStorage.download_music, args=(self.song_data[4], self.song_data[2])).start()
                 MusicStorage.add_song("database3.sqlite", self.song_data)
-                button["image"] = MyImage.SAVE_CLICK
+                self.save_button["image"] = MyImage.SAVE_CLICK
                 click_save = 1
 
         def more_click():
@@ -155,24 +136,24 @@ class Song:
         # button "play" #
         if Main.PLAYER_SETTINGS["play"] and Main.SONG_PLAY_NOW["song_id"] == self.song_data[4]:
             click_play = 1
-            play_button = Button(image=MyImage.PAUSE, command=lambda: play_click(play_button), width=14, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
+            self.play_button = Button(image=MyImage.PAUSE, command=lambda: play_click(), width=14, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
         else:
-            play_button = Button(image=MyImage.PLAY, command=lambda: play_click(play_button), width=14, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
-        play_button_draw = Main.DATA_CANVAS.create_window(self.x, self.y, window=play_button) # draw button
+            self.play_button = Button(image=MyImage.PLAY, command=lambda: play_click(), width=14, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
+        play_button_draw = Main.DATA_CANVAS.create_window(self.x, self.y, window=self.play_button) # draw button
 
         # button "add" #
         if click_add:
-            add_button = Button(image=MyImage.ADD_CLICK, command=lambda: add_click(add_button), width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
+            self.add_button = Button(image=MyImage.ADD_CLICK, command=lambda: add_click(), width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
         else:
-            add_button = Button(image=MyImage.ADD, command=lambda: add_click(add_button), width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
-        add_button_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(play_button_draw)[2]+35, self.y, window=add_button) # draw button
+            self.add_button = Button(image=MyImage.ADD, command=lambda: add_click(), width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
+        add_button_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(play_button_draw)[2]+35, self.y, window=self.add_button) # draw button
 
         # button "download" #
         if click_save:
-            save_button = Button(image=MyImage.SAVE_CLICK, command=lambda: save_click(save_button), width=18, height=24, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
+            self.save_button = Button(image=MyImage.SAVE_CLICK, command=lambda: save_click(), width=18, height=24, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
         else:
-            save_button = Button(image=MyImage.SAVE, command=lambda: save_click(save_button), width=18, height=24, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
-        save_button_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(add_button_draw)[2]+22, self.y, window=save_button) # draw button
+            self.save_button = Button(image=MyImage.SAVE, command=lambda: save_click(), width=18, height=24, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
+        save_button_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(add_button_draw)[2]+22, self.y, window=self.save_button) # draw button
 
         # button "more" #
         more_button_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(save_button_draw)[2]+16, self.y+1, window=Button(image=MyImage.MORE_INFO, command=lambda: more_click(), width=12, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)) # draw button
