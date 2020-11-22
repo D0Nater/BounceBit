@@ -200,6 +200,10 @@ languages = {
         "ru": "Упс, сюда ничего не добавлено ;(",
         "en": "Oops, nothing added here ;("
     },
+    "song_error": {
+        "ru": "Упс, не удалось воспроизвести трек ;(",
+        "en": "Oops, failed to play track ;("
+    },
     "connect_error": {
         "ru": "Упс, не удалось подключиться к интернету ;(",
         "en": "Oops, could not connect to the internet ;("
