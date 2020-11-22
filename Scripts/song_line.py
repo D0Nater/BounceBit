@@ -39,26 +39,21 @@ class SongLine(SongManage):
         self.time_line_now = None
 
     def song_time_thread(self):
-        global num_for_time_line_now
 
         song_id_now = Main.SONG_PLAY_NOW["song_id"]
 
-        min_song, sec_song = [int(i) for i in Main.SONG_TIME_NOW.split(":")] # default 00:00
         song_duration = [int(i) for i in Main.SONG_PLAY_NOW["time"].split(":")] # song time
-        song_duration_str = time.strftime("%M:%S", time.gmtime(60*song_duration[0] + song_duration[1]+1)) # int to string
+        song_duration_str = time.strftime("%M:%S", time.gmtime(60*song_duration[0] + song_duration[1])) # int to string
 
         self.time_line_bbox = Main.SONG_LINE_CANVAS.bbox(self.time_line)
 
-        num_for_time_line = 160 / (60*song_duration[0] + song_duration[1]+1)
+        self.num_for_time_line = 160 / (60*song_duration[0] + song_duration[1]+1)
 
         if Main.SONG_TIME_NOW == "00:00":
             # if play new song #
-            num_for_time_line_now = 0 # default time line
+            self.num_for_time_line_now = 0 # default time line
 
         while Main.PLAYER_SETTINGS["play"] and song_id_now == Main.SONG_PLAY_NOW["song_id"]:
-            Main.SONG_TIME_NOW = time.strftime("%M:%S", time.gmtime(60*min_song + sec_song))
-            sec_song += 1
-
             # after song #
             if song_duration_str == Main.SONG_TIME_NOW:
                 if Main.PLAYER_SETTINGS["cycle"]:
@@ -71,13 +66,7 @@ class SongLine(SongManage):
                 return
 
             elif song_duration_str != Main.SONG_TIME_NOW:
-                Main.SONG_LINE_CANVAS.delete(self.time)
-                Main.SONG_LINE_CANVAS.delete(self.time_line_now)
-
-                self.time = Main.SONG_LINE_CANVAS.create_text(self.x_time, 42, text=Main.SONG_TIME_NOW, fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=W, font="Verdana 10")
-                self.time_line_now = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, self.time_line_bbox[0]+num_for_time_line_now+5, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, width=4, fill="black")
-                
-                num_for_time_line_now += num_for_time_line
+                self.update_time()
 
             time_sleep(1)
 
@@ -92,6 +81,18 @@ class SongLine(SongManage):
         Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
 
         Main.ROOT.update()
+
+    def update_time(self):
+        song_time_now = int(Main.PLAYER.get_song_time())
+
+        Main.SONG_TIME_NOW = time.strftime("%M:%S", time.gmtime(song_time_now))
+        self.num_for_time_line_now = self.num_for_time_line*song_time_now
+
+        Main.SONG_LINE_CANVAS.delete(self.time)
+        Main.SONG_LINE_CANVAS.delete(self.time_line_now)
+
+        self.time = Main.SONG_LINE_CANVAS.create_text(self.x_time, 42, text=Main.SONG_TIME_NOW, fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=W, font="Verdana 10")
+        self.time_line_now = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, self.time_line_bbox[0]+self.num_for_time_line_now+5, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, width=4, fill="black")
 
     def draw_music_line(self, change_settings=False):
         clear_ram()
@@ -115,7 +116,7 @@ class SongLine(SongManage):
         self.time_line = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, Main.SONG_LINE_CANVAS.bbox(self.time)[2]+167, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, width=4, fill=themes[Main.SETTINGS.theme]["text_second_color"])
         
         try:
-            self.time_line_now = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, self.time_line_bbox[0]+globals()["num_for_time_line_now"]+5, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, width=4, fill="black")
+            self.time_line_now = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, self.time_line_bbox[0]+self.num_for_time_line_now+5, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, width=4, fill="black")
         except:
             self.time_line_now = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time_line)[2], Main.SONG_LINE_CANVAS.bbox(self.time_line)[3]-7, 0, Main.SONG_LINE_CANVAS.bbox(self.time_line)[3]-7, width=4, fill="black")
 
