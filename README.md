@@ -3,11 +3,9 @@ Program for listen music free
 
 ![alt text](Screenshots/BounceBit.png "BounceBit")
 
-![alt text](Screenshots/BounceBit_screen2.png "Recommendations")
+![alt text](Screenshots/BounceBit_screen4.png "Recommendations")
 
 ![alt text](Screenshots/BounceBit_screen3.png "Genre")
-
-![alt text](Screenshots/BounceBit_screen4.png "Song Info")
 
 # Create EXE
 1. Download git repository
@@ -25,6 +23,7 @@ Program for listen music free
 3. Fixed some bugs
 4. Button cycle song
 5. Button random song
+6. New images for buttons
 
 # Packages
 <code> pip install lxml </code> <br>
