@@ -6,9 +6,6 @@ from tkinter import *
 """ For download and play music """
 from threading import Thread
 
-""" For clear RAM """
-from gc import collect as clear_ram
-
 """ For random song """
 from random import choice as rand_choice
 
@@ -97,6 +94,7 @@ class SongManage:
             "song_id": Main.LIST_OF_PLAY["music"][f"song{self.song_num}"]["song_id"],
             "num": self.song_num
         }
+
         # update past song #
         if Main.PAST_SONG["song_id"] in Main.LIST_OF_IDS:
             list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
@@ -117,7 +115,11 @@ class SongManage:
 
         # download song #
         Main.SONG_LINE.loading_song()
-        MusicStorage.download_music(Main.SONG_PLAY_NOW["song_id"], Main.SONG_PLAY_NOW["url"])
+        try:
+            MusicStorage.download_music(self.song_data[4], self.song_data[2])
+        except ConnectionError:
+            Main.SONG_LINE.loading_song(error="connect_error")
+            return
 
         del Main.PLAYER
         # Player #
@@ -137,8 +139,8 @@ class SongManage:
         if Main.RANDOM_MUSIC_LIST == []:
             Main.RANDOM_MUSIC_LIST = [num for num in range(Main.LIST_OF_PLAY["music"]["num"])]
 
-        try: del Main.RANDOM_MUSIC_LIST[Main.SONG_PLAY_NOW["num"]]
-        except: pass
+        try: Main.RANDOM_MUSIC_LIST.remove(Main.SONG_PLAY_NOW["num"])
+        except ValueError: pass
 
         if Main.RANDOM_MUSIC_LIST == []:
             Main.RANDOM_MUSIC_LIST = [num for num in range(Main.LIST_OF_PLAY["music"]["num"])]
