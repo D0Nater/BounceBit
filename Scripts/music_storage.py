@@ -4,7 +4,7 @@
 import sqlite3
 
 """ For files """
-from os import path, mkdir, remove
+from os import path, mkdir, remove, stat as os_stat
 
 """ For clear RAM """
 from gc import collect as clear_ram
@@ -64,21 +64,17 @@ class MusicStorage:
         if not path.exists("Databases/Download_Music"):
             mkdir("Databases/Download_Music")
 
-        if path.exists(f"Databases/Download_Music/{song_id}.mp3"):
+        if path.exists(f"Databases/Download_Music/{song_id}.mp3") and os_stat(f"Databases/Download_Music/{song_id}.mp3") is not 0:
             return
 
-        with open(f"Databases/Download_Music/{song_id}.mp3", "wb") as f:
+        try:
             response = requests.get(url, stream=True)
-            total_length = response.headers.get("content-length")
+        except requests.exceptions.ConnectionError:
+            raise ConnectionError
 
-            if total_length is None:
-                f.write(response.content)
-            else:
-                dl = 0
-                total_length = int(total_length)
-                for data in response.iter_content(chunk_size=4096):
-                    dl += len(data)
-                    f.write(data)
+        with open(f"Databases/Download_Music/{song_id}.mp3", "wb") as f:
+            for data in response.iter_content(chunk_size=4096):
+                f.write(data)
 
         # music params #
         audio = EasyID3(f"Databases/Download_Music/{song_id}.mp3")
