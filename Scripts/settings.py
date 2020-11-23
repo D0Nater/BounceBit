@@ -47,9 +47,9 @@ text_for_readme = """ %s v%s
 def decode_text(text):
     try:
         translated = ""
-        i = len(text) - 1
+        i = len(str(text)) - 1
         while i >= 0:
-            translated = translated + text[i]
+            translated = translated + str(text)[i]
             i = i - 1
         decode_text = (b64decode(translated)).decode("UTF-8")
         return decode_text
@@ -112,7 +112,7 @@ class Settings:
         check_setting("language", self.language)
         check_setting("theme", self.theme)
         check_setting("bg_image", self.bg_image)
-        check_setting("volume", self.bg_image)
+        check_setting("volume", self.volume)
 
         conn.commit()
         conn.close()
@@ -146,6 +146,6 @@ class Settings:
         self.language = decode_text(cursor.execute("SELECT param FROM settings WHERE setting=?", (encode_text("language"),)).fetchone()[0])
         self.theme = decode_text(cursor.execute("SELECT param FROM settings WHERE setting=?", (encode_text("theme"),)).fetchone()[0])
         self.bg_image = decode_text(cursor.execute("SELECT param FROM settings WHERE setting=?", (encode_text("bg_image"),)).fetchone()[0])
-        self.volume = decode_text(cursor.execute("SELECT param FROM settings WHERE setting=?", (encode_text("volume"),)).fetchone()[0])
+        self.volume = float(decode_text(cursor.execute("SELECT param FROM settings WHERE setting=?", (encode_text("volume"),)).fetchone()[0]))
 
         conn.close()
