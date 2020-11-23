@@ -93,7 +93,6 @@ class MusicInterface(SearchData):
     def draw_search(self):
         def search_interface(event):
             # press "enter" #
-            # self.music_interface("Поиск 1", None, search_text_var.get())
             self.get_text(search_text_var.get())
 
         # Search #
@@ -111,7 +110,6 @@ class MusicInterface(SearchData):
         # Draw button for search #
         Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(text_entry_draw)[2]+17, Main.DATA_CANVAS.bbox(search_draw)[3]-9, window=Button(image=MyImage.SEARCH, width=16, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
             command=lambda: self.get_text(search_text_var.get())))
-            # command=lambda: self.music_interface("Поиск 1", None, search_text_var.get())))
 
     def draw_genres(self):
         if self.lib.split(" ")[0] == "Рекомендации" or self.lib.split(" ")[0] == "Жанр" or self.lib.split(" ")[0] == "Поиск":
