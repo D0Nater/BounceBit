@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 
 """ For play music """
-import pyglet
 import pyglet.media as media
 from time import time as time_time
 from time import sleep as time_sleep
@@ -12,7 +11,7 @@ from Scripts.main import Main
 
 class MyPlayer:
     def __init__(self):
-        self.player = pyglet.media.Player()
+        self.player = media.Player()
         self.play_song_while = False
 
         self.set_volume(Main.SETTINGS.volume)
