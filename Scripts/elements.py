@@ -100,7 +100,11 @@ languages = {
     },
     "Язык": {
         "ru": "Язык",
-        "en": "Lang"
+        "en": "Language"
+    },
+    "volume": {
+        "ru": "Громкость",
+        "en": "Volume"
     },
     "more": {
         "ru": "Больше",
