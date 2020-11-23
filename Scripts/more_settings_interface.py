@@ -56,7 +56,7 @@ class MoreSettingsInterface:
         self.key_assignmet_test.place(x=Main.SETTINGS.width/2+15, y=Main.DATA_CANVAS.bbox("all")[1]+150, width=self.more_settings_canvas.winfo_width()/2/2+20, height=self.more_settings_canvas.winfo_height()/2, anchor=NE)
 
     def set_volume(self, num):
-        Main.SETTINGS.volume = float(num/10)
+        Main.SETTINGS.volume = float(num/100)
         Main.PLAYER.set_volume(Main.SETTINGS.volume)
 
     def draw_more(self):
@@ -80,7 +80,7 @@ class MoreSettingsInterface:
         # Volume #
         self.volume_text = self.more_settings_canvas.create_text(40, 120, text=languages["volume"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
         self.volume_scale = Scale(command=lambda num: self.set_volume(int(num)), length=150, orient="horizontal", bg=themes[Main.SETTINGS.theme]["text_second_color"])
-        self.volume_scale.set(Main.SETTINGS.volume*10)
+        self.volume_scale.set(Main.SETTINGS.volume*100)
         self.volume_scale_draw = self.more_settings_canvas.create_window(self.more_settings_canvas.bbox(self.volume_text)[2]+20, 120, window=self.volume_scale, anchor=W)
 
         # button 'close' #
