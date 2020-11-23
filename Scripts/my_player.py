@@ -6,17 +6,25 @@ import pyglet.media as media
 from time import time as time_time
 from time import sleep as time_sleep
 
+""" Main """
+from Scripts.main import Main
+
 
 class MyPlayer:
     def __init__(self):
         self.player = pyglet.media.Player()
         self.play_song_while = False
 
+        self.set_volume(Main.SETTINGS.volume)
+
         self._time = 0.0
         self._systime = None
 
     def new_song(self, song_id):
         self.player.queue(media.load(f"Databases/Download_Music/{song_id}.mp3"))
+
+    def set_volume(self, num):
+        self.player.volume = num
 
     def get_song_time(self):
         return self.get_time()
@@ -49,15 +57,14 @@ class MyPlayer:
         self.player.delete()
 
     def reset(self):
-        """Reset the timer to 0."""
+        """ Reset the timer to 0 """
         self._time = 0.0
         if self._systime is not None:
             self._systime = time_time()
 
     def get_time(self):
-        """Get the elapsed time."""
+        """ Get the elapsed time """
         if self._systime is None:
-            now = self._time
-        else:
-            now = time_time() - self._systime + self._time
-        return now
+            return self._time
+
+        return time_time() - self._systime + self._time
