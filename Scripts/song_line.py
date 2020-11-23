@@ -108,11 +108,16 @@ class SongLine(SongManage):
         self.cursor_x = event.x - self.start_song_line
         self.set_song_sec = (self.cursor_x / self.num_for_time_line) - 3
 
-        song_sec = time.strftime("%M:%S", time.gmtime(self.set_song_sec))
+        if self.set_song_sec > self.sec_song_duration:
+            self.song_sec = time.strftime("%M:%S", time.gmtime(self.sec_song_duration-1))
+        elif self.set_song_sec < 0.0:
+            self.song_sec = "00:00"
+        else:
+            self.song_sec = time.strftime("%M:%S", time.gmtime(self.set_song_sec))
 
         self.del_time_under_mouse(None)
 
-        self.time_under_cursor = Main.SONG_LINE_CANVAS.create_text(event.x, 29, text=song_sec, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 10")
+        self.time_under_cursor = Main.SONG_LINE_CANVAS.create_text(event.x, 29, text=self.song_sec, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 10")
 
     def del_time_under_mouse(self, event):
         try: Main.SONG_LINE_CANVAS.delete(self.time_under_cursor)
