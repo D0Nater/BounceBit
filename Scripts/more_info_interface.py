@@ -77,9 +77,13 @@ class MoreInfoInterface:
         # Song duration #
         self.song_duration_draw = self.song_info_canvas.create_text(40, 140, text=languages["Длительность"][Main.SETTINGS.language]+":", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
 
+        # Button for add to playlist #
+        self.add_to_pl_text = self.song_info_canvas.create_text(40, 175, text=languages["add_pl"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+        self.add_to_pl_bttn = self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.add_to_pl_text)[2]+15, self.song_info_canvas.bbox(self.add_to_pl_text)[1]+10, window=Button(image=MyImage.NEW_PLAYLIST, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: print("add song")), anchor=W)
+
         # Copy song url #
-        self.song_url_draw = self.song_info_canvas.create_text(40, 170, text="URL", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
-        self.song_url_button = self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_url_draw)[2]+15, 170, window=Button(image=MyImage.COPY, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: copy_text(SongManage.song_url(data[4]))), anchor=W)
+        self.song_url_draw = self.song_info_canvas.create_text(40, 210, text="URL", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+        self.song_url_button = self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_url_draw)[2]+15, self.song_info_canvas.bbox(self.song_url_draw)[1]+10, window=Button(image=MyImage.COPY, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: copy_text(SongManage.song_url(data[4]))), anchor=W)
 
         Main.ROOT.update()
 
