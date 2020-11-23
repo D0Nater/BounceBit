@@ -57,11 +57,19 @@ class MoreInfoInterface:
 
         # Song name #
         self.song_name_draw = self.song_info_canvas.create_text(40, 40, text=languages["Трек"][Main.SETTINGS.language]+":", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
-        self.song_name_draw = self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_name_draw)[2]+15, 41, text=data[0], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 12")
+
+        self.song_name_text = Text(bg=themes[Main.SETTINGS.theme]["second_color"], fg=themes[Main.SETTINGS.theme]["text_color"], selectbackground="red", width=int(Main.SETTINGS.width / 55), height=1, bd=0, wrap=NONE, font="Verdana 12", cursor="arrow")
+        self.song_name_text.insert(END, data[0]) # write song name
+        self.song_name_text.config(state=DISABLED) # update config
+        self.song_name_text_draw = self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_name_draw)[2]+15, self.song_info_canvas.bbox(self.song_name_draw)[1]+11, anchor=W, window=self.song_name_text)
 
         # Artist #
         self.song_artist_draw = self.song_info_canvas.create_text(40, 80, text=languages["Артист"][Main.SETTINGS.language]+":", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
-        self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_artist_draw)[2]+11, self.song_info_canvas.bbox(self.song_artist_draw)[1]+3, text=data[1], fill="cyan", anchor=NW, font="Verdana 12")
+
+        self.song_author_text = Text(bg=themes[Main.SETTINGS.theme]["second_color"], fg="cyan", selectbackground="red", width=int(Main.SETTINGS.width / 61), height=1, bd=0, wrap=NONE, font="Verdana 12", cursor="arrow")
+        self.song_author_text.insert(END, data[1]) # write song name
+        self.song_author_text.config(state=DISABLED) # update config
+        self.song_name_text_draw = self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_artist_draw)[2]+15, self.song_info_canvas.bbox(self.song_artist_draw)[1]+11, anchor=W, window=self.song_author_text)
 
         # Song size #
         self.song_size_draw = self.song_info_canvas.create_text(40, 110, text=languages["Размер"][Main.SETTINGS.language]+":", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
@@ -78,9 +86,6 @@ class MoreInfoInterface:
         if not searched_data:
             # Search data #
             self.searched_data = ParseMusic.more_song_info(data[4])
-
-        # Button for add to playlist #
-        self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_name_draw)[2]+15, 41, window=Button(image=MyImage.NEW_PLAYLIST, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: print("add song")), anchor=W)
 
         # Draw Song size #
         self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_size_draw)[2]+11, self.song_info_canvas.bbox(self.song_size_draw)[1]+3, text=self.searched_data["size"]+" mb", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 12")
