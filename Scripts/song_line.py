@@ -38,16 +38,18 @@ class SongLine(SongManage):
         self.song_id_now = ""
         self.time_line_now = None
 
+        self.start_song_line = 0
+
     def song_time_thread(self):
 
         song_id_now = Main.SONG_PLAY_NOW["song_id"]
 
-        song_duration = [int(i) for i in Main.SONG_PLAY_NOW["time"].split(":")] # song time
-        song_duration_str = time.strftime("%M:%S", time.gmtime(60*song_duration[0] + song_duration[1])) # int to string
+        self.song_duration = [int(i) for i in Main.SONG_PLAY_NOW["time"].split(":")] # song time
+        self.sec_song_duration = (60*self.song_duration[0] + self.song_duration[1]+1)
 
         self.time_line_bbox = Main.SONG_LINE_CANVAS.bbox(self.time_line)
 
-        self.num_for_time_line = 160 / (60*song_duration[0] + song_duration[1]+1)
+        self.num_for_time_line = 160 / self.sec_song_duration
 
         if Main.SONG_TIME_NOW == "00:00":
             # if play new song #
@@ -55,7 +57,7 @@ class SongLine(SongManage):
 
         while Main.PLAYER_SETTINGS["play"] and song_id_now == Main.SONG_PLAY_NOW["song_id"]:
             # after song #
-            if song_duration_str == Main.SONG_TIME_NOW:
+            if int(Main.PLAYER.get_song_time()) >= self.sec_song_duration:
                 if Main.PLAYER_SETTINGS["cycle"]:
                     self.behind_after_music(0)
                     return
@@ -65,7 +67,7 @@ class SongLine(SongManage):
                 self.behind_after_music(1)
                 return
 
-            elif song_duration_str != Main.SONG_TIME_NOW:
+            elif int(Main.PLAYER.get_song_time()) <= self.sec_song_duration:
                 self.update_time()
 
             time_sleep(1)
@@ -94,6 +96,28 @@ class SongLine(SongManage):
         self.time = Main.SONG_LINE_CANVAS.create_text(self.x_time, 42, text=Main.SONG_TIME_NOW, fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=W, font="Verdana 10")
         self.time_line_now = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, self.time_line_bbox[0]+self.num_for_time_line_now+5, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, width=4, fill="black")
 
+        Main.SONG_LINE_CANVAS.tag_bind(self.time_line_now, "<Motion>", self.draw_time_under_mouse)
+        Main.SONG_LINE_CANVAS.tag_bind(self.time_line_now, "<Leave>", self.del_time_under_mouse)
+        Main.SONG_LINE_CANVAS.tag_bind(self.time_line_now, "<Button-1>", self.set_time)
+
+    def set_time(self, event):
+        Main.PLAYER.set_time(float(int(self.set_song_sec)))
+        self.update_time()
+
+    def draw_time_under_mouse(self, event):
+        self.cursor_x = event.x - self.start_song_line
+        self.set_song_sec = (self.cursor_x / self.num_for_time_line) - 3
+
+        song_sec = time.strftime("%M:%S", time.gmtime(self.set_song_sec))
+
+        self.del_time_under_mouse(None)
+
+        self.time_under_cursor = Main.SONG_LINE_CANVAS.create_text(event.x, 29, text=song_sec, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 10")
+
+    def del_time_under_mouse(self, event):
+        try: Main.SONG_LINE_CANVAS.delete(self.time_under_cursor)
+        except: pass
+
     def draw_music_line(self, change_settings=False):
         clear_ram()
         Main.SONG_LINE_CANVAS.delete("all")
@@ -119,6 +143,16 @@ class SongLine(SongManage):
             self.time_line_now = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, self.time_line_bbox[0]+self.num_for_time_line_now+5, Main.SONG_LINE_CANVAS.bbox(self.time)[3]-7, width=4, fill="black")
         except:
             self.time_line_now = Main.SONG_LINE_CANVAS.create_line(Main.SONG_LINE_CANVAS.bbox(self.time_line)[2], Main.SONG_LINE_CANVAS.bbox(self.time_line)[3]-7, 0, Main.SONG_LINE_CANVAS.bbox(self.time_line)[3]-7, width=4, fill="black")
+
+        self.start_song_line = Main.SONG_LINE_CANVAS.bbox(self.time_line)[0]
+
+        Main.SONG_LINE_CANVAS.tag_bind(self.time_line, "<Motion>", self.draw_time_under_mouse)
+        Main.SONG_LINE_CANVAS.tag_bind(self.time_line, "<Leave>", self.del_time_under_mouse)
+        Main.SONG_LINE_CANVAS.tag_bind(self.time_line, "<Button-1>", self.set_time)
+
+        Main.SONG_LINE_CANVAS.tag_bind(self.time_line_now, "<Motion>", self.draw_time_under_mouse)
+        Main.SONG_LINE_CANVAS.tag_bind(self.time_line_now, "<Leave>", self.del_time_under_mouse)
+        Main.SONG_LINE_CANVAS.tag_bind(self.time_line_now, "<Button-1>", self.set_time)
 
         if self.song_id_now != Main.SONG_PLAY_NOW["song_id"]:
             Main.SONG_LINE_CANVAS.delete(self.time_line_now)
