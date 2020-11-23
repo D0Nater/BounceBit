@@ -3,12 +3,16 @@
 """ For clear RAM """
 from gc import collect as clear_ram
 
+""" Main """
+from Scripts.main import Main
+
 
 def clear_list_of_songs():
     global list_of_songs_class
     for song in list_of_songs_class:
-        song.del_class()
-        del song
+        if song not in Main.LIST_OF_PLAY["classes"] and song is not Main.PAST_SONG["class"]:
+            song.del_class()
+            del song
     clear_ram()
     list_of_songs_class.clear()
 
