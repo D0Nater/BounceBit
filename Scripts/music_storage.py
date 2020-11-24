@@ -4,7 +4,7 @@
 import sqlite3
 
 """ For files """
-from os import path, mkdir, remove, stat as os_stat
+from os import path, mkdir, remove
 
 """ For clear RAM """
 from gc import collect as clear_ram
@@ -64,7 +64,7 @@ class MusicStorage:
         if not path.exists("Databases/Download_Music"):
             mkdir("Databases/Download_Music")
 
-        if path.exists(f"Databases/Download_Music/{song_id}.mp3") and os_stat(f"Databases/Download_Music/{song_id}.mp3") is not 0:
+        if path.exists(f"Databases/Download_Music/{song_id}.mp3") and path.getsize(f"Databases/Download_Music/{song_id}.mp3") is not 0:
             return
 
         try:
@@ -85,7 +85,7 @@ class MusicStorage:
         audio.save()
         return
 
-    def delete_music(song_id):
+    def delete_song_file(song_id):
         if path.exists(f"Databases/Download_Music/{song_id}.mp3"):
             remove(f"Databases/Download_Music/{song_id}.mp3")
 
