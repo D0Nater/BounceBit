@@ -21,11 +21,9 @@ from os import path
 
 """ For parse news """
 from threading import Thread
+
 from Scripts.news import News
 from Scripts.elements import *
-
-""" For Player """
-from Scripts.my_player import MyPlayer
 
 """ For key events """
 from Scripts.key_event import KeyEvent
@@ -44,6 +42,14 @@ from Scripts.menu_interface import Menu
 from Scripts.window_for_data import WindowForData
 from Scripts.song_line import SongLine
 
+from Scripts.settings_interface import SettingsInterface
+from Scripts.playlist_interface import PlaylistInterface
+from Scripts.more_info_interface import MoreInfoInterface
+from Scripts.more_settings_interface import MoreSettingsInterface
+
+""" For Player """
+from Scripts.my_player import MyPlayer
+
 """ Main """
 from Scripts.main import Main
 
@@ -60,6 +66,7 @@ class BounceBit:
         # Settings #
         Main.SETTINGS = Settings("en", "dark") # default settings
         Main.SETTINGS.update_settings() # get settings from database
+        Main.SETTINGS.create_readme()
 
         # Window settings #
         Main.ROOT.iconbitmap(default=LoadPictures.resource_path(path.join("pictures", "program_icon.ico")))
@@ -69,6 +76,12 @@ class BounceBit:
 
         # Player #
         Main.PLAYER = MyPlayer()
+
+        # Interface #
+        Main.SETTINGS_INTERFACE = SettingsInterface()
+        Main.MORE_SETTINGS = MoreSettingsInterface()
+        Main.PLAYLIST_INTERFACE = PlaylistInterface()
+        Main.MORE_INFO_INTERFACE = MoreInfoInterface()
 
         # Draw menu #
         Main.MENU = Menu()
