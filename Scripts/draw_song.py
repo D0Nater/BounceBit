@@ -41,11 +41,10 @@ class Song(SongManage):
     #     pass
 
     def del_class(self):
-        if self.this_class not in Main.LIST_OF_PLAY["classes"]:
-            del self.x
-            del self.y
-            del self.song_num
-            del self.song_data
+        del self.x
+        del self.y
+        del self.song_num
+        del self.song_data
 
     def draw_name(self):
         song_name = self.song_data[0][:34]+'...' if len(self.song_data[0]) > 34 else self.song_data[0]
@@ -57,7 +56,7 @@ class Song(SongManage):
 
         self.x = Main.DATA_CANVAS.bbox(self.author_draw)[2]
 
-    def draw_music(self, this_class, lib):
+    def draw_music(self, this_class, lib=None):
         self.this_class = this_class
 
         # for buttons #
@@ -125,7 +124,7 @@ class Song(SongManage):
                 # Delete song #
                 click_save = 0
                 self.save_button["image"] = MyImage.SAVE
-                MusicStorage.delete_music(self.song_data[4])
+                MusicStorage.delete_song_file(self.song_data[4])
                 MusicStorage.delete_song("database3.sqlite", self.song_data[4])
             else:
                 # Download song #
@@ -143,21 +142,21 @@ class Song(SongManage):
             self.play_button = Button(image=MyImage.PAUSE, command=lambda: play_click(), width=16, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
         else:
             self.play_button = Button(image=MyImage.PLAY, command=lambda: play_click(), width=16, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
-        play_button_draw = Main.DATA_CANVAS.create_window(self.x+25, self.y, anchor=W, window=self.play_button) # draw button
+        play_button_draw = Main.DATA_CANVAS.create_window(self.x+25, self.y, anchor=W, window=self.play_button)
 
         # button "add" #
         if click_add:
             self.add_button = Button(image=MyImage.ADD_CLICK, command=lambda: add_click(), width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
         else:
             self.add_button = Button(image=MyImage.ADD, command=lambda: add_click(), width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
-        add_button_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(play_button_draw)[2]+13, self.y, anchor=W, window=self.add_button) # draw button
+        add_button_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(play_button_draw)[2]+13, self.y, anchor=W, window=self.add_button)
 
         # button "download" #
         if click_save:
             self.save_button = Button(image=MyImage.SAVE_CLICK, command=lambda: save_click(), width=18, height=24, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
         else:
             self.save_button = Button(image=MyImage.SAVE, command=lambda: save_click(), width=18, height=24, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
-        save_button_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(add_button_draw)[2]+11, self.y, anchor=W, window=self.save_button) # draw button
+        save_button_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(add_button_draw)[2]+11, self.y, anchor=W, window=self.save_button)
 
         # button "more" #
-        more_button_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(save_button_draw)[2]+7, self.y+1, anchor=W, window=Button(image=MyImage.MORE_INFO, command=lambda: more_click(), width=12, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)) # draw button
+        more_button_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(save_button_draw)[2]+7, self.y+1, anchor=W, window=Button(image=MyImage.MORE_INFO, command=lambda: more_click(), width=12, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE))
