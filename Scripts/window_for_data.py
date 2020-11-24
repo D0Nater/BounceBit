@@ -3,19 +3,15 @@
 """ For Interface """
 from tkinter import *
 
-""" Other Scripts """
-from Scripts.playlist_interface import PlaylistInterface
-from Scripts.more_info_interface import MoreInfoInterface
-from Scripts.more_settings_interface import MoreSettingsInterface
-
-from Scripts.elements import *
-
 """ For files """
 from os import path
 
 """ Load logo """
 from PIL import Image, ImageTk
 from Scripts.images import LoadPictures
+
+""" Themes """
+from Scripts.elements import *
 
 """ Main """
 from Scripts.main import Main
@@ -24,10 +20,6 @@ from Scripts.main import Main
 class WindowForData:
     def __init__(self):
         Main.SCROLL_WIN = True
-
-        Main.MORE_SETTINGS = MoreSettingsInterface()
-        Main.PLAYLIST_INTERFACE = PlaylistInterface()
-        Main.MORE_INFO_INTERFACE = MoreInfoInterface()
 
     def drow_data(self):
         vscrollbar = Scrollbar(Main.ROOT, bg=themes[Main.SETTINGS.theme]["background"])
@@ -47,4 +39,4 @@ class WindowForData:
     def on_mousewheel(self, event):
         """ Scroll """
         if Main.SCROLL_WIN and Main.DATA_CANVAS.bbox("all")[3] > Main.SETTINGS.height-210:
-            Main.DATA_CANVAS.yview_scroll(int(-1*(event.delta/120)), "units")
+            Main.DATA_CANVAS.yview_scroll(int(-1*(event.delta/100)), "units")
