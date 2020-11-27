@@ -40,13 +40,23 @@ class PlaylistStorage:
 
     def check_song_in_playlist(db_name, playlist_name, song_id):
         try:
-            PlaylistStorage.get_music(db_name, playlist_name)[song_id]
+            PlaylistStorage.get_music(db_name, playlist_name)["music"][song_id]
             return 1
         except KeyError:
             return 0
 
     def add_song_in_playlist(db_name, playlist_name, song_data):
-        pass
+        music = PlaylistStorage.get_music(db_name, playlist_name)
+
+        music["music"][song_data["song_id"]] = song_data
+
+        music["music_num"] += 1
+
+        sql_request(
+            db_name,
+            "UPDATE user_playlists SET music=? WHERE name=?",
+            (encode_text(json.dumps(music)), encode_text(playlist_name))
+        )
 
     def get_playlists(db_name):
         error_correction()
@@ -73,7 +83,7 @@ class PlaylistStorage:
             )
         )
 
-    def add_playlist(db_name, playlist_name, music_data={"music_num":0}):
+    def add_playlist(db_name, playlist_name, music_data={"music":{},"music_num":0}):
         sql_request(
             db_name,
             "INSERT INTO user_playlists VALUES (?,?)",
