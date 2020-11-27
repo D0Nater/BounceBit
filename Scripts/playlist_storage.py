@@ -15,18 +15,38 @@ from Scripts.settings import encode_text, decode_text
 from Scripts.music_storage import error_correction
 
 
+def sql_request(db_name, text, args=()):
+    error_correction()
+
+    conn = sqlite3.connect(f"Databases/{db_name}")
+    cursor = conn.cursor()
+
+    answer = cursor.execute(text, args).fetchone()
+
+    conn.commit()
+    conn.close()
+
+    return answer
+
+
 class PlaylistStorage:
     def check_playlist_in_db(db_name, playlist_name):
         """ Check playlist in database """
-        error_correction()
+        return 0 if sql_request(
+            db_name,
+            "SELECT * FROM user_playlists WHERE name=?",
+            (encode_text(playlist_name),)
+        ) is None else 1
 
-        conn = sqlite3.connect(f"Databases/{db_name}")
-        cursor = conn.cursor()
+    def check_song_in_playlist(db_name, playlist_name, song_id):
+        try:
+            PlaylistStorage.get_music(db_name, playlist_name)[song_id]
+            return 1
+        except KeyError:
+            return 0
 
-        answ = 0 if (cursor.execute("SELECT * FROM user_playlists WHERE name=?", (encode_text(playlist_name),))).fetchone() is None else 1
-
-        conn.close()
-        return answ
+    def add_song_in_playlist(db_name, playlist_name, song_data):
+        pass
 
     def get_playlists(db_name):
         error_correction()
@@ -43,37 +63,26 @@ class PlaylistStorage:
         return playlists
 
     def get_music(db_name, playlist_name):
-        error_correction()
-
-        conn = sqlite3.connect(f"Databases/{db_name}")
-        cursor = conn.cursor()
-
-        music_data = decode_text(cursor.execute("SELECT music FROM user_playlists WHERE name=?", (encode_text(playlist_name),)).fetchone()[0])
-
-        conn.close()
-        return json.loads(music_data)
+        return json.loads(
+            decode_text(
+                sql_request(
+                    db_name,
+                    "SELECT music FROM user_playlists WHERE name=?",
+                    (encode_text(playlist_name),)
+                )[0]
+            )
+        )
 
     def add_playlist(db_name, playlist_name, music_data={"music_num":0}):
-        error_correction()
-
-        conn = sqlite3.connect(f"Databases/{db_name}")
-        cursor = conn.cursor()
-
-        cursor.execute("INSERT INTO user_playlists VALUES (?,?)", (encode_text(playlist_name), encode_text(json.dumps(music_data))))
-
-        conn.commit()
-        conn.close()
-        clear_ram()
+        sql_request(
+            db_name,
+            "INSERT INTO user_playlists VALUES (?,?)",
+            (encode_text(playlist_name), encode_text(json.dumps(music_data)))
+        )
 
     def delete_playlist(db_name, playlist_name):
-        error_correction()
-
-        conn = sqlite3.connect(f"Databases/{db_name}")
-        cursor = conn.cursor()
-
-        cursor.execute("DELETE FROM user_playlists WHERE name=?", (encode_text(playlist_name),))
-
-        conn.commit()
-
-        conn.close()
-        clear_ram()
+        sql_request(
+            db_name,
+            "DELETE FROM user_playlists WHERE name=?",
+            (encode_text(playlist_name),)
+        )
