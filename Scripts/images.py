@@ -40,8 +40,8 @@ class LoadPictures:
         MyImage.RANDOM_SONG = self.load_picture("rand_song_button.png")
         MyImage.RANDOM_SONG_CLICK = self.load_picture("rand_song_button_click.png")
 
-        MyImage.SEARCH = self.load_picture("search_button.png")
         MyImage.NEW_PLAYLIST = self.load_picture("new_playlist_button.png")
+        MyImage.NEW_PLAYLIST_CLICK = self.load_picture("new_playlist_button_click.png")
 
         MyImage.OK = self.load_picture("ok_button.png")
         MyImage.CLOSE = self.load_picture("close_button.png")
@@ -52,6 +52,7 @@ class LoadPictures:
         MyImage.EDIT = self.load_picture("edit_button.png")
         MyImage.UPDATE = self.load_picture("update_button.png")
 
+        MyImage.SEARCH = self.load_picture("search_button.png")
         MyImage.DOWNLOAD_UPD = self.load_picture("download_upd_button.png")
 
     @staticmethod
