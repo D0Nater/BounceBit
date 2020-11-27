@@ -33,7 +33,7 @@ class SearchData:
 
         Main.DATA_CANVAS.delete("all")
         # loading #
-        load_text = Main.DATA_CANVAS.create_text(14, 15, text=languages["Загрузка"][Main.SETTINGS.language]+"...", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+        load_text = Main.DATA_CANVAS.create_text(14, 15, text=languages["Загрузка"][Main.SETTINGS.language]+"...", fill=themes[Main.SETTINGS.theme]["text_color"],  font="Verdana 13", anchor=W)
         Main.ROOT.update()
 
         try:
@@ -69,7 +69,7 @@ class MusicInterface(SearchData):
             return ParseMusic.search_music(self.search_text, int(self.lib.split(" ")[1]))
 
         elif self.lib.split(" ")[0] == "Жанр":
-            return ParseMusic.genres_music(self.lib.split(" ")[1], int(self.lib.split(" ")[2]))
+            return ParseMusic.genres_music(languages[self.lib.split(" ")[1]]["num"] , int(self.lib.split(" ")[2]))
 
     def draw_music(self):
         Main.LIST_OF_MUSIC = self.all_data
@@ -96,7 +96,7 @@ class MusicInterface(SearchData):
             self.get_text(search_text_var.get())
 
         # Search #
-        search_draw = Main.DATA_CANVAS.create_text(Main.DATA_CANVAS.bbox(self.lib_name)[0], Main.DATA_CANVAS.bbox(self.lib_name)[3]+25, text=languages["Поиск"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+        search_draw = Main.DATA_CANVAS.create_text(Main.DATA_CANVAS.bbox(self.lib_name)[0], Main.DATA_CANVAS.bbox(self.lib_name)[3]+25, text=languages["Поиск"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13", anchor=W)
 
         # Search line #
         search_text_var = StringVar()
@@ -203,7 +203,7 @@ class MusicInterface(SearchData):
             except: pass
 
         # loading #
-        load_text = Main.DATA_CANVAS.create_text(14, 15, text=languages["Загрузка"][Main.SETTINGS.language]+"...", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+        load_text = Main.DATA_CANVAS.create_text(14, 15, text=languages["Загрузка"][Main.SETTINGS.language]+"...", fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13", anchor=W)
         Main.ROOT.update()
 
         # Search data #
@@ -213,7 +213,7 @@ class MusicInterface(SearchData):
         Main.DATA_CANVAS.delete(load_text)
 
         # Lib name #
-        self.lib_name = Main.DATA_CANVAS.create_text(14, 15, text=lib_name_text, fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+        self.lib_name = Main.DATA_CANVAS.create_text(14, 15, text=lib_name_text, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13", anchor=W)
 
         # Search line #
         self.draw_search()
@@ -241,4 +241,4 @@ class MusicInterface(SearchData):
             Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
         else:
             # Write error #
-            Main.DATA_CANVAS.create_text(14, self.y, text=languages[self.all_data["error"]][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=W, font="Verdana 12")
+            Main.DATA_CANVAS.create_text(14, self.y, text=languages[self.all_data["error"]][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_second_color"], font="Verdana 12", anchor=W)
