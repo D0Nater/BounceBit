@@ -29,24 +29,16 @@ class ParseMusic:
     @staticmethod
     def music_pages(tree, page):
         # Pages #
-        pages_array = []
-        try:
-            pages_array.append(page)
+        pages_array = [page]
 
-            # other pages #
-            page_num = (3 if page > 2 else 1)
-            for num in range(0, 4):
-                try:
-                    pages_array.append(int(tree.xpath(f'//*[@id="pjax-container"]/div/div/section/ul/li[{page_num}]/a/text()')[0]))
-                except:
-                    pass
+        page_num = (3 if page > 2 else 1)
+        for num in range(0, 4):
+            try:
+                pages_array.append(int(tree.xpath(f'//*[@id="pjax-container"]/div/div/section/ul/li[{page_num}]/a/text()')[0]))
+            except:
+                pass
+            page_num += 1
 
-                page_num += 1
-
-        except:
-            pass
-        
-        # sorted and return pages #
         return sorted(pages_array)
 
     @staticmethod
@@ -100,9 +92,9 @@ class ParseMusic:
         return ParseMusic.search_data(f"http://m.hitmos.com/search{page_str}?q={search_text}", page)
 
     @staticmethod
-    def genres_music(genre, page):
+    def genres_music(genre_num, page):
         page_str = "/start/" + str(48*(page-1)) if page > 1 else ""
-        return ParseMusic.search_data("http://m.hitmos.com/genre/%s%s"%(languages[genre]["num"], page_str), page)
+        return ParseMusic.search_data("http://m.hitmos.com/genre/%s%s" % (genre_num, page_str), page)
 
     @staticmethod
     def more_song_info(song_id):
