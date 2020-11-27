@@ -20,16 +20,50 @@ from Scripts.images import MyImage
 from Scripts.main import Main
 
 
-class MoreInfoInterface:
+class AddToPlaylist:
+    def close_window(self):
+        if not self.playlist_win_num:
+            return
+
+        try:
+            self.playlist_win_canvas.delete("all")
+            self.playlist_win_canvas.destroy()
+
+            del self.playlist_win_canvas
+
+            self.playlist_win_num -= 1
+        except:
+            pass
+
+    def draw_playlists(self):
+        pass
+
+    def draw_window(self):
+        self.playlist_win_num += 1
+
+        self.playlist_win_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/2/2+50, height=Main.DATA_CANVAS.winfo_height()-40, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=0)
+        self.playlist_win_canvas.place(x=Main.SETTINGS.width/2-50, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
+
+        # button 'close' #
+        self.playlist_win_canvas.create_window(Main.DATA_CANVAS.winfo_width()/2/2+45, 6, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_window()), anchor=NE)
+
+        # Song name #
+        self.song_name_draw = self.playlist_win_canvas.create_text(30, 30, text=languages["add_pl"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+
+
+class MoreInfoInterface(AddToPlaylist):
     """ Draw window with more song info """
     def __init__(self):
         self.num_of_wins = 0
+        self.playlist_win_num = 0
 
     def close_song_info(self):
         if not self.num_of_wins:
             return
         try:
             Main.SCROLL_WIN = True
+
+            self.close_window()
 
             self.song_info_canvas.delete("all")
             self.song_info_canvas.destroy()
@@ -79,7 +113,7 @@ class MoreInfoInterface:
 
         # Button for add to playlist #
         self.add_to_pl_text = self.song_info_canvas.create_text(40, 175, text=languages["add_pl"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
-        self.add_to_pl_bttn = self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.add_to_pl_text)[2]+15, self.song_info_canvas.bbox(self.add_to_pl_text)[1]+10, window=Button(image=MyImage.NEW_PLAYLIST, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: print("add song")), anchor=W)
+        self.add_to_pl_bttn = self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.add_to_pl_text)[2]+15, self.song_info_canvas.bbox(self.add_to_pl_text)[1]+10, window=Button(image=MyImage.NEW_PLAYLIST, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.draw_window()), anchor=W)
 
         # Copy song url #
         self.song_url_draw = self.song_info_canvas.create_text(40, 210, text="URL", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
