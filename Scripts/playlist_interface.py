@@ -89,7 +89,9 @@ class DrawPlaylist:
         self.playlist_name = playlist_name
         self.y = y
 
-        self.draw_playlist_name = Main.DATA_CANVAS.create_text(20, self.y, text=self.playlist_name, fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+        self.playlist_name_text = self.playlist_name[:40]+"..." if len(self.playlist_name) > 40 else self.playlist_name
+
+        self.draw_playlist_name = Main.DATA_CANVAS.create_text(20, self.y, text=self.playlist_name_text, fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
 
         self.button_more = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.draw_playlist_name)[2]+13, Main.DATA_CANVAS.bbox(self.draw_playlist_name)[3]+2, anchor=SW, window=Button(image=MyImage.MORE, width=20, height=20, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
             command=lambda: Main.PLAYLIST_INTERFACE.playlist_draw(self.playlist_class, self.playlist_name)))
