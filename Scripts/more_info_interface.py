@@ -68,9 +68,9 @@ class AddToPlaylist:
                 self.draw_name = self.main_canvas.create_text(40, y, text=self.name, fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
 
                 if click_add:
-                    self.add_button = Button(image=MyImage.NEW_PLAYLIST_CLICK, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: add_to_playlist())
+                    self.add_button = Button(image=MyImage.NEW_PLAYLIST_CLICK, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: add_to_playlist(self.name))
                 else:
-                    self.add_button = Button(image=MyImage.NEW_PLAYLIST, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: add_to_playlist())
+                    self.add_button = Button(image=MyImage.NEW_PLAYLIST, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: add_to_playlist(self.name))
 
                 self.add_to_playlist_button = self.main_canvas.create_window(self.main_canvas.bbox(self.draw_name)[2]+20, y, window=self.add_button, anchor=W)
 
