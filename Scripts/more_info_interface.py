@@ -42,6 +42,8 @@ class AddToPlaylist:
             del self.playlist_win_canvas
 
             self.playlist_win_num -= 1
+
+            Main.DATA_CANVAS.bind_all("<MouseWheel>", Main.WINDOW_FOR_DATA.on_mousewheel)
         except:
             pass
 
@@ -74,6 +76,9 @@ class AddToPlaylist:
 
                 self.add_to_playlist_button = self.main_canvas.create_window(self.main_canvas.bbox(self.draw_name)[2]+20, y, window=self.add_button, anchor=W)
 
+                # self.just_line_top = 
+                # self.just_line_bottom = 
+
         playlists = PlaylistStorage.get_playlists("database2.sqlite")[::-1]
 
         playlist_y = self.playlist_win_canvas.bbox(self.song_name_draw)[3]+30
@@ -86,7 +91,7 @@ class AddToPlaylist:
     def draw_window(self):
         def on_mousewheel(event):
             """ Scroll """
-            if self.playlist_win_canvas.bbox("all")[3] > self.playlist_win_canvas.winfo_height():
+            if self.playlist_win_num and self.playlist_win_canvas.bbox("all")[3] > self.playlist_win_canvas.winfo_height():
                 self.playlist_win_canvas.yview_scroll(int(-1*(event.delta/100)), "units")
 
         self.playlist_win_num += 1
