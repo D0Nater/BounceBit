@@ -9,6 +9,7 @@ from pyperclip import copy as copy_text
 """ Other Scripts """
 from Scripts.elements import *
 from Scripts.parse_music import ParseMusic
+from Scripts.playlist_storage import PlaylistStorage
 
 """ For song manage """
 from Scripts.song_manage import SongManage
@@ -18,6 +19,15 @@ from Scripts.images import MyImage
 
 """ Main """
 from Scripts.main import Main
+
+
+song_more_info = {
+    "name": None,
+    "author": None,
+    "url": None,
+    "song_time": None,
+    "song_id": None
+}
 
 
 class AddToPlaylist:
@@ -36,19 +46,68 @@ class AddToPlaylist:
             pass
 
     def draw_playlists(self):
-        pass
+        class DrawPlaylist:
+            def __init__(self, main_canvas, name):
+                self.main_canvas = main_canvas
+                self.name = name
+
+            def draw_playlist(self, y):
+                click_add = PlaylistStorage.check_song_in_playlist("database2.sqlite", self.name, song_more_info['song_id'])
+
+                def add_to_playlist(playlists_name):
+                    nonlocal click_add
+
+                    if click_add:
+                        click_add = 0
+                        self.add_button['image'] = MyImage.NEW_PLAYLIST
+                    else:
+                        click_add = 1
+                        self.add_button['image'] = MyImage.NEW_PLAYLIST_CLICK
+                        PlaylistStorage.add_song_in_playlist("database2.sqlite", playlists_name, song_more_info)
+
+                self.draw_name = self.main_canvas.create_text(40, y, text=self.name, fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+
+                if click_add:
+                    self.add_button = Button(image=MyImage.NEW_PLAYLIST_CLICK, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: add_to_playlist())
+                else:
+                    self.add_button = Button(image=MyImage.NEW_PLAYLIST, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: add_to_playlist())
+
+                self.add_to_playlist_button = self.main_canvas.create_window(self.main_canvas.bbox(self.draw_name)[2]+20, y, window=self.add_button, anchor=W)
+
+        playlists = PlaylistStorage.get_playlists("database2.sqlite")[::-1]
+
+        playlist_y = self.playlist_win_canvas.bbox(self.song_name_draw)[3]+30
+        for playlist_now in playlists:
+            new_playlist = DrawPlaylist(self.playlist_win_canvas, playlist_now)
+            new_playlist.draw_playlist(playlist_y)
+
+            playlist_y += 40
 
     def draw_window(self):
+        def on_mousewheel(event):
+            """ Scroll """
+            if self.playlist_win_canvas.bbox("all")[3] > self.playlist_win_canvas.winfo_height():
+                self.playlist_win_canvas.yview_scroll(int(-1*(event.delta/100)), "units")
+
         self.playlist_win_num += 1
 
         self.playlist_win_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/2/2+50, height=Main.DATA_CANVAS.winfo_height()-40, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=0)
+        self.playlist_win_canvas.bind_all("<MouseWheel>", on_mousewheel)
         self.playlist_win_canvas.place(x=Main.SETTINGS.width/2-50, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
 
+        # just pixel #
+        just_px = self.playlist_win_canvas.create_text(0, 0, text=".", fill=themes[Main.SETTINGS.theme]["second_color"], anchor=W, font="Verdana 1")
+
         # button 'close' #
-        self.playlist_win_canvas.create_window(Main.DATA_CANVAS.winfo_width()/2/2+45, 6, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_window()), anchor=NE)
+        self.playlist_win_canvas.create_window(Main.DATA_CANVAS.winfo_width()/2/2+44, 6, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_window()), anchor=NE)
 
         # Song name #
         self.song_name_draw = self.playlist_win_canvas.create_text(30, 30, text=languages["add_pl"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+
+        self.draw_playlists()
+
+        # Update window #
+        self.playlist_win_canvas.config(scrollregion=self.playlist_win_canvas.bbox("all"))
 
 
 class MoreInfoInterface(AddToPlaylist):
@@ -58,6 +117,8 @@ class MoreInfoInterface(AddToPlaylist):
         self.playlist_win_num = 0
 
     def close_song_info(self):
+        global song_more_info
+
         if not self.num_of_wins:
             return
         try:
@@ -70,17 +131,35 @@ class MoreInfoInterface(AddToPlaylist):
 
             del self.song_info_canvas
 
+            song_more_info = {
+                "name": None,
+                "author": None,
+                "url": None,
+                "song_time": None,
+                "song_id": None
+            }
+
             self.num_of_wins -= 1
         except AttributeError:
             pass
 
     def song_info_draw(self, data, searched_data=None):
+        global song_more_info
+
         # Delete past window #
         self.close_song_info()
         Main.PLAYLIST_INTERFACE.close_playlist()
 
         # Create new window #
         self.num_of_wins += 1
+
+        song_more_info = {
+            "name": data[0],
+            "author": data[1],
+            "url": data[2],
+            "song_time": data[3],
+            "song_id": data[4]
+        }
 
         # Draw window #
         self.song_info_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/2/2+50, height=Main.DATA_CANVAS.winfo_height()-40, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=0)
