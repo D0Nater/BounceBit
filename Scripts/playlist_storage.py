@@ -58,6 +58,19 @@ class PlaylistStorage:
             (encode_text(json.dumps(music)), encode_text(playlist_name))
         )
 
+    def del_song_out_playlist(db_name, playlist_name, song_id):
+        music = PlaylistStorage.get_music(db_name, playlist_name)
+
+        del music["music"][song_id]
+
+        music["music_num"] -= 1
+
+        sql_request(
+            db_name,
+            "UPDATE user_playlists SET music=? WHERE name=?",
+            (encode_text(json.dumps(music)), encode_text(playlist_name))
+        )
+
     def get_playlists(db_name):
         error_correction()
 
@@ -66,8 +79,20 @@ class PlaylistStorage:
 
         playlists = []
 
-        for playlist_name in cursor.execute("SELECT name FROM user_playlists ORDER BY music"):
-            playlists.append(decode_text(playlist_name[0]))
+        playlist_ids = []
+        for playlist in cursor.execute("SELECT * FROM user_playlists ORDER BY playlist_id"):
+            playlist_ids.append(playlist[2])
+        playlist_ids = sorted(playlist_ids)
+
+        for playlist_id in playlist_ids:
+            playlists.append(
+                decode_text(
+                    cursor.execute(
+                        "SELECT name FROM user_playlists WHERE playlist_id=?",
+                        (playlist_id,)
+                    ).fetchone()
+                )
+            )
 
         conn.close()
         return playlists
@@ -84,10 +109,17 @@ class PlaylistStorage:
         )
 
     def add_playlist(db_name, playlist_name, music_data={"music":{},"music_num":0}):
+
+        # new playlist id for database #
+        try:
+            playlist_id = sql_request(db_name, "SELECT * FROM user_playlists ORDER BY playlist_id DESC LIMIT 1")[2]+1
+        except:
+            playlist_id = sql_request(db_name, "SELECT count(*) FROM user_playlists ORDER BY playlist_id")[0]
+
         sql_request(
             db_name,
-            "INSERT INTO user_playlists VALUES (?,?)",
-            (encode_text(playlist_name), encode_text(json.dumps(music_data)))
+            "INSERT INTO user_playlists VALUES (?,?,?)",
+            (encode_text(playlist_name), encode_text(json.dumps(music_data)), playlist_id)
         )
 
     def delete_playlist(db_name, playlist_name):
