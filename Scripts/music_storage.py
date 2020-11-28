@@ -49,7 +49,7 @@ def error_correction():
         try: cursor.execute("CREATE TABLE user_music (name, author, url, song_time, num, song_id)")
         except: pass
 
-        try: cursor.execute("CREATE TABLE user_playlists (name, music)")
+        try: cursor.execute("CREATE TABLE user_playlists (name, music, playlist_id)")
         except: pass
 
         conn.commit()
@@ -100,14 +100,23 @@ class MusicStorage:
         music_list = []
         for i in cursor.execute("SELECT * FROM user_music ORDER BY song_time"):
             music_list.append(i[4])
-        music_list = sorted(music_list)
+        music_list = sorted(music_list)[::-1]
 
         # read db #
-        for num in range(0, cursor.execute("SELECT count(*) FROM user_music ORDER BY song_time").fetchone()[0]):
-            song_data = cursor.execute("SELECT * FROM user_music WHERE num=?", (music_list[-num-1],)).fetchone()
-            song_data = {"name": decode_text(song_data[0]), "author": decode_text(song_data[1]), "url": decode_text(song_data[2]), "song_time": decode_text(song_data[3]), "song_id": decode_text(song_data[5])}
-            json_text["music"][f"song{num}"] = song_data
+        song_num = 0
+        for num in music_list:
+            song_data = cursor.execute("SELECT * FROM user_music WHERE num=?", (num,)).fetchone()
+            song_data = {
+                "name": decode_text(song_data[0]),
+                "author": decode_text(song_data[1]),
+                "url": decode_text(song_data[2]),
+                "song_time": decode_text(song_data[3]),
+                "song_id": decode_text(song_data[5])
+            }
+            json_text["music"][f"song{song_num}"] = song_data
             json_text["music"]["num"] += 1
+
+            song_num += 1
 
         if json_text["music"]["num"] is 0:
             json_text["error"] = error
@@ -139,7 +148,16 @@ class MusicStorage:
         except:
             song_num = cursor.execute("SELECT count(*) FROM user_music ORDER BY song_id").fetchone()[0]
 
-        cursor.execute("INSERT INTO user_music VALUES (?,?,?,?,?,?)", (encode_text(song_data[0]), encode_text(song_data[1]), encode_text(song_data[2]), encode_text(song_data[3]), song_num, encode_text(song_data[4])))
+        cursor.execute(
+            "INSERT INTO user_music VALUES (?,?,?,?,?,?)", (
+                encode_text(song_data[0]),
+                encode_text(song_data[1]),
+                encode_text(song_data[2]),
+                encode_text(song_data[3]),
+                song_num,
+                encode_text(song_data[4])
+            )
+        )
 
         conn.commit()
         conn.close()
