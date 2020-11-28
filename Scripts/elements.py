@@ -186,6 +186,10 @@ languages = {
         "ru": "Плейлист",
         "en": "Playlist"
     },
+    "add_pl": {
+        "ru": "Добавить в плейлист",
+        "en": "Add to playlist"
+    },
     "create_pl": {
         "ru": "Создать Плейлист",
         "en": "Create Playlist"
