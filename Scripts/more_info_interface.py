@@ -62,6 +62,7 @@ class AddToPlaylist:
                     if click_add:
                         click_add = 0
                         self.add_button['image'] = MyImage.NEW_PLAYLIST
+                        PlaylistStorage.del_song_out_playlist("database2.sqlite", playlists_name, song_more_info['song_id'])
                     else:
                         click_add = 1
                         self.add_button['image'] = MyImage.NEW_PLAYLIST_CLICK
@@ -75,9 +76,6 @@ class AddToPlaylist:
                     self.add_button = Button(image=MyImage.NEW_PLAYLIST, width=27, height=27, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: add_to_playlist(self.name))
 
                 self.add_to_playlist_button = self.main_canvas.create_window(self.main_canvas.bbox(self.draw_name)[2]+20, y, window=self.add_button, anchor=W)
-
-                # self.just_line_top = 
-                # self.just_line_bottom = 
 
         playlists = PlaylistStorage.get_playlists("database2.sqlite")[::-1]
 
