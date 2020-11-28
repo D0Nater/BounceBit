@@ -35,7 +35,7 @@ class ParseMusic:
         for num in range(0, 4):
             try:
                 pages_array.append(int(tree.xpath(f'//*[@id="pjax-container"]/div/div/section/ul/li[{page_num}]/a/text()')[0]))
-            except:
+            except IndexError:
                 pass
             page_num += 1
 
