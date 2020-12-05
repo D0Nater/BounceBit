@@ -5,6 +5,7 @@ from tkinter import *
 
 """ Other Scripts """
 from Scripts.elements import *
+from Scripts.draw_song import DrawSong
 from Scripts.playlist_storage import PlaylistStorage
 
 """ Images """
@@ -34,11 +35,26 @@ class PlaylistInterface:
             pass
 
     def draw_music(self):
-        if int(self.music_data["music_num"]):
-            for song in range(int(self.music_data["music_num"])):
-                print(song)
-        else:
+        if not int(self.music_data["music_num"]):
             self.playlist_canvas.create_text(40, self.playlist_canvas.bbox(self.playlists_name_draw)[3]+20, text=languages["add_error"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=NW, font="Verdana 13")
+            return
+
+        self.y_coord = 80
+        song_num = 0
+        for song in self.music_data["music"]:
+            new_song = DrawSong(self.playlist_canvas, self.y_coord, song_num, self.music_data["music"][song], self.playlist_name)
+
+            new_song.draw_name(50)
+            new_song.draw_play_button(new_song.song_bbox[2]+25, "second_color")
+            new_song.draw_more_button(new_song.song_bbox[2]+9, "second_color")
+
+            list_of_songs_class.append(new_song)
+
+            if Main.SONG_PLAY_NOW["song_id"] == self.music_data["music"][song]["song_id"]:
+                Main.PAST_SONG["class"] = new_song
+
+            song_num += 1
+            self.y_coord += 40
 
     def delete_playlist(self):
         self.playlist_class.delete_playlist(self.music_data)
@@ -61,7 +77,7 @@ class PlaylistInterface:
         self.num_of_wins += 1
 
         # Draw window #
-        self.playlist_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=Main.DATA_CANVAS.winfo_height()-40, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=0)
+        self.playlist_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=Main.DATA_CANVAS.winfo_height()-40, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
         self.playlist_canvas.place(x=Main.SETTINGS.width/2, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
 
         # Playlist name #
