@@ -1,19 +1,8 @@
 # -*- coding: utf-8 -*-
 
-""" For Interface """
-from tkinter import *
-
-""" For take Data """
-from Scripts.music_storage import MusicStorage
-
-""" Interfaces """
-from Scripts.music_interface import MusicInterface
-
-""" Other """
 from Scripts.elements import *
-
-""" Main """
-from Scripts.main import Main
+from Scripts.music_storage import MusicStorage
+from Scripts.music_interface import MusicInterface
 
 
 class Menu(MusicInterface):
