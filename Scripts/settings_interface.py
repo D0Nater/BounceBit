@@ -1,28 +1,11 @@
 # -*- coding: utf-8 -*-
 
-""" For Graphical Interface """
-from tkinter import *
-
-""" For clear RAM """
-from gc import collect as clear_ram
-
 """ For copy text """
 from pyperclip import copy as copy_text
 
-""" Other Scripts """
 from Scripts.elements import *
-
-""" For news """
 from Scripts.news import News
-
-""" For load background """
 from Scripts.load_bg import LoadBackground
-
-""" Images """
-from Scripts.images import MyImage
-
-""" Main """
-from Scripts.main import Main
 
 
 class DrawThemeButton:
