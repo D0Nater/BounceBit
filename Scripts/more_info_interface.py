@@ -90,7 +90,7 @@ class AddToPlaylist:
         just_px = self.playlist_win_canvas.create_text(0, 0, text=".", fill=themes[Main.SETTINGS.theme]["second_color"], anchor=W, font="Verdana 1")
 
         # button "close" #
-        self.playlist_win_canvas.create_window(Main.DATA_CANVAS.winfo_width()/2/2+44, 6, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_window()), anchor=NE)
+        self.playlist_win_canvas.create_window(Main.DATA_CANVAS.winfo_width()/2/2+44, 5, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_window()), anchor=NE)
 
         # Song name #
         self.song_name_draw = self.playlist_win_canvas.create_text(30, 30, text=languages["add_pl"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
@@ -150,7 +150,7 @@ class MoreInfoInterface(AddToPlaylist):
         self.song_info_canvas.place(x=Main.SETTINGS.width/2-50, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
 
         # button "close" #
-        self.song_info_canvas.create_window(Main.DATA_CANVAS.winfo_width()/2/2+45, 6, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_song_info()), anchor=NE)
+        self.song_info_canvas.create_window(Main.DATA_CANVAS.winfo_width()/2/2+46, 7, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_song_info()), anchor=NE)
 
         # Song name #
         self.song_name_draw = self.song_info_canvas.create_text(40, 40, text=languages["Трек"][Main.SETTINGS.language]+":", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
