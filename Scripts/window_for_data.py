@@ -6,12 +6,12 @@ from tkinter import *
 """ For files """
 from os import path
 
+""" Themes """
+from Scripts.elements import *
+
 """ Load logo """
 from PIL import Image, ImageTk
 from Scripts.images import LoadPictures
-
-""" Themes """
-from Scripts.elements import *
 
 """ Main """
 from Scripts.main import Main
