@@ -25,7 +25,7 @@ class DrawSong(SongManage):
         self.y = y
         self.lib = lib
         self.song_num = song_num
-        self.song_data = info # [info["name"], info["author"], info["url"], info["song_time"], info["song_id"]]
+        self.song_data = info
 
         self.song_bbox = None
         self.song_coords = {}
