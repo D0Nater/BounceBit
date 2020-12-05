@@ -12,7 +12,7 @@ from gc import collect as clear_ram
 """ Other Scripts """
 from Scripts.elements import *
 from Scripts.parse_music import ParseMusic
-from Scripts.draw_song import Song
+from Scripts.draw_song import DrawSong
 from Scripts.playlist_interface import DrawPlaylists
 
 """ For encode song id """
@@ -76,12 +76,14 @@ class MusicInterface(SearchData):
 
         Main.LIST_OF_IDS = [self.all_data["music"][f"song{i}"]["song_id"] for i in range(self.all_data["music"]["num"])]
 
-        """ Draw data on page """
         for song_num in range(self.all_data["music"]["num"]):
-            # draw music #
-            new_song = Song(self.y, song_num, self.all_data["music"][f"song{song_num}"])
-            new_song.draw_name()
-            new_song.draw_music(new_song, self.lib)
+
+            new_song = DrawSong(self.y, song_num, self.all_data["music"][f"song{song_num}"], self.lib)
+            new_song.draw_name(20)
+            new_song.draw_play_button(new_song.song_bbox[2]+25)
+            new_song.draw_add_button(new_song.song_bbox[2]+13)
+            new_song.draw_save_button(new_song.song_bbox[2]+11)
+            new_song.draw_more_button(new_song.song_bbox[2]+7)
 
             list_of_songs_class.append(new_song)
 
@@ -92,7 +94,6 @@ class MusicInterface(SearchData):
 
     def draw_search(self):
         def search_interface(event):
-            # press "enter" #
             self.get_text(search_text_var.get())
 
         # Search #
