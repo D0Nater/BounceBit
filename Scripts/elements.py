@@ -1,10 +1,19 @@
 # -*- coding: utf-8 -*-
 
+""" For Graphical Interface """
+from tkinter import *
+
 """ For clear RAM """
 from gc import collect as clear_ram
 
 """ Main """
 from Scripts.main import Main
+
+
+def draw_just_lines():
+    Main.JUST_LINE = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=25, bg=themes[Main.SETTINGS.theme]["second_color"], bd=0, highlightthickness=0)
+    Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
+    Main.JUST_LINE.create_line(0, 0, Main.SETTINGS.width, 0, width=1, fill="grey9")
 
 
 def clear_list_of_songs():
