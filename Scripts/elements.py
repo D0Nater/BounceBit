@@ -1,12 +1,17 @@
 # -*- coding: utf-8 -*-
 
-""" For Graphical Interface """
 from tkinter import *
 
-""" For clear RAM """
+from os import path
+from threading import Thread
+
+import time
+from time import sleep as time_sleep
+
 from gc import collect as clear_ram
 
-""" Main """
+from Scripts.images import MyImage
+
 from Scripts.main import Main
 
 
