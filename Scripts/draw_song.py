@@ -1,23 +1,8 @@
 # -*- coding: utf-8 -*-
 
-""" For Graphical Interface """
-from tkinter import *
-
-""" For download and play music """
-from threading import Thread
-
-""" Other Scripts """
 from Scripts.elements import *
-from Scripts.music_storage import MusicStorage
-
-""" For song manage """
 from Scripts.song_manage import SongManage
-
-""" Images """
-from Scripts.images import MyImage
-
-""" Main """
-from Scripts.main import Main
+from Scripts.music_storage import MusicStorage
 
 
 class DrawSong(SongManage):
