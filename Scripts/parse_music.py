@@ -3,15 +3,11 @@
 """ For databases """
 import sqlite3
 
-""" For clear RAM """
-from gc import collect as clear_ram
-
 """ For Parse """
 import requests
 import lxml.html
 from json import loads as json_loads
 
-""" Other Scripts """
 from Scripts.elements import *
 
 
