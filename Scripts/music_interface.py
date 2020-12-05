@@ -1,28 +1,12 @@
 # -*- coding: utf-8 -*-
 
-""" For Graphical Interface """
-from tkinter import *
-
-""" For download and listen music """
-from threading import Thread
-
-""" For clear RAM """
-from gc import collect as clear_ram
-
-""" Other Scripts """
-from Scripts.elements import *
-from Scripts.parse_music import ParseMusic
-from Scripts.draw_song import DrawSong
-from Scripts.playlist_interface import DrawPlaylists
-
 """ For encode song id """
 from Scripts.settings import decode_text
 
-""" Images """
-from Scripts.images import MyImage
-
-""" Main """
-from Scripts.main import Main
+from Scripts.elements import *
+from Scripts.draw_song import DrawSong
+from Scripts.parse_music import ParseMusic
+from Scripts.playlist_interface import DrawPlaylists
 
 
 class SearchData:
@@ -238,8 +222,7 @@ class MusicInterface(SearchData):
 
             Main.MENU.update_buttons()
 
-            Main.JUST_LINE = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=25, bg=themes[Main.SETTINGS.theme]["second_color"], bd=0, highlightthickness=0)
-            Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
+            draw_just_lines()
         else:
             # Write error #
             Main.DATA_CANVAS.create_text(14, self.y, text=languages[self.all_data["error"]][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_second_color"], font="Verdana 12", anchor=W)
