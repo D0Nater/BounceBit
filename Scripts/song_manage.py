@@ -1,29 +1,14 @@
 # -*- coding: utf-8 -*-
 
-""" For Graphical Interface """
-from tkinter import *
-
-""" For download and play music """
-from threading import Thread
-
 """ For random song """
 from random import choice as rand_choice
 
-""" Other Scripts """
-from Scripts.elements import *
-from Scripts.music_storage import MusicStorage
-
-""" For Player """
-from Scripts.my_player import MyPlayer
-
-""" Images """
-from Scripts.images import MyImage
-
-""" Main """
-from Scripts.main import Main
-
 """ For encode song id """
 from Scripts.settings import encode_text
+
+from Scripts.elements import *
+from Scripts.my_player import MyPlayer
+from Scripts.music_storage import MusicStorage
 
 
 class SongManage:
@@ -58,8 +43,7 @@ class SongManage:
         if Main.MORE_INFO_INTERFACE.num_of_wins:
             Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data, Main.MORE_INFO_INTERFACE.searched_data)
 
-        Main.JUST_LINE = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=25, bg=themes[Main.SETTINGS.theme]["second_color"], bd=0, highlightthickness=0)
-        Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
+        draw_just_lines()
 
         Main.MENU.update_buttons()
 
