@@ -3,7 +3,7 @@ Program for listen music free
 
 ![alt text](Screenshots/BounceBit.png "BounceBit")
 
-![alt text](Screenshots/BounceBit_screen4.png "Recommendations")
+![alt text](Screenshots/BounceBit_recommendation.png "Recommendations")
 
 ![alt text](Screenshots/BounceBit_settings.png "Settings")
 
