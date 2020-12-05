@@ -137,10 +137,10 @@ class MoreInfoInterface(AddToPlaylist):
     def song_info_draw(self, data, searched_data=None):
         global song_more_info
 
-        song_more_info = data
-
         # Delete past window #
         self.close_song_info()
+
+        song_more_info = data
 
         # Create new window #
         self.num_of_wins += 1
