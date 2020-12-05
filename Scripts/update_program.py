@@ -1,27 +1,12 @@
 # -*- coding: utf-8 -*-
 
-""" For Interface """
-from tkinter import *
-
 """ For Parse """
 import json
 import requests
 import lxml.html
 
-""" For download update """
-from threading import Thread
-
-""" Other """
 from Scripts.elements import *
-
-""" For parse data """
 from Scripts.parse_music import parse_data
-
-""" Images """
-from Scripts.images import MyImage
-
-""" Main """
-from Scripts.main import Main
 
 
 class UpdateProgram:
