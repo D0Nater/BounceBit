@@ -13,7 +13,7 @@ Program for listen music free
 3. Install all packages
 4. Install <a href="https://pypi.org/project/pyinstaller/">Pyintaller</a>
 5. Open command line and go to folder with main file
-6. Write to command line: pyinstaller main.spec
+6. Write to command line: pyinstaller BounceBit.spec
 7. In folder 'dist' will be BounceBit.exe
 
 # New
