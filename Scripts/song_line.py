@@ -1,33 +1,8 @@
 # -*- coding: utf-8 -*-
 
-""" For Graphical Interface """
-from tkinter import *
-
-""" For download and listen music """
-from threading import Thread
-
-""" For files """
-from os import path
-
-""" For clear RAM """
-from gc import collect as clear_ram
-
-""" For load music on screen """
-import time
-from time import sleep as time_sleep
-
-""" Other Scripts """
 from Scripts.elements import *
-from Scripts.music_storage import MusicStorage
-
-""" For song manage """
 from Scripts.song_manage import SongManage
-
-""" Images """
-from Scripts.images import MyImage
-
-""" Main """
-from Scripts.main import Main
+from Scripts.music_storage import MusicStorage
 
 
 class SongLine(SongManage):
@@ -38,10 +13,7 @@ class SongLine(SongManage):
         self.song_id_now = ""
         self.time_line_now = None
 
-        self.start_song_line = 0
-
     def song_time_thread(self):
-
         song_id_now = Main.SONG_PLAY_NOW["song_id"]
 
         self.song_duration = [int(i) for i in Main.SONG_PLAY_NOW["time"].split(":")] # song time
@@ -79,8 +51,7 @@ class SongLine(SongManage):
 
         Main.SONG_LINE_CANVAS.create_text(30, 40, text=text, fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 12")
 
-        Main.JUST_LINE = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=25, bg=themes[Main.SETTINGS.theme]["second_color"], bd=0, highlightthickness=0)
-        Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
+        draw_just_lines()
 
         Main.ROOT.update()
 
@@ -197,8 +168,7 @@ class SongLine(SongManage):
         # Buttom "more info" #
         self.more_info_button = Main.SONG_LINE_CANVAS.create_window(Main.SONG_LINE_CANVAS.bbox(self.rand_song_button_draw)[2]+7, Main.SONG_LINE_CANVAS.bbox(self.song_time)[1]+8, anchor=W, window=Button(image=MyImage.MORE_INFO, command=lambda: Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data), width=17, height=19, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE))
 
-        Main.JUST_LINE = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=25, bg=themes[Main.SETTINGS.theme]["second_color"], bd=0, highlightthickness=0)
-        Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
+        draw_just_lines()
 
         if Main.PLAYER_SETTINGS["play"] and not change_settings:
             Thread(target=Main.SONG_LINE.song_time_thread, daemon=True).start()
