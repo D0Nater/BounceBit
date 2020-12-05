@@ -31,8 +31,8 @@ a = Analysis(['BounceBit.py'],
                ('pictures/rand_song_button.png', 'pictures'),
                ('pictures/rand_song_button_click.png', 'pictures'),
 
-               ('pictures/search_button.png', 'pictures'),
                ('pictures/new_playlist_button.png', 'pictures'),
+               ('pictures/new_playlist_button_click.png', 'pictures'),
 
                ('pictures/ok_button.png', 'pictures'),
                ('pictures/close_button.png', 'pictures'),
@@ -43,6 +43,7 @@ a = Analysis(['BounceBit.py'],
                ('pictures/edit_button.png', 'pictures'),
                ('pictures/update_button.png', 'pictures'),
 
+               ('pictures/search_button.png', 'pictures'),
                ('pictures/download_upd_button.png', 'pictures'),
 
                ('pictures/Light/play_button.png', 'pictures/Light'),
@@ -66,8 +67,8 @@ a = Analysis(['BounceBit.py'],
                ('pictures/Light/rand_song_button.png', 'pictures/Light'),
                ('pictures/Light/rand_song_button_click.png', 'pictures/Light'),
 
-               ('pictures/Light/search_button.png', 'pictures/Light'),
                ('pictures/Light/new_playlist_button.png', 'pictures/Light'),
+               ('pictures/Light/new_playlist_button_click.png', 'pictures/Light'),
 
                ('pictures/Light/ok_button.png', 'pictures/Light'),
                ('pictures/Light/close_button.png', 'pictures/Light'),
@@ -78,6 +79,7 @@ a = Analysis(['BounceBit.py'],
                ('pictures/Light/edit_button.png', 'pictures/Light'),
                ('pictures/Light/update_button.png', 'pictures/Light'),
 
+               ('pictures/Light/search_button.png', 'pictures/Light'),
                ('pictures/Light/download_upd_button.png', 'pictures/Light')
              ],
              hiddenimports=[],
