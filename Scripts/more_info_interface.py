@@ -54,18 +54,18 @@ class AddToPlaylist:
                 self.name = name
 
             def draw_playlist(self, y):
-                click_add = PlaylistStorage.check_song_in_playlist("database2.sqlite", self.name, song_more_info['song_id'])
+                click_add = PlaylistStorage.check_song_in_playlist("database2.sqlite", self.name, song_more_info["song_id"])
 
                 def add_to_playlist(playlists_name):
                     nonlocal click_add
 
                     if click_add:
                         click_add = 0
-                        self.add_button['image'] = MyImage.NEW_PLAYLIST
-                        PlaylistStorage.del_song_out_playlist("database2.sqlite", playlists_name, song_more_info['song_id'])
+                        self.add_button["image"] = MyImage.NEW_PLAYLIST
+                        PlaylistStorage.del_song_out_playlist("database2.sqlite", playlists_name, song_more_info["song_id"])
                     else:
                         click_add = 1
-                        self.add_button['image'] = MyImage.NEW_PLAYLIST_CLICK
+                        self.add_button["image"] = MyImage.NEW_PLAYLIST_CLICK
                         PlaylistStorage.add_song_in_playlist("database2.sqlite", playlists_name, song_more_info)
 
                 self.draw_name = self.main_canvas.create_text(40, y, text=self.name, fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
@@ -101,7 +101,7 @@ class AddToPlaylist:
         # just pixel #
         just_px = self.playlist_win_canvas.create_text(0, 0, text=".", fill=themes[Main.SETTINGS.theme]["second_color"], anchor=W, font="Verdana 1")
 
-        # button 'close' #
+        # button "close" #
         self.playlist_win_canvas.create_window(Main.DATA_CANVAS.winfo_width()/2/2+44, 6, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_window()), anchor=NE)
 
         # Song name #
@@ -149,6 +149,8 @@ class MoreInfoInterface(AddToPlaylist):
     def song_info_draw(self, data, searched_data=None):
         global song_more_info
 
+        song_more_info = data
+
         # Delete past window #
         self.close_song_info()
         Main.PLAYLIST_INTERFACE.close_playlist()
@@ -156,26 +158,18 @@ class MoreInfoInterface(AddToPlaylist):
         # Create new window #
         self.num_of_wins += 1
 
-        song_more_info = {
-            "name": data[0],
-            "author": data[1],
-            "url": data[2],
-            "song_time": data[3],
-            "song_id": data[4]
-        }
-
         # Draw window #
         self.song_info_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/2/2+50, height=Main.DATA_CANVAS.winfo_height()-40, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=0)
         self.song_info_canvas.place(x=Main.SETTINGS.width/2-50, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
 
-        # button 'close' #
+        # button "close" #
         self.song_info_canvas.create_window(Main.DATA_CANVAS.winfo_width()/2/2+45, 6, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_song_info()), anchor=NE)
 
         # Song name #
         self.song_name_draw = self.song_info_canvas.create_text(40, 40, text=languages["Трек"][Main.SETTINGS.language]+":", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
 
         self.song_name_text = Text(bg=themes[Main.SETTINGS.theme]["second_color"], fg=themes[Main.SETTINGS.theme]["text_color"], selectbackground="red", width=int(Main.SETTINGS.width / 55), height=1, bd=0, wrap=NONE, font="Verdana 12", cursor="arrow")
-        self.song_name_text.insert(END, data[0]) # write song name
+        self.song_name_text.insert(END, song_more_info["name"]) # write song name
         self.song_name_text.config(state=DISABLED) # update config
         self.song_name_text_draw = self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_name_draw)[2]+15, self.song_info_canvas.bbox(self.song_name_draw)[1]+11, anchor=W, window=self.song_name_text)
 
@@ -183,7 +177,7 @@ class MoreInfoInterface(AddToPlaylist):
         self.song_artist_draw = self.song_info_canvas.create_text(40, 80, text=languages["Артист"][Main.SETTINGS.language]+":", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
 
         self.song_author_text = Text(bg=themes[Main.SETTINGS.theme]["second_color"], fg="cyan", selectbackground="red", width=int(Main.SETTINGS.width / 61), height=1, bd=0, wrap=NONE, font="Verdana 12", cursor="arrow")
-        self.song_author_text.insert(END, data[1]) # write song name
+        self.song_author_text.insert(END, song_more_info["author"]) # write artist
         self.song_author_text.config(state=DISABLED) # update config
         self.song_name_text_draw = self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_artist_draw)[2]+15, self.song_info_canvas.bbox(self.song_artist_draw)[1]+11, anchor=W, window=self.song_author_text)
 
@@ -205,12 +199,12 @@ class MoreInfoInterface(AddToPlaylist):
 
         if not searched_data:
             # Search data #
-            self.searched_data = ParseMusic.more_song_info(data[4])
+            self.searched_data = ParseMusic.more_song_info(song_more_info["song_id"])
 
         # Draw Song size #
         self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_size_draw)[2]+11, self.song_info_canvas.bbox(self.song_size_draw)[1]+3, text=self.searched_data["size"]+" mb", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 12")
 
         # Draw Song duration #
-        self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_duration_draw)[2]+11, self.song_info_canvas.bbox(self.song_duration_draw)[1]+2, text=data[3], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 12")
+        self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_duration_draw)[2]+11, self.song_info_canvas.bbox(self.song_duration_draw)[1]+2, text=song_more_info["song_time"], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 12")
 
         Main.SCROLL_WIN = False
