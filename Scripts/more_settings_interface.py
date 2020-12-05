@@ -1,17 +1,7 @@
 # -*- coding: utf-8 -*-
 
-""" For Graphical Interface """
-from tkinter import *
-
-""" Other Scripts """
 from Scripts.elements import *
 from Scripts.playlist_storage import PlaylistStorage
-
-""" Images """
-from Scripts.images import MyImage
-
-""" Main """
-from Scripts.main import Main
 
 
 class MoreSettingsInterface:
@@ -67,7 +57,7 @@ class MoreSettingsInterface:
         self.num_of_wins += 1
 
         # Draw window #
-        self.more_settings_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=Main.DATA_CANVAS.winfo_height()-40, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=0)
+        self.more_settings_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=Main.DATA_CANVAS.winfo_height()-40, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
         self.more_settings_canvas.place(x=Main.SETTINGS.width/2, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
 
         # Lib name #
@@ -84,7 +74,7 @@ class MoreSettingsInterface:
         self.volume_scale_draw = self.more_settings_canvas.create_window(self.more_settings_canvas.bbox(self.volume_text)[2]+20, 120, window=self.volume_scale, anchor=W)
 
         # button 'close' #
-        self.more_settings_canvas.create_window(Main.DATA_CANVAS.winfo_width()/1.5-4, 6, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_window()), anchor=NE)
+        self.more_settings_canvas.create_window(Main.DATA_CANVAS.winfo_width()/1.5-3, 6, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_window()), anchor=NE)
 
         Main.ROOT.update()
 
