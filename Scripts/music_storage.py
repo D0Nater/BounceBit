@@ -150,12 +150,12 @@ class MusicStorage:
 
         cursor.execute(
             "INSERT INTO user_music VALUES (?,?,?,?,?,?)", (
-                encode_text(song_data[0]),
-                encode_text(song_data[1]),
-                encode_text(song_data[2]),
-                encode_text(song_data[3]),
+                encode_text(song_data["name"]),
+                encode_text(song_data["author"]),
+                encode_text(song_data["url"]),
+                encode_text(song_data["song_time"]),
                 song_num,
-                encode_text(song_data[4])
+                encode_text(song_data["song_id"])
             )
         )
 
