@@ -77,8 +77,8 @@ class MusicInterface(SearchData):
         Main.LIST_OF_IDS = [self.all_data["music"][f"song{i}"]["song_id"] for i in range(self.all_data["music"]["num"])]
 
         for song_num in range(self.all_data["music"]["num"]):
+            new_song = DrawSong(Main.DATA_CANVAS, self.y, song_num, self.all_data["music"][f"song{song_num}"], self.lib)
 
-            new_song = DrawSong(self.y, song_num, self.all_data["music"][f"song{song_num}"], self.lib)
             new_song.draw_name(20)
             new_song.draw_play_button(new_song.song_bbox[2]+25)
             new_song.draw_add_button(new_song.song_bbox[2]+13)
