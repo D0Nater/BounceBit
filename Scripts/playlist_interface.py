@@ -1,18 +1,8 @@
 # -*- coding: utf-8 -*-
 
-""" For Graphical Interface """
-from tkinter import *
-
-""" Other Scripts """
 from Scripts.elements import *
 from Scripts.draw_song import DrawSong
 from Scripts.playlist_storage import PlaylistStorage
-
-""" Images """
-from Scripts.images import MyImage
-
-""" Main """
-from Scripts.main import Main
 
 
 class PlaylistInterface:
@@ -91,7 +81,7 @@ class PlaylistInterface:
         self.playlists_edit_draw = self.playlist_canvas.create_window(self.playlist_canvas.bbox(self.playlists_delete_draw)[2]+8, 36, window=Button(image=MyImage.EDIT, width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: print("edit playlist")), anchor=W)
 
         # button "close" #
-        self.playlist_canvas.create_window(Main.DATA_CANVAS.winfo_width()/1.5-4, 6, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_playlist()), anchor=NE)
+        self.playlist_canvas.create_window(Main.DATA_CANVAS.winfo_width()/1.5-3, 6, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_playlist()), anchor=NE)
 
         Main.ROOT.update()
 
