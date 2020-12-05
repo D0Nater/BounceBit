@@ -37,6 +37,7 @@ class DrawSong(SongManage):
 
     def del_class(self):
         del self.y
+        del self.canvas
         del self.song_num
         del self.song_data
         del self.song_bbox
@@ -107,45 +108,45 @@ class DrawSong(SongManage):
     def more_click(self):
         Main.MORE_INFO_INTERFACE.song_info_draw(self.song_data)
 
-    def draw_play_button(self, x_coord):
+    def draw_play_button(self, x_coord, button_color="background"):
         self.click_play = 0
 
         if Main.PLAYER_SETTINGS["play"] and Main.SONG_PLAY_NOW["song_id"] == self.song_data["song_id"]:
             self.click_play = 1
-            self.play_button = Button(image=MyImage.PAUSE, command=lambda: self.play_click(), width=16, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
+            self.play_button = Button(image=MyImage.PAUSE, command=lambda: self.play_click(), width=16, height=23, bd=0, bg=themes[Main.SETTINGS.theme][button_color], activebackground=themes[Main.SETTINGS.theme][button_color], relief=RIDGE)
         else:
-            self.play_button = Button(image=MyImage.PLAY, command=lambda: self.play_click(), width=16, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
+            self.play_button = Button(image=MyImage.PLAY, command=lambda: self.play_click(), width=16, height=23, bd=0, bg=themes[Main.SETTINGS.theme][button_color], activebackground=themes[Main.SETTINGS.theme][button_color], relief=RIDGE)
         self.play_button_draw = self.canvas.create_window(x_coord, self.y, anchor=W, window=self.play_button)
 
         self.song_bbox = self.canvas.bbox(self.play_button_draw)
         self.song_coords["play_button"] = self.canvas.bbox(self.play_button_draw)
 
-    def draw_add_button(self, x_coord):
+    def draw_add_button(self, x_coord, button_color="background"):
         self.click_add = MusicStorage.check_song_in_db("database2.sqlite", self.song_data["song_id"])
 
         if self.click_add:
-            self.add_button = Button(image=MyImage.ADD_CLICK, command=lambda: self.add_click(), width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
+            self.add_button = Button(image=MyImage.ADD_CLICK, command=lambda: self.add_click(), width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme][button_color], activebackground=themes[Main.SETTINGS.theme][button_color], relief=RIDGE)
         else:
-            self.add_button = Button(image=MyImage.ADD, command=lambda: self.add_click(), width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
+            self.add_button = Button(image=MyImage.ADD, command=lambda: self.add_click(), width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme][button_color], activebackground=themes[Main.SETTINGS.theme][button_color], relief=RIDGE)
         self.add_button_draw = self.canvas.create_window(x_coord, self.y, anchor=W, window=self.add_button)
 
         self.song_bbox = self.canvas.bbox(self.add_button_draw)
         self.song_coords["add_button"] = self.canvas.bbox(self.add_button_draw)
 
-    def draw_save_button(self, x_coord):
+    def draw_save_button(self, x_coord, button_color="background"):
         self.click_save = MusicStorage.check_song_in_db("database3.sqlite", self.song_data["song_id"])
 
         if self.click_save:
-            self.save_button = Button(image=MyImage.SAVE_CLICK, command=lambda: self.save_click(), width=18, height=24, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
+            self.save_button = Button(image=MyImage.SAVE_CLICK, command=lambda: self.save_click(), width=18, height=24, bd=0, bg=themes[Main.SETTINGS.theme][button_color], activebackground=themes[Main.SETTINGS.theme][button_color], relief=RIDGE)
         else:
-            self.save_button = Button(image=MyImage.SAVE, command=lambda: self.save_click(), width=18, height=24, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
+            self.save_button = Button(image=MyImage.SAVE, command=lambda: self.save_click(), width=18, height=24, bd=0, bg=themes[Main.SETTINGS.theme][button_color], activebackground=themes[Main.SETTINGS.theme][button_color], relief=RIDGE)
         self.save_button_draw = self.canvas.create_window(x_coord, self.y, anchor=W, window=self.save_button)
 
         self.song_bbox = self.canvas.bbox(self.save_button_draw)
         self.song_coords["save_button"] = self.canvas.bbox(self.save_button_draw)
 
-    def draw_more_button(self, x_coord):
-        self.more_button_draw = self.canvas.create_window(x_coord, self.y+1, anchor=W, window=Button(image=MyImage.MORE_INFO, command=lambda: self.more_click(), width=12, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE))
+    def draw_more_button(self, x_coord, button_color="background"):
+        self.more_button_draw = self.canvas.create_window(x_coord, self.y+1, anchor=W, window=Button(image=MyImage.MORE_INFO, command=lambda: self.more_click(), width=12, height=16, bd=0, bg=themes[Main.SETTINGS.theme][button_color], activebackground=themes[Main.SETTINGS.theme][button_color], relief=RIDGE))
 
         self.song_bbox = self.canvas.bbox(self.more_button_draw)
         self.song_coords["more_button"] = self.canvas.bbox(self.more_button_draw)
