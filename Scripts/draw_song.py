@@ -21,7 +21,9 @@ from Scripts.main import Main
 
 
 class DrawSong(SongManage):
-    def __init__(self, y, song_num, info, lib):
+    def __init__(self, canvas, y, song_num, info, lib):
+        self.canvas = canvas
+
         self.y = y
         self.lib = lib
         self.song_num = song_num
@@ -113,10 +115,10 @@ class DrawSong(SongManage):
             self.play_button = Button(image=MyImage.PAUSE, command=lambda: self.play_click(), width=16, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
         else:
             self.play_button = Button(image=MyImage.PLAY, command=lambda: self.play_click(), width=16, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
-        self.play_button_draw = Main.DATA_CANVAS.create_window(x_coord, self.y, anchor=W, window=self.play_button)
+        self.play_button_draw = self.canvas.create_window(x_coord, self.y, anchor=W, window=self.play_button)
 
-        self.song_bbox = Main.DATA_CANVAS.bbox(self.play_button_draw)
-        self.song_coords["play_button"] = Main.DATA_CANVAS.bbox(self.play_button_draw)
+        self.song_bbox = self.canvas.bbox(self.play_button_draw)
+        self.song_coords["play_button"] = self.canvas.bbox(self.play_button_draw)
 
     def draw_add_button(self, x_coord):
         self.click_add = MusicStorage.check_song_in_db("database2.sqlite", self.song_data["song_id"])
@@ -125,10 +127,10 @@ class DrawSong(SongManage):
             self.add_button = Button(image=MyImage.ADD_CLICK, command=lambda: self.add_click(), width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
         else:
             self.add_button = Button(image=MyImage.ADD, command=lambda: self.add_click(), width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
-        self.add_button_draw = Main.DATA_CANVAS.create_window(x_coord, self.y, anchor=W, window=self.add_button)
+        self.add_button_draw = self.canvas.create_window(x_coord, self.y, anchor=W, window=self.add_button)
 
-        self.song_bbox = Main.DATA_CANVAS.bbox(self.add_button_draw)
-        self.song_coords["add_button"] = Main.DATA_CANVAS.bbox(self.add_button_draw)
+        self.song_bbox = self.canvas.bbox(self.add_button_draw)
+        self.song_coords["add_button"] = self.canvas.bbox(self.add_button_draw)
 
     def draw_save_button(self, x_coord):
         self.click_save = MusicStorage.check_song_in_db("database3.sqlite", self.song_data["song_id"])
@@ -137,23 +139,23 @@ class DrawSong(SongManage):
             self.save_button = Button(image=MyImage.SAVE_CLICK, command=lambda: self.save_click(), width=18, height=24, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
         else:
             self.save_button = Button(image=MyImage.SAVE, command=lambda: self.save_click(), width=18, height=24, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE)
-        self.save_button_draw = Main.DATA_CANVAS.create_window(x_coord, self.y, anchor=W, window=self.save_button)
+        self.save_button_draw = self.canvas.create_window(x_coord, self.y, anchor=W, window=self.save_button)
 
-        self.song_bbox = Main.DATA_CANVAS.bbox(self.save_button_draw)
-        self.song_coords["save_button"] = Main.DATA_CANVAS.bbox(self.save_button_draw)
+        self.song_bbox = self.canvas.bbox(self.save_button_draw)
+        self.song_coords["save_button"] = self.canvas.bbox(self.save_button_draw)
 
     def draw_more_button(self, x_coord):
-        self.more_button_draw = Main.DATA_CANVAS.create_window(x_coord, self.y+1, anchor=W, window=Button(image=MyImage.MORE_INFO, command=lambda: self.more_click(), width=12, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE))
+        self.more_button_draw = self.canvas.create_window(x_coord, self.y+1, anchor=W, window=Button(image=MyImage.MORE_INFO, command=lambda: self.more_click(), width=12, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE))
 
-        self.song_bbox = Main.DATA_CANVAS.bbox(self.more_button_draw)
-        self.song_coords["more_button"] = Main.DATA_CANVAS.bbox(self.more_button_draw)
+        self.song_bbox = self.canvas.bbox(self.more_button_draw)
+        self.song_coords["more_button"] = self.canvas.bbox(self.more_button_draw)
 
     def draw_name(self, x_coord):
         song_name = self.song_data["name"][:34]+'...' if len(self.song_data["name"]) > 34 else self.song_data["name"]
         song_author = self.song_data["author"][:34]+'...' if len(self.song_data["author"]) > 34 else self.song_data["author"]
 
-        self.name_draw = Main.DATA_CANVAS.create_text(x_coord, self.y, text=f"{song_name}  -  ", fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 12", anchor=W)
-        self.author_draw = Main.DATA_CANVAS.create_text(Main.DATA_CANVAS.bbox(self.name_draw)[2], self.y, text=song_author, fill=themes[Main.SETTINGS.theme]["text_second_color"], font="Verdana 12", anchor=W)
+        self.name_draw = self.canvas.create_text(x_coord, self.y, text=f"{song_name}  -  ", fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 12", anchor=W)
+        self.author_draw = self.canvas.create_text(self.canvas.bbox(self.name_draw)[2], self.y, text=song_author, fill=themes[Main.SETTINGS.theme]["text_second_color"], font="Verdana 12", anchor=W)
 
-        self.song_bbox = Main.DATA_CANVAS.bbox(self.author_draw)
-        self.song_coords["name"] = Main.DATA_CANVAS.bbox(self.author_draw)
+        self.song_bbox = self.canvas.bbox(self.author_draw)
+        self.song_coords["name"] = self.canvas.bbox(self.author_draw)
