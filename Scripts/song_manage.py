@@ -33,13 +33,13 @@ class SongManage:
 
     def click_play(self):
         def play_song():
+            Main.PLAYER_SETTINGS["play"] = 1
             Thread(target=Main.PLAYER.play, daemon=True).start() # play
             Thread(target=Main.SONG_LINE.song_time_thread, daemon=True).start()
-            Main.PLAYER_SETTINGS["play"] = 1
 
         def pause_song():
-            Main.PLAYER.pause()
             Main.PLAYER_SETTINGS["play"] = 0
+            Main.PLAYER.pause()
 
         # update button #
         if Main.PLAYER_SETTINGS["play"]:
@@ -51,7 +51,8 @@ class SongManage:
 
         # update past song #
         if Main.PAST_SONG["song_id"] in Main.LIST_OF_IDS:
-            list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
+            upd_class = list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])]
+            upd_class.draw_play_button(upd_class.song_coords["play_button"][0])
 
         # update window with more song info #
         if Main.MORE_INFO_INTERFACE.num_of_wins:
@@ -97,7 +98,8 @@ class SongManage:
 
         # update past song #
         if Main.PAST_SONG["song_id"] in Main.LIST_OF_IDS:
-            list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
+            upd_class = list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])]
+            upd_class.draw_play_button(upd_class.song_coords["play_button"][0])
 
         # update data #
         Main.PAST_SONG["class"] = Main.LIST_OF_PLAY["classes"][self.song_num]
@@ -105,7 +107,8 @@ class SongManage:
 
         # update new song #
         if Main.PAST_SONG["song_id"] in Main.LIST_OF_IDS:
-            list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])].draw_music(Main.PAST_SONG["class"], Main.PAST_SONG["past_lib"])
+            upd_class = list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])]
+            upd_class.draw_play_button(upd_class.song_coords["play_button"][0])
 
         # update song time #
         Main.SONG_TIME_NOW = "00:00"
@@ -116,7 +119,7 @@ class SongManage:
         # download song #
         Main.SONG_LINE.loading_song()
         try:
-            MusicStorage.download_music(Main.PAST_SONG["class"].song_data[4], Main.PAST_SONG["class"].song_data[2])
+            MusicStorage.download_music(Main.PAST_SONG["class"].song_data["song_id"], Main.PAST_SONG["class"].song_data["url"])
         except ConnectionError:
             Main.SONG_LINE.loading_song(error="connect_error")
             return
