@@ -45,8 +45,7 @@ class SettingsInterface(LoadBackground):
             Main.MENU_CANVAS["bg"] = themes[Main.SETTINGS.theme]["second_color"]
             Main.DATA_CANVAS["bg"] = themes[Main.SETTINGS.theme]["background"]
 
-            Main.JUST_LINE = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=25, bg=themes[Main.SETTINGS.theme]["second_color"], bd=0, highlightthickness=0)
-            Main.JUST_LINE.place(x=0, y=Main.SETTINGS.height-143)
+            draw_just_lines()
 
             Main.LOAD_IMAGE.upd_images()
             Main.MENU.update_buttons()
