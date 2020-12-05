@@ -13,17 +13,9 @@
 - GitHub: github.com/D0Nater -
 """
 
-""" For Interface """
-from tkinter import *
-
-""" For icon """
-from os import path
-
 """ For parse news """
-from threading import Thread
-
-from Scripts.news import News
 from Scripts.elements import *
+from Scripts.news import News
 
 """ For key events """
 from Scripts.key_event import KeyEvent
@@ -50,9 +42,6 @@ from Scripts.more_settings_interface import MoreSettingsInterface
 """ For Player """
 from Scripts.my_player import MyPlayer
 
-""" Main """
-from Scripts.main import Main
-
 
 class BounceBit:
     def __init__(self):
@@ -61,7 +50,6 @@ class BounceBit:
 
         # Start Program #
         Main.ROOT = Tk()
-        Main.ROOT.title("")
 
         # Settings #
         Main.SETTINGS = Settings("en", "dark") # default settings
@@ -69,8 +57,9 @@ class BounceBit:
         Main.SETTINGS.create_readme()
 
         # Window settings #
+        Main.ROOT.title("")
         Main.ROOT.iconbitmap(default=LoadPictures.resource_path(path.join("pictures", "program_icon.ico")))
-        Main.ROOT.geometry(f"{Main.SETTINGS.width-50}x{Main.SETTINGS.height-100}+10+10")
+        Main.ROOT.geometry(f"{Main.SETTINGS.width - 50}x{Main.SETTINGS.height - 100}+10+10")
         Main.ROOT.minsize(width=180, height=45)
         Main.ROOT.state("zoomed")
 
