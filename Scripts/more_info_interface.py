@@ -1,24 +1,12 @@
 # -*- coding: utf-8 -*-
 
-""" For Graphical Interface """
-from tkinter import *
-
 """ For copy text """
 from pyperclip import copy as copy_text
 
-""" Other Scripts """
 from Scripts.elements import *
 from Scripts.parse_music import ParseMusic
-from Scripts.playlist_storage import PlaylistStorage
-
-""" For song manage """
 from Scripts.song_manage import SongManage
-
-""" Images """
-from Scripts.images import MyImage
-
-""" Main """
-from Scripts.main import Main
+from Scripts.playlist_storage import PlaylistStorage
 
 
 song_more_info = {
