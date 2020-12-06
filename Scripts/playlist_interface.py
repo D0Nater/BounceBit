@@ -8,6 +8,12 @@ from Scripts.playlist_storage import PlaylistStorage
 class PlaylistInterface:
     def __init__(self):
         self.num_of_wins = 0
+        self.scroll_playlist = True
+
+    def on_mousewheel(self, event):
+        """ Scroll """
+        if self.scroll_playlist and self.num_of_wins and self.playlist_canvas.bbox("all")[3] > self.playlist_canvas.winfo_height():
+            self.playlist_canvas.yview_scroll(int(-1*(event.delta/100)), "units")
 
     def close_playlist(self):
         if not self.num_of_wins:
@@ -21,6 +27,8 @@ class PlaylistInterface:
             del self.playlist_canvas
 
             self.num_of_wins -= 1
+
+            Main.DATA_CANVAS.bind_all("<MouseWheel>", Main.WINDOW_FOR_DATA.on_mousewheel)
         except AttributeError:
             pass
 
@@ -53,11 +61,7 @@ class PlaylistInterface:
         self.close_playlist()
 
     def playlist_draw(self, playlist_class, playlist_name):
-        def on_mousewheel(event):
-            """ Scroll """
-            if self.num_of_wins and self.playlist_canvas.bbox("all")[3] > self.playlist_canvas.winfo_height():
-                self.playlist_canvas.yview_scroll(int(-1*(event.delta/100)), "units")
-
+        self.scroll_playlist = True
         self.playlist_name = playlist_name
         self.playlist_class = playlist_class
         self.music_data = PlaylistStorage.get_music("database2.sqlite", self.playlist_name)
@@ -71,7 +75,7 @@ class PlaylistInterface:
 
         # Draw window #
         self.playlist_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=Main.DATA_CANVAS.winfo_height()-40, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
-        self.playlist_canvas.bind_all("<MouseWheel>", on_mousewheel)
+        self.playlist_canvas.bind_all("<MouseWheel>", self.on_mousewheel)
         self.playlist_canvas.place(x=Main.SETTINGS.width/2, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
 
         # Playlist name #
