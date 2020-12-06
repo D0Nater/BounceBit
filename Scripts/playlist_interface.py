@@ -27,6 +27,10 @@ class PlaylistInterface:
             self.playlist_canvas.destroy()
             del self.playlist_canvas
 
+            self.top_line_canvas.delete("all")
+            self.top_line_canvas.destroy()
+            del self.top_line_canvas
+
             self.bottom_line_canvas.delete("all")
             self.bottom_line_canvas.destroy()
             del self.bottom_line_canvas
@@ -39,14 +43,14 @@ class PlaylistInterface:
 
     def draw_music(self):
         if not int(self.music_data["music_num"]):
-            self.playlist_canvas.create_text(40, self.playlist_canvas.bbox(self.playlists_name_draw)[3]+20, text=languages["add_error"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=NW, font="Verdana 13")
+            self.playlist_canvas.create_text(40, 20, text=languages["add_error"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=NW, font="Verdana 13")
             return
 
-        self.y_coord = 80
+        self.y_coord = 20
         for song in self.music_data["music"]:
             new_song = DrawSong(self.playlist_canvas, self.y_coord, self.song_num, self.music_data["music"][song], self.playlist_name)
 
-            new_song.draw_name(50)
+            new_song.draw_name(30)
             new_song.draw_play_button(new_song.song_bbox[2]+25, "second_color")
             new_song.draw_more_button(new_song.song_bbox[2]+9, "second_color")
 
@@ -58,11 +62,34 @@ class PlaylistInterface:
             self.song_num += 1
             self.y_coord += 40
 
+    def update_song_num_draw(self):
+        try: self.bottom_line_canvas.delete(self.song_num_draw)
+        except AttributeError: pass
+        self.song_num_draw = self.bottom_line_canvas.create_text(15, 8, text='Всего песен: '+str(self.song_num), fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 11")
+
+    def draw_top_line(self):
+        self.top_line_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=40, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
+        self.top_line_canvas.place(x=Main.SETTINGS.width/2, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
+
+        # Playlist name #
+        self.playlists_name_draw = self.top_line_canvas.create_text(15, 20, text=languages["Плейлист"][Main.SETTINGS.language]+" - ", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+        self.playlists_name_draw = self.top_line_canvas.create_text(self.top_line_canvas.bbox(self.playlists_name_draw)[2], 20, text=self.playlist_name, fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
+
+        # button "delete" #
+        self.playlists_delete_draw = self.top_line_canvas.create_window(self.top_line_canvas.bbox(self.playlists_name_draw)[2]+15, 21, window=Button(image=MyImage.TRASHCAN, width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.delete_playlist_click()), anchor=W)
+
+        # button "edit" #
+        self.playlists_edit_draw = self.top_line_canvas.create_window(self.top_line_canvas.bbox(self.playlists_delete_draw)[2]+8, 21, window=Button(image=MyImage.EDIT, width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: print("edit playlist")), anchor=W)
+
+        # button "close" #
+        self.top_line_canvas.create_window(Main.DATA_CANVAS.winfo_width()/1.5-10, 11, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_playlist()), anchor=NE)
+
+
     def draw_bottom_line(self):
         self.bottom_line_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=33, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
         self.bottom_line_canvas.place(x=Main.SETTINGS.width/2, y=Main.DATA_CANVAS.winfo_height()+24, anchor=N)
 
-        self.song_num_draw = self.bottom_line_canvas.create_text(15, 8, text='Всего песен: '+str(self.song_num), fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 11")
+        self.update_song_num_draw()
 
     def delete_playlist_click(self):
         self.playlist_class.delete_playlist(self.music_data)
@@ -83,26 +110,15 @@ class PlaylistInterface:
         Main.MORE_INFO_INTERFACE.close_song_info()
 
         # Draw window #
-        self.playlist_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=Main.DATA_CANVAS.winfo_height()-72, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
+        self.playlist_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=Main.DATA_CANVAS.winfo_height()-113, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
         self.playlist_canvas.bind_all("<MouseWheel>", self.on_mousewheel)
-        self.playlist_canvas.place(x=Main.SETTINGS.width/2, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
+        self.playlist_canvas.place(x=Main.SETTINGS.width/2, y=Main.DATA_CANVAS.bbox("all")[1]+131, anchor=N)
 
-        # Playlist name #
-        self.playlists_name_draw = self.playlist_canvas.create_text(40, 34, text=languages["Плейлист"][Main.SETTINGS.language]+" - ", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
-        self.playlists_name_draw = self.playlist_canvas.create_text(self.playlist_canvas.bbox(self.playlists_name_draw)[2], 35, text=self.playlist_name, fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
-
-        # button "delete" #
-        self.playlists_delete_draw = self.playlist_canvas.create_window(self.playlist_canvas.bbox(self.playlists_name_draw)[2]+15, 36, window=Button(image=MyImage.TRASHCAN, width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.delete_playlist_click()), anchor=W)
-
-        # button "edit" #
-        self.playlists_edit_draw = self.playlist_canvas.create_window(self.playlist_canvas.bbox(self.playlists_delete_draw)[2]+8, 36, window=Button(image=MyImage.EDIT, width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: print("edit playlist")), anchor=W)
-
-        # button "close" #
-        self.playlist_canvas.create_window(Main.DATA_CANVAS.winfo_width()/1.5-3, 6, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_playlist()), anchor=NE)
-
-        Main.ROOT.update()
+        just_px = self.playlist_canvas.create_text(0, 0, text=".", fill=themes[Main.SETTINGS.theme]["second_color"], anchor=W, font="Verdana 1")
 
         self.draw_music()
+
+        self.draw_top_line()
         self.draw_bottom_line()
 
         # Update window #
