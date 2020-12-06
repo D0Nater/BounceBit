@@ -7,6 +7,8 @@ from Scripts.playlist_storage import PlaylistStorage
 
 class PlaylistInterface:
     def __init__(self):
+        self.song_num = 0
+
         self.num_of_wins = 0
         self.scroll_playlist = True
 
@@ -23,8 +25,11 @@ class PlaylistInterface:
 
             self.playlist_canvas.delete("all")
             self.playlist_canvas.destroy()
-
             del self.playlist_canvas
+
+            self.bottom_line_canvas.delete("all")
+            self.bottom_line_canvas.destroy()
+            del self.bottom_line_canvas
 
             self.num_of_wins -= 1
 
@@ -37,10 +42,9 @@ class PlaylistInterface:
             self.playlist_canvas.create_text(40, self.playlist_canvas.bbox(self.playlists_name_draw)[3]+20, text=languages["add_error"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=NW, font="Verdana 13")
             return
 
-        song_num = 0
         self.y_coord = 80
         for song in self.music_data["music"]:
-            new_song = DrawSong(self.playlist_canvas, self.y_coord, song_num, self.music_data["music"][song], self.playlist_name)
+            new_song = DrawSong(self.playlist_canvas, self.y_coord, self.song_num, self.music_data["music"][song], self.playlist_name)
 
             new_song.draw_name(50)
             new_song.draw_play_button(new_song.song_bbox[2]+25, "second_color")
@@ -51,17 +55,25 @@ class PlaylistInterface:
             if Main.SONG_PLAY_NOW["song_id"] == self.music_data["music"][song]["song_id"]:
                 Main.PAST_SONG["class"] = new_song
 
-            song_num += 1
+            self.song_num += 1
             self.y_coord += 40
+
+    def draw_bottom_line(self):
+        self.bottom_line_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=33, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
+        self.bottom_line_canvas.place(x=Main.SETTINGS.width/2, y=Main.DATA_CANVAS.winfo_height()+24, anchor=N)
+
+        self.song_num_draw = self.bottom_line_canvas.create_text(15, 8, text='Всего песен: '+str(self.song_num), fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 11")
 
     def delete_playlist_click(self):
         self.playlist_class.delete_playlist(self.music_data)
-
         PlaylistStorage.delete_playlist("database2.sqlite", self.playlist_name)
         self.close_playlist()
 
     def playlist_draw(self, playlist_class, playlist_name):
+        self.song_num = 0
+        self.num_of_wins += 1
         self.scroll_playlist = True
+
         self.playlist_name = playlist_name
         self.playlist_class = playlist_class
         self.music_data = PlaylistStorage.get_music("database2.sqlite", self.playlist_name)
@@ -70,11 +82,8 @@ class PlaylistInterface:
         self.close_playlist()
         Main.MORE_INFO_INTERFACE.close_song_info()
 
-        # Create new window #
-        self.num_of_wins += 1
-
         # Draw window #
-        self.playlist_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=Main.DATA_CANVAS.winfo_height()-40, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
+        self.playlist_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=Main.DATA_CANVAS.winfo_height()-72, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
         self.playlist_canvas.bind_all("<MouseWheel>", self.on_mousewheel)
         self.playlist_canvas.place(x=Main.SETTINGS.width/2, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
 
@@ -94,6 +103,7 @@ class PlaylistInterface:
         Main.ROOT.update()
 
         self.draw_music()
+        self.draw_bottom_line()
 
         # Update window #
         self.playlist_canvas.config(scrollregion=self.playlist_canvas.bbox("all"))
