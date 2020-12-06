@@ -145,7 +145,7 @@ class SongLine(SongManage):
         if Main.PLAYER_SETTINGS["play"]:
             self.play_button = Button(image=MyImage.PAUSE, command=lambda: self.click_play(), width=16, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE)
         else:
-            self.play_button = Button(image=MyImage.PLAY, command=lambda: self.click_play(), width=14, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE)
+            self.play_button = Button(image=MyImage.PLAY, command=lambda: self.click_play(), width=16, height=23, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE)
         self.play_button_draw = Main.SONG_LINE_CANVAS.create_window(Main.SONG_LINE_CANVAS.bbox(self.behind_song_button)[2]+8, Main.SONG_LINE_CANVAS.bbox(self.song_time)[1]+8, anchor=W, window=self.play_button)
 
         # Button "after song" #
