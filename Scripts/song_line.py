@@ -29,7 +29,7 @@ class SongLine(SongManage):
 
         while Main.PLAYER_SETTINGS["play"] and song_id_now == Main.SONG_PLAY_NOW["song_id"]:
             # after song #
-            if int(Main.PLAYER.get_song_time()) >= self.sec_song_duration:
+            if int(Main.PLAYER.get_time()) >= self.sec_song_duration:
                 if Main.PLAYER_SETTINGS["cycle"]:
                     self.behind_after_music(0)
                     return
@@ -39,7 +39,7 @@ class SongLine(SongManage):
                 self.behind_after_music(1)
                 return
 
-            elif int(Main.PLAYER.get_song_time()) <= self.sec_song_duration:
+            elif int(Main.PLAYER.get_time()) <= self.sec_song_duration:
                 self.update_time()
 
             time_sleep(1)
@@ -56,7 +56,7 @@ class SongLine(SongManage):
         Main.ROOT.update()
 
     def update_time(self):
-        song_time_now = int(Main.PLAYER.get_song_time())
+        song_time_now = int(Main.PLAYER.get_time())
 
         Main.SONG_TIME_NOW = time.strftime("%M:%S", time.gmtime(song_time_now))
         self.num_for_time_line_now = self.num_for_time_line*song_time_now
