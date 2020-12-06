@@ -29,8 +29,8 @@ class PlaylistInterface:
             self.playlist_canvas.create_text(40, self.playlist_canvas.bbox(self.playlists_name_draw)[3]+20, text=languages["add_error"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_second_color"], anchor=NW, font="Verdana 13")
             return
 
-        self.y_coord = 80
         song_num = 0
+        self.y_coord = 80
         for song in self.music_data["music"]:
             new_song = DrawSong(self.playlist_canvas, self.y_coord, song_num, self.music_data["music"][song], self.playlist_name)
 
@@ -46,15 +46,18 @@ class PlaylistInterface:
             song_num += 1
             self.y_coord += 40
 
-    def delete_playlist(self):
+    def delete_playlist_click(self):
         self.playlist_class.delete_playlist(self.music_data)
 
         PlaylistStorage.delete_playlist("database2.sqlite", self.playlist_name)
         self.close_playlist()
 
-        Main.SCROLL_WIN = True
-
     def playlist_draw(self, playlist_class, playlist_name):
+        def on_mousewheel(event):
+            """ Scroll """
+            if self.num_of_wins and self.playlist_canvas.bbox("all")[3] > self.playlist_canvas.winfo_height():
+                self.playlist_canvas.yview_scroll(int(-1*(event.delta/100)), "units")
+
         self.playlist_name = playlist_name
         self.playlist_class = playlist_class
         self.music_data = PlaylistStorage.get_music("database2.sqlite", self.playlist_name)
@@ -68,6 +71,7 @@ class PlaylistInterface:
 
         # Draw window #
         self.playlist_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=Main.DATA_CANVAS.winfo_height()-40, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
+        self.playlist_canvas.bind_all("<MouseWheel>", on_mousewheel)
         self.playlist_canvas.place(x=Main.SETTINGS.width/2, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
 
         # Playlist name #
@@ -75,7 +79,7 @@ class PlaylistInterface:
         self.playlists_name_draw = self.playlist_canvas.create_text(self.playlist_canvas.bbox(self.playlists_name_draw)[2], 35, text=self.playlist_name, fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
 
         # button "delete" #
-        self.playlists_delete_draw = self.playlist_canvas.create_window(self.playlist_canvas.bbox(self.playlists_name_draw)[2]+15, 36, window=Button(image=MyImage.TRASHCAN, width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.delete_playlist()), anchor=W)
+        self.playlists_delete_draw = self.playlist_canvas.create_window(self.playlist_canvas.bbox(self.playlists_name_draw)[2]+15, 36, window=Button(image=MyImage.TRASHCAN, width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.delete_playlist_click()), anchor=W)
 
         # button "edit" #
         self.playlists_edit_draw = self.playlist_canvas.create_window(self.playlist_canvas.bbox(self.playlists_delete_draw)[2]+8, 36, window=Button(image=MyImage.EDIT, width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: print("edit playlist")), anchor=W)
@@ -86,6 +90,9 @@ class PlaylistInterface:
         Main.ROOT.update()
 
         self.draw_music()
+
+        # Update window #
+        self.playlist_canvas.config(scrollregion=self.playlist_canvas.bbox("all"))
 
         Main.SCROLL_WIN = False
 
