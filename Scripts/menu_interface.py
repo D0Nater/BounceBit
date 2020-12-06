@@ -9,7 +9,7 @@ class Menu(MusicInterface):
     def draw_menu(self):
         Main.MENU_CANVAS = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=77, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=0)
         Main.PROGRAM_NAME_DRAW = Main.MENU_CANVAS.create_text(10, 28, text=PROGRAM_NAME, fill="red", anchor=W, font="Aharoni 20") # program name
-        Main.VERSION_DRAW = Main.MENU_CANVAS.create_text(145, 30, text=f"v{VERSION}", fill="red", anchor=W) # version
+        Main.VERSION_DRAW = Main.MENU_CANVAS.create_text(Main.MENU_CANVAS.bbox(Main.PROGRAM_NAME_DRAW)[2]+3, 30, text=f"v{VERSION}", fill="red", anchor=W) # version
         Main.MENU_CANVAS.pack()
 
     def update_buttons(self):
