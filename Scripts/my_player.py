@@ -25,9 +25,6 @@ class MyPlayer:
     def set_volume(self, num):
         self.player.volume = num
 
-    def get_song_time(self):
-        return self.get_time()
-
     def set_time(self, new_time):
         self.reset()
         self._time = new_time
@@ -41,7 +38,7 @@ class MyPlayer:
         self._systime = time_time()
         while self.play_song_while:
             self.player.play()
-            time_sleep(0.4)
+            time_sleep(0.34)
         return
 
     def pause(self):
