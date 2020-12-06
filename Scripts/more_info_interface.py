@@ -113,7 +113,11 @@ class MoreInfoInterface(AddToPlaylist):
         if not self.num_of_wins:
             return
         try:
-            Main.SCROLL_WIN = True
+            if Main.PLAYLIST_INTERFACE.num_of_wins:
+                Main.PLAYLIST_INTERFACE.scroll_playlist = True
+                Main.PLAYLIST_INTERFACE.playlist_canvas.bind_all("<MouseWheel>", Main.PLAYLIST_INTERFACE.on_mousewheel)
+            else:
+                Main.SCROLL_WIN = True
 
             self.close_window()
 
@@ -134,13 +138,14 @@ class MoreInfoInterface(AddToPlaylist):
         except AttributeError:
             pass
 
-    def song_info_draw(self, data, searched_data=None):
+    def song_info_draw(self, song_data, searched_data=None):
         global song_more_info
 
         # Delete past window #
         self.close_song_info()
 
-        song_more_info = data
+        song_more_info = song_data
+        Main.PLAYLIST_INTERFACE.scroll_playlist = False
 
         # Create new window #
         self.num_of_wins += 1
@@ -180,7 +185,7 @@ class MoreInfoInterface(AddToPlaylist):
 
         # Copy song url #
         self.song_url_draw = self.song_info_canvas.create_text(40, 210, text="URL", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
-        self.song_url_button = self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_url_draw)[2]+15, self.song_info_canvas.bbox(self.song_url_draw)[1]+10, window=Button(image=MyImage.COPY, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: copy_text(SongManage.song_url(data[4]))), anchor=W)
+        self.song_url_button = self.song_info_canvas.create_window(self.song_info_canvas.bbox(self.song_url_draw)[2]+15, self.song_info_canvas.bbox(self.song_url_draw)[1]+10, window=Button(image=MyImage.COPY, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: copy_text(SongManage.song_url(song_data["song_id"]))), anchor=W)
 
         Main.ROOT.update()
 
