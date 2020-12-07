@@ -3,6 +3,7 @@
 from tkinter import *
 
 from os import path
+
 from threading import Thread
 
 import time
@@ -32,7 +33,7 @@ def clear_list_of_songs():
 
 
 """ Elements for main program """
-VERSION = "0.5.0"
+VERSION = "0.5.1"
 AUTHOR = "D0Nater"
 GITHUB = "https://github.com/D0Nater/BounceBit/"
 PROGRAM_NAME = "Bounce Bit"
