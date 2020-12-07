@@ -31,45 +31,11 @@ def sql_request(db_name, text, args=()):
 
 class PlaylistStorage:
     def check_playlist_in_db(db_name, playlist_name):
-        """ Check playlist in database """
         return 0 if sql_request(
             db_name,
             "SELECT * FROM user_playlists WHERE name=?",
             (encode_text(playlist_name),)
         ) is None else 1
-
-    def check_song_in_playlist(db_name, playlist_name, song_id):
-        try:
-            PlaylistStorage.get_music(db_name, playlist_name)["music"][song_id]
-            return 1
-        except KeyError:
-            return 0
-
-    def add_song_in_playlist(db_name, playlist_name, song_data):
-        music = PlaylistStorage.get_music(db_name, playlist_name)
-
-        music["music"][song_data["song_id"]] = song_data
-
-        music["music_num"] += 1
-
-        sql_request(
-            db_name,
-            "UPDATE user_playlists SET music=? WHERE name=?",
-            (encode_text(json.dumps(music)), encode_text(playlist_name))
-        )
-
-    def del_song_out_playlist(db_name, playlist_name, song_id):
-        music = PlaylistStorage.get_music(db_name, playlist_name)
-
-        del music["music"][song_id]
-
-        music["music_num"] -= 1
-
-        sql_request(
-            db_name,
-            "UPDATE user_playlists SET music=? WHERE name=?",
-            (encode_text(json.dumps(music)), encode_text(playlist_name))
-        )
 
     def get_playlists(db_name):
         error_correction()
@@ -97,19 +63,7 @@ class PlaylistStorage:
         conn.close()
         return playlists
 
-    def get_music(db_name, playlist_name):
-        return json.loads(
-            decode_text(
-                sql_request(
-                    db_name,
-                    "SELECT music FROM user_playlists WHERE name=?",
-                    (encode_text(playlist_name),)
-                )[0]
-            )
-        )
-
-    def add_playlist(db_name, playlist_name, music_data={"music":{},"music_num":0}):
-
+    def add_playlist(db_name, playlist_name, music_data={"music":{"num":0}}):
         # new playlist id for database #
         try:
             playlist_id = sql_request(db_name, "SELECT * FROM user_playlists ORDER BY playlist_id DESC LIMIT 1")[2]+1
@@ -127,4 +81,52 @@ class PlaylistStorage:
             db_name,
             "DELETE FROM user_playlists WHERE name=?",
             (encode_text(playlist_name),)
+        )
+
+    def check_song_in_playlist(db_name, playlist_name, song_id):
+        try:
+            PlaylistStorage.get_music(db_name, playlist_name)["music"][song_id]
+            return 1
+        except KeyError:
+            return 0
+
+    def get_music(db_name, playlist_name):
+        return json.loads(
+            decode_text(
+                sql_request(
+                    db_name,
+                    "SELECT music FROM user_playlists WHERE name=?",
+                    (encode_text(playlist_name),)
+                )[0]
+            )
+        )
+
+    def add_song_in_playlist(db_name, playlist_name, song_data):
+        music_json = PlaylistStorage.get_music(db_name, playlist_name)
+
+        song_num = "song"+str(music_json["music"]["num"])
+        music_json["music"][song_num] = song_data
+
+        music_json["music"][song_data["song_id"]] = song_num # song link
+
+        music_json["music"]["num"] += 1
+
+        sql_request(
+            db_name,
+            "UPDATE user_playlists SET music=? WHERE name=?",
+            (encode_text(json.dumps(music_json)), encode_text(playlist_name))
+        )
+
+    def del_song_out_playlist(db_name, playlist_name, song_id):
+        music_json = PlaylistStorage.get_music(db_name, playlist_name)
+
+        del music_json["music"][music_json["music"][song_id]]
+        del music_json["music"][song_id]
+
+        music_json["music"]["num"] -= 1
+
+        sql_request(
+            db_name,
+            "UPDATE user_playlists SET music=? WHERE name=?",
+            (encode_text(json.dumps(music_json)), encode_text(playlist_name))
         )
