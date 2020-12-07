@@ -73,13 +73,10 @@ class MusicInterface(SearchData):
 
     def draw_playlist_interface(self):
         def delete_playlist_click():
-            print('del')
-            # self.playlist_class.delete_playlist(self.music_data)
-            # PlaylistStorage.delete_playlist("database2.sqlite", self.playlist_name)
-            # self.close_playlist()
+            pass
 
         def edit_playlist_click():
-            print('edit')
+            pass
 
         # button "delete" #
         self.playlists_delete_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.lib_name)[2]+15, Main.DATA_CANVAS.bbox(self.lib_name)[1], anchor=NW, window=Button(image=MyImage.TRASHCAN, width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], command=lambda: delete_playlist_click()))
