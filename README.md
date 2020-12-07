@@ -17,13 +17,10 @@ Program for listen music free
 7. In folder 'dist' will be BounceBit.exe
 
 # New
-   Version 0.4.1
-1. More music
-2. Song url
+   Version 0.5.1
+1. Playlists
+2. Improved interface
 3. Fixed some bugs
-4. Button cycle song
-5. Button random song
-6. New images for buttons
 
 # Packages
 <code> pip install lxml </code> <br>
