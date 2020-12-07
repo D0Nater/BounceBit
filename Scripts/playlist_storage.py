@@ -76,6 +76,13 @@ class PlaylistStorage:
             (encode_text(playlist_name), encode_text(json.dumps(music_data)), playlist_id)
         )
 
+    def change_playlist(db_name, playlist_name, new_playlist_name):
+        sql_request(
+            db_name,
+            "UPDATE user_playlists SET name=? WHERE name=?",
+            (encode_text(new_playlist_name), encode_text(playlist_name))
+        )
+
     def delete_playlist(db_name, playlist_name):
         sql_request(
             db_name,
