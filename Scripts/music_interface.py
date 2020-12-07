@@ -220,17 +220,17 @@ class MusicInterface(SearchData):
         page_x = Main.DATA_CANVAS.bbox(self.lib_name)[2]+35
         if self.lib.split(" ")[0] == "Поиск":
             for page_num in self.all_data["pages"]:
-                PageButton(page_num, self.music_interface, (f"Поиск {page_num}", None, self.search_text)).draw_button(page_x, Main.DATA_CANVAS.bbox(self.lib_name)[3]-9)
+                PageButton(page_num, self.music_interface, (f"Поиск {page_num}", None, self.search_text)).draw_button(page_x, Main.DATA_CANVAS.bbox(self.lib_name)[3]-12)
                 page_x += 29
 
         elif self.lib.split(" ")[0] == "Жанр":
             for page_num in self.all_data["pages"]:
-                PageButton(page_num, self.music_interface, ("Жанр %s %s"%(self.lib.split(" ")[1], page_num), None, "")).draw_button(page_x, Main.DATA_CANVAS.bbox(self.lib_name)[3]-9)
+                PageButton(page_num, self.music_interface, ("Жанр %s %s"%(self.lib.split(" ")[1], page_num), None, "")).draw_button(page_x, Main.DATA_CANVAS.bbox(self.lib_name)[3]-12)
                 page_x += 29
 
         elif self.lib.split(" ")[0] == "Рекомендации":
             for page_num in self.all_data["pages"]:
-                PageButton(page_num, self.music_interface, (f"Рекомендации {page_num}", None)).draw_button(page_x, Main.DATA_CANVAS.bbox(self.lib_name)[3]-9)
+                PageButton(page_num, self.music_interface, (f"Рекомендации {page_num}", None)).draw_button(page_x, Main.DATA_CANVAS.bbox(self.lib_name)[3]-12)
                 page_x += 29
 
     def music_interface(self, lib, all_data, search_text=""):
