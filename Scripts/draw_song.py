@@ -81,8 +81,8 @@ class DrawSong(SongManage):
             # Delete song #
             self.click_save = 0
             self.save_button["image"] = MyImage.SAVE
-            MusicStorage.delete_song_file(self.song_data["song_id"])
             MusicStorage.delete_song("database3.sqlite", self.song_data["song_id"])
+            MusicStorage.delete_song_file(self.song_data["song_id"])
         else:
             # Download song #
             self.click_save = 1
