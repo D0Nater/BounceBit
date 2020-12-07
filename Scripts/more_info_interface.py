@@ -113,11 +113,7 @@ class MoreInfoInterface(AddToPlaylist):
         if not self.num_of_wins:
             return
         try:
-            if Main.PLAYLIST_INTERFACE.num_of_wins:
-                Main.PLAYLIST_INTERFACE.scroll_playlist = True
-                Main.PLAYLIST_INTERFACE.playlist_canvas.bind_all("<MouseWheel>", Main.PLAYLIST_INTERFACE.on_mousewheel)
-            else:
-                Main.SCROLL_WIN = True
+            Main.SCROLL_WIN = True
 
             self.close_window()
 
@@ -145,7 +141,6 @@ class MoreInfoInterface(AddToPlaylist):
         self.close_song_info()
 
         song_more_info = song_data
-        Main.PLAYLIST_INTERFACE.scroll_playlist = False
 
         # Create new window #
         self.num_of_wins += 1
