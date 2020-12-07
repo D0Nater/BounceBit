@@ -104,6 +104,8 @@ class DrawPlaylists:
             Main.DATA_CANVAS.delete(self.create_button)
             Main.DATA_CANVAS.delete(self.cancel_button)
 
+            self.set_playlist_name.unbind("<Return>")
+
             if draw:
                 self.draw_new_playlist(self.x_new_playlist, self.y_new_playlist)
         except AttributeError:
