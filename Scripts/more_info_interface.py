@@ -51,17 +51,10 @@ class AddToPlaylist:
                         click_add = 0
                         self.add_button["image"] = MyImage.NEW_PLAYLIST
                         PlaylistStorage.del_song_out_playlist("database2.sqlite", playlists_name, song_more_info["song_id"])
-
-                        Main.PLAYLIST_INTERFACE.song_num -= 1
                     else:
                         click_add = 1
                         self.add_button["image"] = MyImage.NEW_PLAYLIST_CLICK
                         PlaylistStorage.add_song_in_playlist("database2.sqlite", playlists_name, song_more_info)
-
-                        Main.PLAYLIST_INTERFACE.song_num += 1
-
-                    if Main.PLAYLIST_INTERFACE.num_of_wins:
-                        Main.PLAYLIST_INTERFACE.update_song_num_draw()
 
                 self.draw_name = self.main_canvas.create_text(40, y, text=self.name, fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
 
