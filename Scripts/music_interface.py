@@ -112,6 +112,7 @@ class MusicInterface(SearchData):
             self.lib_name = Main.DATA_CANVAS.create_text(14, 15, text=languages["pl_name"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13", anchor=W)
 
             self.set_playlist_name = Entry(textvariable=self.playlist_name_var, width=18, bg=themes[Main.SETTINGS.theme]["background"], fg=themes[Main.SETTINGS.theme]["text_color"], selectbackground="red", insertbackground=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 11")
+            self.set_playlist_name.insert(0, self.playlist_name)
             self.set_playlist_name_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.lib_name)[2]+19, Main.DATA_CANVAS.bbox(self.lib_name)[3]-9, window=self.set_playlist_name, anchor=W)
 
             self.set_playlist_name.bind("<Return>", save_playlist)
