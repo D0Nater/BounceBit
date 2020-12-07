@@ -84,7 +84,7 @@ class AddToPlaylist:
 
         self.playlist_win_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/2/2+50, height=Main.DATA_CANVAS.winfo_height()-38, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
         self.playlist_win_canvas.bind_all("<MouseWheel>", on_mousewheel)
-        self.playlist_win_canvas.place(x=Main.SETTINGS.width/2-50, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
+        self.playlist_win_canvas.place(x=Main.SETTINGS.width/2-50, y=Main.DATA_CANVAS.bbox("all")[1]+95, anchor=N)
 
         # just pixel #
         just_px = self.playlist_win_canvas.create_text(0, 0, text=".", fill=themes[Main.SETTINGS.theme]["second_color"], anchor=W, font="Verdana 1")
@@ -147,7 +147,7 @@ class MoreInfoInterface(AddToPlaylist):
 
         # Draw window #
         self.song_info_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/2/2+50, height=Main.DATA_CANVAS.winfo_height()-38, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
-        self.song_info_canvas.place(x=Main.SETTINGS.width/2-50, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
+        self.song_info_canvas.place(x=Main.SETTINGS.width/2-50, y=Main.DATA_CANVAS.bbox("all")[1]+95, anchor=N)
 
         # button "close" #
         self.song_info_canvas.create_window(Main.DATA_CANVAS.winfo_width()/2/2+46, 7, window=Button(image=MyImage.CLOSE, width=17, height=17, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], command=lambda: self.close_song_info()), anchor=NE)
