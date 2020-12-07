@@ -35,7 +35,6 @@ from Scripts.window_for_data import WindowForData
 from Scripts.song_line import SongLine
 
 from Scripts.settings_interface import SettingsInterface
-from Scripts.playlist_interface import PlaylistInterface
 from Scripts.more_info_interface import MoreInfoInterface
 from Scripts.more_settings_interface import MoreSettingsInterface
 
@@ -69,7 +68,6 @@ class BounceBit:
         # Interface #
         Main.SETTINGS_INTERFACE = SettingsInterface()
         Main.MORE_SETTINGS = MoreSettingsInterface()
-        Main.PLAYLIST_INTERFACE = PlaylistInterface()
         Main.MORE_INFO_INTERFACE = MoreInfoInterface()
 
         # Draw menu #
