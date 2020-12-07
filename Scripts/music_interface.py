@@ -6,6 +6,7 @@ from Scripts.settings import decode_text
 from Scripts.elements import *
 from Scripts.draw_song import DrawSong
 from Scripts.parse_music import ParseMusic
+from Scripts.music_storage import MusicStorage
 from Scripts.playlist_storage import PlaylistStorage
 from Scripts.playlist_interface import DrawPlaylists
 
@@ -57,26 +58,71 @@ class MusicInterface(SearchData):
             return ParseMusic.genres_music(languages[self.lib.split(" ")[1]]["num"] , int(self.lib.split(" ")[2]))
 
         elif self.lib.split(" ")[0] == "Плейлист":
-            playlist_name = " ".join(self.lib.split(" ")[1:])
+            self.playlist_name = " ".join(self.lib.split(" ")[1:])
 
-            music_data = PlaylistStorage.get_music("database2.sqlite", playlist_name)
+            music_data = PlaylistStorage.get_music("database2.sqlite", self.playlist_name)
 
             all_data = {"music": {"num": int(music_data["music"]["num"])}, "error": None if int(music_data["music"]["num"]) else "add_error"}
 
-            song_num = 0
+            song_num = int(music_data["music"]["num"])-1
             for song in music_data["music"]:
                 if "song" in song:
                     all_data["music"][f"song{song_num}"] = music_data["music"][song]
-                    song_num += 1
+                    song_num -= 1
 
             return all_data
 
     def draw_playlist_interface(self):
         def delete_playlist_click():
-            pass
+            PlaylistStorage.delete_playlist("database2.sqlite", self.playlist_name)
+            self.music_interface("Избранное", MusicStorage.read_music("database2.sqlite", "add_error"))
 
         def edit_playlist_click():
-            pass
+            def cancel_entry(save=False):
+                Main.DATA_CANVAS.delete(self.lib_name)
+                self.lib_name_text = languages["Плейлист"][Main.SETTINGS.language]+" - "+self.playlist_name_var.get() if save else self.lib_name_text
+                self.lib_name = Main.DATA_CANVAS.create_text(14, 15, text=self.lib_name_text, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13", anchor=W)
+
+                del self.playlist_name_var
+
+                Main.DATA_CANVAS.delete(self.create_button)
+                Main.DATA_CANVAS.delete(self.cancel_button)
+                Main.DATA_CANVAS.delete(self.set_playlist_name_draw)
+
+                self.set_playlist_name.unbind("<Return>")
+
+                self.draw_playlist_interface()
+
+            def save_playlist(event):
+                new_name = self.playlist_name_var.get()
+                if not len(new_name) > 1 or PlaylistStorage.check_playlist_in_db("database2.sqlite", new_name):
+                    return
+
+                PlaylistStorage.change_playlist("database2.sqlite", self.playlist_name, new_name)
+
+                cancel_entry(save=True)
+
+            Main.DATA_CANVAS.delete(self.playlists_delete_draw)
+            Main.DATA_CANVAS.delete(self.playlists_edit_draw)
+
+            # Draw block for set playlist name #
+            self.playlist_name_var = StringVar()
+
+            Main.DATA_CANVAS.delete(self.lib_name)
+            self.lib_name = Main.DATA_CANVAS.create_text(14, 15, text=languages["pl_name"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13", anchor=W)
+
+            self.set_playlist_name = Entry(textvariable=self.playlist_name_var, width=18, bg=themes[Main.SETTINGS.theme]["background"], fg=themes[Main.SETTINGS.theme]["text_color"], selectbackground="red", insertbackground=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 11")
+            self.set_playlist_name_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.lib_name)[2]+19, Main.DATA_CANVAS.bbox(self.lib_name)[3]-9, window=self.set_playlist_name, anchor=W)
+
+            self.set_playlist_name.bind("<Return>", save_playlist)
+
+            # Draw button for create playlist #
+            self.create_button = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.set_playlist_name_draw)[2]+12, Main.DATA_CANVAS.bbox(self.set_playlist_name_draw)[3]-3, anchor=SW, window=Button(image=MyImage.OK, width=18, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
+                command=lambda: save_playlist(None)))
+
+            # Draw button for cancel #
+            self.cancel_button = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.create_button)[2]+12, Main.DATA_CANVAS.bbox(self.set_playlist_name_draw)[3]-1, anchor=SW, window=Button(image=MyImage.CLOSE, width=18, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
+                command=lambda: cancel_entry()))
 
         # button "delete" #
         self.playlists_delete_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.lib_name)[2]+15, Main.DATA_CANVAS.bbox(self.lib_name)[1], anchor=NW, window=Button(image=MyImage.TRASHCAN, width=18, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], command=lambda: delete_playlist_click()))
@@ -207,11 +253,11 @@ class MusicInterface(SearchData):
 
         # lib name #
         if self.lib.split(" ")[0] == "Жанр":
-            lib_name_text = languages["Жанр"][Main.SETTINGS.language]+"-"+languages[self.lib.split(" ")[1]][Main.SETTINGS.language]+" - "+languages["Страница"][Main.SETTINGS.language]+" "+self.lib.split(" ")[2]
+            self.lib_name_text = languages["Жанр"][Main.SETTINGS.language]+"-"+languages[self.lib.split(" ")[1]][Main.SETTINGS.language]+" - "+languages["Страница"][Main.SETTINGS.language]+" "+self.lib.split(" ")[2]
         elif self.lib.split(" ")[0] == "Плейлист":
-           lib_name_text = languages["Плейлист"][Main.SETTINGS.language]+" - "+" ".join(self.lib.split(" ")[1:])
+           self.lib_name_text = languages["Плейлист"][Main.SETTINGS.language]+" - "+" ".join(self.lib.split(" ")[1:])
         else:
-            lib_name_text = languages[self.lib.split(" ")[0]][Main.SETTINGS.language]+((" - "+languages["Страница"][Main.SETTINGS.language]+" "+self.lib.split(" ")[1]) if len(self.lib.split(" ")) > 1 else "")
+            self.lib_name_text = languages[self.lib.split(" ")[0]][Main.SETTINGS.language]+((" - "+languages["Страница"][Main.SETTINGS.language]+" "+self.lib.split(" ")[1]) if len(self.lib.split(" ")) > 1 else "")
 
         # delete logo #
         try: del Main.SCREENSAVER
@@ -228,37 +274,30 @@ class MusicInterface(SearchData):
         load_text = Main.DATA_CANVAS.create_text(14, 15, text=languages["Загрузка"][Main.SETTINGS.language]+"...", fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13", anchor=W)
         Main.ROOT.update()
 
-        # Search data #
         if self.all_data is None:
             self.all_data = self.search_data()
 
         Main.DATA_CANVAS.delete(load_text)
 
-        # Lib name #
-        self.lib_name = Main.DATA_CANVAS.create_text(14, 15, text=lib_name_text, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13", anchor=W)
+        self.lib_name = Main.DATA_CANVAS.create_text(14, 15, text=self.lib_name_text, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13", anchor=W)
         self.y = Main.DATA_CANVAS.bbox(self.lib_name)[3]
 
-        # Search line #
         self.draw_search()
 
-        # Genres #
         self.draw_genres()
 
-        # Playlists #
         self.draw_playlists()
 
         if self.lib.split(" ")[0] == "Плейлист":
             self.draw_playlist_interface()
 
         if self.all_data["error"] is None:
-            # Music #
             self.draw_music()
 
-            # Pages #
             self.draw_pages()
 
-            # Update window #
             Main.ROOT.update()
+            # Update window #
             Main.DATA_CANVAS.config(scrollregion=Main.DATA_CANVAS.bbox("all"))
 
             Main.MENU.update_buttons()
