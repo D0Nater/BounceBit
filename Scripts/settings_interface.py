@@ -57,7 +57,6 @@ class SettingsInterface(LoadBackground):
         # close all #
         Main.SETTINGS_INTERFACE.del_news_block()
         Main.MORE_INFO_INTERFACE.close_song_info()
-        Main.PLAYLIST_INTERFACE.close_playlist()
         Main.MORE_SETTINGS.close_window()
 
         Main.PAST_SONG["lib_now"] = "Settings"
