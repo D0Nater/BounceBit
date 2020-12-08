@@ -39,6 +39,8 @@ class SettingsInterface:
             Main.SETTINGS.language = new_setting
             Main.MENU.update_buttons()
 
+            Main.UPDATE_PROGRAM.update_msg()
+
         self.settings_interface()
 
     def del_news_block(self):
