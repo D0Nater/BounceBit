@@ -6,15 +6,12 @@ import sqlite3
 """ For files """
 from os import path, mkdir, remove
 
-""" For clear RAM """
-from gc import collect as clear_ram
-
 """ For download music """
 import requests
 from mutagen.easyid3 import EasyID3
 
 """ For encode/decode db4 """
-from Scripts.settings import encode_text, decode_text
+from Scripts.settings import encode_text, decode_text, sql_request
 
 
 def error_correction():
@@ -89,6 +86,15 @@ class MusicStorage:
         if path.exists(f"Databases/Download_Music/{song_id}.mp3"):
             remove(f"Databases/Download_Music/{song_id}.mp3")
 
+    def check_song_in_db(db_name, song_id):
+        error_correction()
+
+        return 0 if sql_request(
+            db_name,
+            "SELECT * FROM user_music WHERE song_id=?",
+            (encode_text(song_id),)
+        ) is None else 1
+
     def read_music(db_name, error):
         error_correction()
 
@@ -124,32 +130,19 @@ class MusicStorage:
         conn.close()
         return json_text
 
-    def check_song_in_db(db_name, song_id):
-        """ Check song in database """
-        error_correction()
-
-        conn = sqlite3.connect(f"Databases/{db_name}")
-        cursor = conn.cursor()
-
-        answ = 0 if (cursor.execute("SELECT * FROM user_music WHERE song_id=?", (encode_text(song_id),))).fetchone() is None else 1
-
-        conn.close()
-        return answ
-
     def add_song(db_name, song_data):
         error_correction()
 
-        conn = sqlite3.connect(f"Databases/{db_name}")
-        cursor = conn.cursor()
-
         # new song num for database #
         try:
-            song_num = cursor.execute("SELECT * FROM user_music ORDER BY num DESC LIMIT 1").fetchone()[4]+1
+            song_num = sql_request(db_name, "SELECT * FROM user_music ORDER BY num DESC LIMIT 1")[4]+1
         except:
-            song_num = cursor.execute("SELECT count(*) FROM user_music ORDER BY song_id").fetchone()[0]
+            song_num = sql_request(db_name, "SELECT count(*) FROM user_music ORDER BY song_id")[0]
 
-        cursor.execute(
-            "INSERT INTO user_music VALUES (?,?,?,?,?,?)", (
+        sql_request(
+            db_name,
+            "INSERT INTO user_music VALUES (?,?,?,?,?,?)",
+            (
                 encode_text(song_data["name"]),
                 encode_text(song_data["author"]),
                 encode_text(song_data["url"]),
@@ -159,18 +152,11 @@ class MusicStorage:
             )
         )
 
-        conn.commit()
-        conn.close()
-        clear_ram()
-
     def delete_song(db_name, song_id):
         error_correction()
 
-        conn = sqlite3.connect(f"Databases/{db_name}")
-        cursor = conn.cursor()
-
-        cursor.execute("DELETE FROM user_music WHERE song_id=?", (encode_text(song_id),))
-
-        conn.commit()
-        conn.close()
-        clear_ram()
+        sql_request(
+            db_name,
+            "DELETE FROM user_music WHERE song_id=?",
+            (encode_text(song_id),)
+        )
