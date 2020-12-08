@@ -85,7 +85,6 @@ class BounceBit:
         # Load images #
         Main.LOAD_IMAGE = LoadPictures()
         Main.LOAD_IMAGE.upd_images()
-        Main.LOAD_IMAGE.load_bg()
 
         # Search updates #
         Main.UPDATE_PROGRAM = UpdateProgram()
