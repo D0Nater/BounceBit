@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 
 """ For Parse """
-import json
 import requests
 import lxml.html
+
+""" For make message box """
+from tkinter.messagebox import showinfo
 
 from Scripts.elements import *
 from Scripts.parse_music import parse_data
@@ -17,9 +19,9 @@ class UpdateProgram:
         try:
             tree = parse_data("https://github.com/D0Nater/BounceBit/blob/main/__init__.py")
 
-            self.version = tree.xpath(f'//*[@id="LC5"]/span/text()')[0].split(': ')[-1]
+            self.new_version = tree.xpath(f'//*[@id="LC5"]/span/text()')[0].split(': ')[-1]
 
-            if self.version != VERSION:
+            if self.new_version != VERSION:
                 self.draw_update = True
 
                 self.create_text_upd()
@@ -30,7 +32,7 @@ class UpdateProgram:
     def create_text_upd(self):
         if self.draw_update:
             # update text #
-            self.update_text_draw = Main.MENU_CANVAS.create_text(Main.MENU_CANVAS.bbox(Main.VERSION_DRAW)[2]+20, 27, text=languages["update_text"][Main.SETTINGS.language]+" \""+self.version+"\" !", anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 11")
+            self.update_text_draw = Main.MENU_CANVAS.create_text(Main.MENU_CANVAS.bbox(Main.VERSION_DRAW)[2]+20, 27, text=languages["update_text"][Main.SETTINGS.language]+" \""+self.new_version+"\" !", anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 11")
 
             # button 'download' #
             self.download_button = Main.MENU_CANVAS.create_window(Main.MENU_CANVAS.bbox(self.update_text_draw)[2]+15, Main.MENU_CANVAS.bbox(self.update_text_draw)[3]-12, anchor=W, window=Button(image=MyImage.DOWNLOAD_UPD, width=18, height=20, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE, \
@@ -48,18 +50,17 @@ class UpdateProgram:
         return tree.xpath(f'//*[@id="LC1"]/text()')[0]
 
     def download_upd(self):
-
         self.__google_file__ = self.get_download_url()
 
-        print(self.__google_file__)
-
-        with open(f"BounceBitInstall_{self.version}.exe", "wb") as f:
+        with open(f"BounceBitInstall_{self.new_version}.exe", "wb") as f:
             response = requests.get(self.__google_file__, stream=True)
 
             for data in response.iter_content(chunk_size=4096):
                 f.write(data)
 
         self.close_msg()
+
+        showinfo(title=f"BounceBit Update {self.new_version}", message="Program was updated!")
 
     def update_msg(self):
         if self.draw_update:
