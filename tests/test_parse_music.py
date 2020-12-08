@@ -128,13 +128,13 @@ def humanize_bytes(num, suffix="B"):
         num /= 1024.0
     return "%.1f%s%s" % (num, "Yi", suffix)
 
-def top_music_test():
+def test_top_music():
     return ParseMusic.top_music(page=1)
 
-def search_music_test():
+def test_search_music():
     return ParseMusic.search_music(search_text="relaxing music", page=1)
 
-def genres_music_test():
+def test_genres_music():
     genres = {
         "pop": "2",
         "rock": "6",
@@ -146,7 +146,7 @@ def genres_music_test():
 
     return ParseMusic.genres_music(genre_num=genres["pop"], page=1)
 
-def more_song_info():
+def test_more_song_info():
     song_data_json = {
             "author": "Dabro",
             "name": "\u041d\u0430 \u043a\u0440\u044b\u0448\u0435",
@@ -160,10 +160,10 @@ def more_song_info():
 def main():
     start_time = time_time()
 
-    music_data_json = top_music_test()
-    # music_data_json = search_music_test()
-    # music_data_json = genres_music_test()
-    # music_data_json = more_song_info()
+    music_data_json = test_top_music()
+    # music_data_json = test_search_music()
+    # music_data_json = test_genres_music()
+    # music_data_json = test_more_song_info()
 
     end_time = time_time() - start_time
 
