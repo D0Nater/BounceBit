@@ -9,11 +9,12 @@ from os import path, mkdir, remove
 """ For get metrics """
 from win32api import GetSystemMetrics
 
+""" For decoding and encoding text """
+from base64 import b64decode, b64encode
+
 """ For create readme """
 from Scripts.elements import *
 
-""" For decoding and encoding text """
-from base64 import b64decode, b64encode
 
 text_for_readme = """ %s v%s
 
@@ -76,7 +77,6 @@ class Settings:
         self.height = GetSystemMetrics(1)
         self.language = language
         self.theme = theme
-        self.bg_image = None
         self.volume = 0.4
 
     def create_readme(self):
@@ -111,7 +111,6 @@ class Settings:
 
         check_setting("language", self.language)
         check_setting("theme", self.theme)
-        check_setting("bg_image", self.bg_image)
         check_setting("volume", self.volume)
 
         conn.commit()
@@ -128,7 +127,6 @@ class Settings:
 
         cursor.execute("UPDATE settings SET param=? WHERE setting=?", (encode_text(self.language), encode_text("language")))
         cursor.execute("UPDATE settings SET param=? WHERE setting=?", (encode_text(self.theme), encode_text("theme")))
-        cursor.execute("UPDATE settings SET param=? WHERE setting=?", (encode_text(self.bg_image), encode_text("bg_image")))
         cursor.execute("UPDATE settings SET param=? WHERE setting=?", (encode_text(self.volume), encode_text("volume")))
 
         conn.commit()
@@ -145,7 +143,6 @@ class Settings:
 
         self.language = decode_text(cursor.execute("SELECT param FROM settings WHERE setting=?", (encode_text("language"),)).fetchone()[0])
         self.theme = decode_text(cursor.execute("SELECT param FROM settings WHERE setting=?", (encode_text("theme"),)).fetchone()[0])
-        self.bg_image = decode_text(cursor.execute("SELECT param FROM settings WHERE setting=?", (encode_text("bg_image"),)).fetchone()[0])
         self.volume = float(decode_text(cursor.execute("SELECT param FROM settings WHERE setting=?", (encode_text("volume"),)).fetchone()[0]))
 
         conn.close()
