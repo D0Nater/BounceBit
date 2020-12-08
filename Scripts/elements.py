@@ -113,10 +113,6 @@ languages = {
         "ru": "Фон",
         "en": "Background"
     },
-    "load_img": {
-        "ru": "Загрузить изображение",
-        "en": "Load picture"
-    },
     "Язык": {
         "ru": "Язык",
         "en": "Language"
@@ -190,10 +186,6 @@ languages = {
     "Размер": {
         "ru": "Размер",
         "en": "Size"
-    },
-    "Текст": {
-        "ru": "Текст",
-        "en": "Text"
     },
 
     # Playlists #
