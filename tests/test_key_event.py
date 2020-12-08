@@ -31,7 +31,7 @@ def main():
 
     # Window settings #
     root.title("BounceBit Test")
-    root.geometry(f"350x300")
+    root.geometry("350x300")
 
     KeyEvent(root)
 
