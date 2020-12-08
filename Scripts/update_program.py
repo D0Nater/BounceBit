@@ -34,7 +34,7 @@ class UpdateProgram:
 
             # button 'download' #
             self.download_button = Main.MENU_CANVAS.create_window(Main.MENU_CANVAS.bbox(self.update_text_draw)[2]+15, Main.MENU_CANVAS.bbox(self.update_text_draw)[3]-12, anchor=W, window=Button(image=MyImage.DOWNLOAD_UPD, width=18, height=20, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE, \
-                command=lambda: Thread(target=self.download_upd)))
+                command=lambda: Thread(target=self.download_upd).start()))
 
             # button 'close' #
             self.close_button = Main.MENU_CANVAS.create_window(Main.MENU_CANVAS.bbox(self.download_button)[2]+12, Main.MENU_CANVAS.bbox(self.update_text_draw)[3]-10, anchor=W, window=Button(image=MyImage.CLOSE, width=16, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE, \
@@ -50,6 +50,8 @@ class UpdateProgram:
     def download_upd(self):
 
         self.__google_file__ = self.get_download_url()
+
+        print(self.__google_file__)
 
         with open(f"BounceBitInstall_{self.version}.exe", "wb") as f:
             response = requests.get(self.__google_file__, stream=True)
