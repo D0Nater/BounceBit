@@ -45,6 +45,18 @@ text_for_readme = """ %s v%s
 """
 
 
+def sql_request(db_name, text, args=()):
+    conn = sqlite3.connect(f"Databases/{db_name}")
+    cursor = conn.cursor()
+
+    answer = cursor.execute(text, args).fetchone()
+
+    conn.commit()
+    conn.close()
+
+    return answer
+
+
 def decode_text(text):
     try:
         translated = ""
@@ -80,8 +92,12 @@ class Settings:
         self.volume = 0.4
 
     def create_readme(self):
+        global text_for_readme
+
         with open("Databases/README.md", "w+") as file:
             file.write(text_for_readme % (PROGRAM_NAME, VERSION, AUTHOR, GITHUB))
+
+        del text_for_readme
 
     def error_correction(self):
         """
