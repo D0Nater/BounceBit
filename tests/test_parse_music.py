@@ -148,11 +148,11 @@ def test_genres_music():
 
 def test_more_song_info():
     song_data_json = {
-            "author": "Dabro",
-            "name": "\u041d\u0430 \u043a\u0440\u044b\u0448\u0435",
-            "song_id": "71520975",
-            "song_time": "03:18",
-            "url": "http://m.hitmos.com/get/cuts/01/a2/01a2be02fe76f8d1a94bf1cfb8f606af/71520975/Dabro_-_Na_kryshe_b128f0d198.mp3"
+        "author": "Dabro",
+        "name": "\u041d\u0430 \u043a\u0440\u044b\u0448\u0435",
+        "song_id": "71520975",
+        "song_time": "03:18",
+        "url": "http://m.hitmos.com/get/cuts/01/a2/01a2be02fe76f8d1a94bf1cfb8f606af/71520975/Dabro_-_Na_kryshe_b128f0d198.mp3"
     }
 
     return ParseMusic.more_song_info(song_data_json["song_id"])
