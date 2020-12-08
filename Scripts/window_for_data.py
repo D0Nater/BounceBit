@@ -15,7 +15,7 @@ class WindowForData:
         vscrollbar = Scrollbar(Main.ROOT, bg=themes[Main.SETTINGS.theme]["background"])
 
         # Main canvas #
-        Main.DATA_CANVAS = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=Main.SETTINGS.height-220, yscrollcommand=vscrollbar.set, bg=themes[Main.SETTINGS.theme]["background"], highlightthickness=0)
+        Main.DATA_CANVAS = Canvas(Main.ROOT, width=Main.SETTINGS.width, height=Main.SETTINGS.height-215, yscrollcommand=vscrollbar.set, bg=themes[Main.SETTINGS.theme]["background"], highlightthickness=0)
         Main.DATA_CANVAS.configure(scrollregion=Main.DATA_CANVAS.bbox("all"))
         Main.DATA_CANVAS.bind_all("<MouseWheel>", self.on_mousewheel)
         vscrollbar.config(command=Main.DATA_CANVAS.yview)
