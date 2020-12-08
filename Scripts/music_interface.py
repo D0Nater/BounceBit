@@ -264,11 +264,6 @@ class MusicInterface(SearchData):
         try: del Main.SCREENSAVER
         except: pass
 
-        # Create background #
-        if Main.SETTINGS.bg_image != "None":
-            try: Main.DATA_CANVAS.create_image(0, 0, image=Main.IMAGE_BG, anchor=NW)
-            except: pass
-
         just_px = Main.DATA_CANVAS.create_text(0, 0, text=".", fill=themes[Main.SETTINGS.theme]["background"], anchor=W, font="Verdana 1")
 
         # loading #
