@@ -1,8 +1,5 @@
 # -*- coding: utf-8 -*-
 
-""" For databases """
-import sqlite3
-
 """ For Parse """
 import requests
 import lxml.html
