@@ -2,13 +2,14 @@
 
 Name: BounceBit
 
-Version: 0.5.2
+Version: 0.5.3
 
 Author: D0Nater
 
 GitHub: https://github.com/D0Nater/BounceBit/
 
 Date: 14.10.2020 (day/month/year)
+Last update: 10.01.2021 (day/month/year)
 
 Lang: Python 3.6.7
 
