@@ -47,6 +47,8 @@ a = Analysis(
         ('pictures/search_button.png', 'pictures'),
         ('pictures/download_upd_button.png', 'pictures'),
 
+        ('pictures/more_info_button.png', 'pictures'),
+
         ('pictures/Light/play_button.png', 'pictures/Light'),
         ('pictures/Light/pause_button.png', 'pictures/Light'),
 
@@ -81,7 +83,9 @@ a = Analysis(
         ('pictures/Light/update_button.png', 'pictures/Light'),
 
         ('pictures/Light/search_button.png', 'pictures/Light'),
-        ('pictures/Light/download_upd_button.png', 'pictures/Light')
+        ('pictures/Light/download_upd_button.png', 'pictures/Light'),
+
+        ('pictures/Light/more_info_button.png', 'pictures/Light')
     ],
     hiddenimports=[],
     hookspath=[],
