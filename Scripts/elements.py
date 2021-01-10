@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 
-from tkinter import *
-
+import sys
 from os import path
+
+from tkinter import *
 
 from threading import Thread
 
@@ -33,7 +34,7 @@ def clear_list_of_songs():
 
 
 """ Elements for main program """
-VERSION = "0.5.2"
+VERSION = "0.5.3"
 AUTHOR = "D0Nater"
 GITHUB = "https://github.com/D0Nater/BounceBit/"
 PROGRAM_NAME = "Bounce Bit"
@@ -94,6 +95,10 @@ languages = {
     "Рекомендации": {
         "ru": "Рекомендации",
         "en": "Recommendations"
+    },
+    "Сейчас_играет": {
+        "ru": "Сейчас играет",
+        "en": "Playing now"
     },
 
     # Settings #
