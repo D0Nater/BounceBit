@@ -32,7 +32,7 @@ class LoadPictures:
         MyImage.AFTER_SONG = self.load_picture("after_song_button.png")
 
         MyImage.MORE = self.load_picture("more_button.png")
-        MyImage.MORE_INFO = self.load_picture("more_music_button.png")
+        MyImage.MORE_MUSIC = self.load_picture("more_music_button.png")
 
         MyImage.CYCLE = self.load_picture("cycle_button.png")
         MyImage.CYCLE_CLICK = self.load_picture("cycle_button_click.png")
@@ -54,6 +54,8 @@ class LoadPictures:
 
         MyImage.SEARCH = self.load_picture("search_button.png")
         MyImage.DOWNLOAD_UPD = self.load_picture("download_upd_button.png")
+
+        MyImage.MORE_INFO = self.load_picture("more_info_button.png")
 
     @staticmethod
     def resource_path(relative):
