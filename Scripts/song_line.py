@@ -170,7 +170,7 @@ class SongLine(SongManage, MusicInterface):
         self.more_music_button = Main.SONG_LINE_CANVAS.create_window(Main.SONG_LINE_CANVAS.bbox(self.rand_song_button_draw)[2]+9, Main.SONG_LINE_CANVAS.bbox(self.song_time)[1]+8, anchor=W, window=Button(image=MyImage.MORE_MUSIC, command=lambda: self.music_interface("Сейчас_играет", Main.LIST_OF_PLAY), width=20, height=18, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE))
 
         # Button "more info" #
-        self.more_info_button = Main.SONG_LINE_CANVAS.create_window(Main.SONG_LINE_CANVAS.bbox(self.more_music_button)[2]+7, Main.SONG_LINE_CANVAS.bbox(self.song_time)[1]+8, anchor=W, window=Button(image=MyImage.MORE_INFO, command=lambda: Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data), width=17, height=19, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE))
+        self.more_info_button = Main.SONG_LINE_CANVAS.create_window(Main.SONG_LINE_CANVAS.bbox(self.more_music_button)[2]+7, Main.SONG_LINE_CANVAS.bbox(self.song_time)[1]+8, anchor=W, window=Button(image=MyImage.MORE_INFO, command=lambda: (Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data) if Main.PAST_SONG["lib_now"] != "Settings" else None), width=17, height=19, bd=0, bg=themes[Main.SETTINGS.theme]["second_color"], activebackground=themes[Main.SETTINGS.theme]["second_color"], relief=RIDGE))
 
         draw_just_lines()
 
