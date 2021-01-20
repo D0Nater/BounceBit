@@ -14,7 +14,7 @@ from Scripts.playlist_interface import DrawPlaylists
 class SearchData:
     ALL_TAGS = ["song"]
 
-    def parse_data(self):
+    def parse_data(self, song_id):
         parse_data_json = {"music": {"num": 0}, "pages": [], "error": None}
 
         Main.DATA_CANVAS.delete("all")
@@ -23,8 +23,10 @@ class SearchData:
         Main.ROOT.update()
 
         try:
-            parse_data_json["music"]["song0"] = ParseMusic.more_song_info(self.song_id)
+            parse_data_json["music"]["song0"] = ParseMusic.more_song_info(song_id)
             parse_data_json["music"]["num"] = 1
+        except ConnectionError:
+            parse_data_json["error"] = "connect_error"
         except:
             parse_data_json["error"] = "not_found"
 
@@ -40,24 +42,24 @@ class SearchData:
             return
 
         try:
-            self.song_id = decode_text(self.text_arr[-2])
-            self.music_interface("Поиск 1", self.parse_data(), text_str)
+            song_id = decode_text(self.text_arr[-2])
+            self.music_interface("Поиск 1", self.parse_data(song_id), text_str)
         except:
             pass
 
 
 class MusicInterface(SearchData):
     def search_data(self):
-        if self.lib.split(" ")[0] == "Рекомендации":
+        if self.lib.startswith("Рекомендации"):
             return ParseMusic.top_music(int(self.lib.split(" ")[1]))
 
-        elif self.lib.split(" ")[0] == "Поиск":
+        elif self.lib.startswith("Поиск"):
             return ParseMusic.search_music(self.search_text, int(self.lib.split(" ")[1]))
 
-        elif self.lib.split(" ")[0] == "Жанр":
+        elif self.lib.startswith("Жанр"):
             return ParseMusic.genres_music(languages[self.lib.split(" ")[1]]["num"] , int(self.lib.split(" ")[2]))
 
-        elif self.lib.split(" ")[0] == "Плейлист":
+        elif self.lib.startswith("Плейлист"):
             self.playlist_name = " ".join(self.lib.split(" ")[1:])
 
             music_data = PlaylistStorage.get_music("database2.sqlite", self.playlist_name)
@@ -148,10 +150,10 @@ class MusicInterface(SearchData):
 
             list_of_songs_class.append(new_song)
 
-            if Main.SONG_PLAY_NOW["song_id"] == self.all_data["music"][f"song{song_num}"]["song_id"]:
-                Main.PAST_SONG["class"] = new_song
-
             self.y += 40
+
+        if Main.SONG_PLAY_NOW["song_id"] in Main.LIST_OF_IDS:
+            Main.PAST_SONG["class"] = list_of_songs_class[Main.LIST_OF_IDS.index(Main.PAST_SONG["song_id"])]
 
     def draw_search(self):
         def search_interface(event):
@@ -175,7 +177,7 @@ class MusicInterface(SearchData):
             command=lambda: self.get_text(search_text_var.get())))
 
     def draw_genres(self):
-        if self.lib.split(" ")[0] == "Рекомендации" or self.lib.split(" ")[0] == "Жанр" or self.lib.split(" ")[0] == "Поиск":
+        if self.lib.startswith("Рекомендации") or self.lib.startswith("Жанр") or self.lib.startswith("Поиск"):
             genres_text = Main.DATA_CANVAS.create_text(Main.DATA_CANVAS.bbox(self.lib_name)[0], self.y+10, text=languages["Жанры"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 13")
 
             genre_pop = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(genres_text)[2]+20, self.y+10, anchor=NW, window=Button(text=languages["Поп"][Main.SETTINGS.language], bg=themes[Main.SETTINGS.theme]["second_color"], fg=themes[Main.SETTINGS.theme]["text_color"], bd=0, width=7, font="Verdana 10", \
@@ -199,7 +201,7 @@ class MusicInterface(SearchData):
             self.y = Main.DATA_CANVAS.bbox(genre_classical)[3]+10
 
     def draw_playlists(self):
-        if self.lib.split(" ")[0] == "Избранное":
+        if self.lib.startswith("Избранное"):
             playlists = DrawPlaylists(self.lib_name, self.music_interface)
             playlists.draw_new_playlist(Main.DATA_CANVAS.bbox(self.lib_name)[0], self.y+20)
             playlists.draw_playlists(Main.DATA_CANVAS.bbox(self.lib_name)[0])
@@ -218,17 +220,17 @@ class MusicInterface(SearchData):
                     command=lambda: self.func(*self.args)))
 
         page_x = Main.DATA_CANVAS.bbox(self.lib_name)[2]+35
-        if self.lib.split(" ")[0] == "Поиск":
+        if self.lib.startswith("Поиск"):
             for page_num in self.all_data["pages"]:
                 PageButton(page_num, self.music_interface, (f"Поиск {page_num}", None, self.search_text)).draw_button(page_x, Main.DATA_CANVAS.bbox(self.lib_name)[3]-12)
                 page_x += 29
 
-        elif self.lib.split(" ")[0] == "Жанр":
+        elif self.lib.startswith("Жанр"):
             for page_num in self.all_data["pages"]:
                 PageButton(page_num, self.music_interface, ("Жанр %s %s"%(self.lib.split(" ")[1], page_num), None, "")).draw_button(page_x, Main.DATA_CANVAS.bbox(self.lib_name)[3]-12)
                 page_x += 29
 
-        elif self.lib.split(" ")[0] == "Рекомендации":
+        elif self.lib.startswith("Рекомендации"):
             for page_num in self.all_data["pages"]:
                 PageButton(page_num, self.music_interface, (f"Рекомендации {page_num}", None)).draw_button(page_x, Main.DATA_CANVAS.bbox(self.lib_name)[3]-12)
                 page_x += 29
@@ -250,12 +252,12 @@ class MusicInterface(SearchData):
         self.search_text = search_text
         Main.PAST_SONG["lib_now"] = self.lib
         Main.LIST_OF_IDS = []
-        self.y = 90 if self.lib.split(" ")[0] == "Загруженное" else 130
+        self.y = 90 if self.lib.startswith("Загруженное") else 130
 
         # lib name #
-        if self.lib.split(" ")[0] == "Жанр":
+        if self.lib.startswith("Жанр"):
             self.lib_name_text = languages["Жанр"][Main.SETTINGS.language]+"-"+languages[self.lib.split(" ")[1]][Main.SETTINGS.language]+" - "+languages["Страница"][Main.SETTINGS.language]+" "+self.lib.split(" ")[2]
-        elif self.lib.split(" ")[0] == "Плейлист":
+        elif self.lib.startswith("Плейлист"):
            self.lib_name_text = languages["Плейлист"][Main.SETTINGS.language]+" - "+" ".join(self.lib.split(" ")[1:])
         else:
             self.lib_name_text = languages[self.lib.split(" ")[0]][Main.SETTINGS.language]+((" - "+languages["Страница"][Main.SETTINGS.language]+" "+self.lib.split(" ")[1]) if len(self.lib.split(" ")) > 1 else "")
@@ -284,7 +286,7 @@ class MusicInterface(SearchData):
 
         self.draw_playlists()
 
-        if self.lib.split(" ")[0] == "Плейлист":
+        if self.lib.startswith("Плейлист"):
             self.draw_playlist_interface()
 
         if self.all_data["error"] is None:
