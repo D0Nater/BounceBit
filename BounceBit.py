@@ -51,14 +51,14 @@ class BounceBit:
         Main.ROOT = Tk()
 
         # Settings #
-        Main.SETTINGS = Settings("en", "dark") # default settings
+        Main.SETTINGS = Settings(language="en", theme="dark", volume=0.4) # default settings
         Main.SETTINGS.update_settings() # get settings from database
         Main.SETTINGS.create_readme()
 
         # Window settings #
         Main.ROOT.title("")
         Main.ROOT.iconbitmap(default=LoadPictures.resource_path(path.join("pictures", "program_icon.ico")))
-        Main.ROOT.geometry(f"{Main.SETTINGS.width - 50}x{Main.SETTINGS.height - 100}+10+10")
+        Main.ROOT.geometry(f"{Main.SETTINGS.width-50}x{Main.SETTINGS.height-100}+10+10")
         Main.ROOT.minsize(width=180, height=45)
         Main.ROOT.state("zoomed")
 
