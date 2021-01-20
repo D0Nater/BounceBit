@@ -84,12 +84,12 @@ def encode_text(text):
 
 
 class Settings:
-    def __init__(self, language, theme):
+    def __init__(self, language, theme, volume):
         self.width = GetSystemMetrics(0)
         self.height = GetSystemMetrics(1)
         self.language = language
         self.theme = theme
-        self.volume = 0.4
+        self.volume = volume
 
     def create_readme(self):
         global text_for_readme
