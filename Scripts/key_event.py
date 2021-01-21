@@ -48,6 +48,9 @@ class KeyEvent:
                 Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data)
 
     def up_volume(self, event):
+        if self.is_unbind_keys:
+            return
+
         new_volume = Main.SETTINGS.volume + 0.02
 
         if new_volume > 1.0:
@@ -56,6 +59,9 @@ class KeyEvent:
         Main.MORE_SETTINGS.set_volume(new_volume*100)
 
     def down_volume(self, event):
+        if self.is_unbind_keys:
+            return
+
         new_volume = Main.SETTINGS.volume - 0.02
 
         if new_volume < 0:
