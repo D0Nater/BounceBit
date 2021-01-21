@@ -58,7 +58,7 @@ class MoreSettingsInterface:
 
         # Draw window #
         self.more_settings_canvas = Canvas(Main.ROOT, width=Main.DATA_CANVAS.winfo_width()/1.5, height=Main.DATA_CANVAS.winfo_height()-38, bg=themes[Main.SETTINGS.theme]["second_color"], highlightthickness=1, highlightbackground="grey9")
-        self.more_settings_canvas.place(x=Main.SETTINGS.width/2, y=Main.DATA_CANVAS.bbox("all")[1]+82, anchor=N)
+        self.more_settings_canvas.place(x=Main.SETTINGS.width/2, y=Main.DATA_CANVAS.bbox("all")[1]+90, anchor=N)
 
         # Lib name #
         self.lib_name_draw = self.more_settings_canvas.create_text(40, 30, text=languages["more"][Main.SETTINGS.language], fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
