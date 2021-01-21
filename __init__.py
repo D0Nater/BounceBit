@@ -16,10 +16,12 @@ Lang: Python 3.6.7
 Packages: (
     gc,
     os,
+    sys,
     PIL,
     time,
     lxml 4.5.0,
     json,
+    random,
     pyglet 1.5.7,
     base64,
     tkinter,
