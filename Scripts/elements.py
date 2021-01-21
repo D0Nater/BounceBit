@@ -34,7 +34,7 @@ def clear_list_of_songs():
 
 
 """ Elements for main program """
-VERSION = "0.5.3"
+VERSION = "0.5.4"
 AUTHOR = "D0Nater"
 GITHUB = "https://github.com/D0Nater/BounceBit/"
 PROGRAM_NAME = "Bounce Bit"
