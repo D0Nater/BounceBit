@@ -4,7 +4,7 @@ Name: BounceBit
 
 Version: 0.5.4
 
-Size: 28677000
+Size: 28678000
 
 Author: D0Nater
 
