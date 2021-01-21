@@ -48,10 +48,8 @@ class UpdateProgram:
                 command=lambda: self.close_msg()))
 
     def get_download_url(self):
-        # parse site #
         tree = parse_data("https://github.com/D0Nater/BounceBit/blob/main/DownloadProgram")
 
-        # parse and decode text #
         return tree.xpath('//*[@id="LC1"]/text()')[0]
 
     def download_upd(self):
@@ -110,7 +108,6 @@ class UpdateProgram:
                     startfile(f"BounceBit_{self.new_version}.exe")
                 except:
                     showinfo(title="BounceBit", message="Starting Error!")
-            # showinfo(title=f"BounceBit Update {self.new_version}", message="Program was updated!")
         else:
             delete_update()
             showinfo(title=f"BounceBit Update {self.new_version}", message="Program was not updated!")
