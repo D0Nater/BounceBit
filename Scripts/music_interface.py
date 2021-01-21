@@ -171,6 +171,7 @@ class MusicInterface(SearchData):
         text_entry_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(search_draw)[2]+19, Main.DATA_CANVAS.bbox(search_draw)[3]-9, window=text_entry, anchor=W)
 
         text_entry.bind("<Return>", search_interface)
+        text_entry.bind("<FocusIn>", Main.KEY_EVENT.unbind_keys)
 
         # Draw button for search #
         Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(text_entry_draw)[2]+17, Main.DATA_CANVAS.bbox(search_draw)[3]-9, anchor=W, window=Button(image=MyImage.SEARCH, width=16, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
