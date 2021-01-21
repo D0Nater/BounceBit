@@ -7,6 +7,10 @@ Program for listen music free
 
 ![alt text](Screenshots/BounceBit_settings.png "Settings")
 
+# Download
+This program is currently on google drive
+Click <a href="https://drive.google.com/uc?export=download&id=1jzg0h_EL41MrP7jcvRp74HBx3kv6n2_X/">THIS</a> for download
+
 # Create EXE
 1. Download git repository
 2. In file 'BounceBit.spec' edit pathex - set path to main file
@@ -26,7 +30,6 @@ Program for listen music free
 
 # Packages
 <code> pip install lxml </code> <br>
-<code> pip install numpy </code> <br>
 <code> pip install Pillow </code> <br>
 <code> pip install pyglet </code> <br>
 <code> pip install mutagen </code> <br>
