@@ -4,7 +4,7 @@
 import sqlite3
 
 """ For files """
-from os import path, mkdir, remove
+from os import mkdir, remove
 
 """ For get metrics """
 from win32api import GetSystemMetrics
