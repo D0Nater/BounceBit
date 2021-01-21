@@ -49,6 +49,9 @@ class MoreSettingsInterface:
         Main.SETTINGS.volume = float(num/100)
         Main.PLAYER.set_volume(Main.SETTINGS.volume)
 
+        if self.num_of_wins:
+            self.volume_scale.set(Main.SETTINGS.volume*100)
+
     def draw_more(self):
         # Delete past window #
         self.close_window()
