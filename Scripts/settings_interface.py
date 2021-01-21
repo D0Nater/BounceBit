@@ -67,6 +67,9 @@ class SettingsInterface:
         try: del Main.SCREENSAVER
         except: pass
 
+        # just pixel #
+        Main.DATA_CANVAS.create_text(0, 0, text=".", fill=themes[Main.SETTINGS.theme]["background"], anchor=W, font="Verdana 1")
+
         # Settings #
         self.settings_text = Main.DATA_CANVAS.create_text(15, 19, text=languages["Настройки"][Main.SETTINGS.language], anchor=W, fill=themes[Main.SETTINGS.theme]["text_color"], font="Verdana 13")
 
