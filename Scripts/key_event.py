@@ -10,6 +10,9 @@ class KeyEvent:
 
         Main.ROOT.bind("<space>", self.play_pause)
 
+        Main.ROOT.bind("<Up>", self.up_volume)
+        Main.ROOT.bind("<Down>", self.down_volume)
+
         Main.ROOT.bind("<Left>", self.behind_music)
         Main.ROOT.bind("<Right>", self.after_music)
 
@@ -43,6 +46,22 @@ class KeyEvent:
                 Main.MORE_INFO_INTERFACE.close_song_info()
             else:
                 Main.MORE_INFO_INTERFACE.song_info_draw(Main.PAST_SONG["class"].song_data)
+
+    def up_volume(self, event):
+        new_volume = Main.SETTINGS.volume + 0.02
+
+        if new_volume > 1.0:
+            new_volume = 1.0
+
+        Main.MORE_SETTINGS.set_volume(new_volume*100)
+
+    def down_volume(self, event):
+        new_volume = Main.SETTINGS.volume - 0.02
+
+        if new_volume < 0:
+            new_volume = 0
+
+        Main.MORE_SETTINGS.set_volume(new_volume*100)
 
     def behind_music(self, event):
         if self.is_unbind_keys:
