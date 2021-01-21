@@ -91,7 +91,7 @@ class BounceBit:
         Thread(target=Main.UPDATE_PROGRAM.search_upd).start()
 
         # Keys settings #
-        KeyEvent()
+        Main.KEY_EVENT = KeyEvent()
 
         # Start window #
         Main.ROOT.mainloop()
