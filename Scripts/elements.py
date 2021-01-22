@@ -255,7 +255,7 @@ languages = {
         "en": "page"
     },
     "key_assignmet": {
-        "ru": "Клавишы\n\n< SPACE > - Плей/Пауза\n\n< RIGHT > - Следующая песня\n\n< LEFT > - Предыдущая песня\n\n< Shift > - Информация о песне",
-        "en": "Keyboard keys\n\n< SPACE > - Play/Pause\n\n< RIGHT > - After song\n\n< LEFT > - Behind song\n\n< Shift > - Information about song"
+        "ru": "Клавишы\n\n< SPACE > - Плей/Пауза\n\n< UP > - Сделать громче\n\n< DOWN > - Сделать тише\n\n< RIGHT > - Следующая песня\n\n< LEFT > - Предыдущая песня\n\n< Shift > - Информация о песне",
+        "en": "Keyboard keys\n\n< SPACE > - Play/Pause\n\n< UP > - Make it louder\n\n< DOWN > - Make it quieter\n\n< RIGHT > - After song\n\n< LEFT > - Behind song\n\n< Shift > - Information about song"
     }
 }
