@@ -92,6 +92,7 @@ class MusicInterface(SearchData):
                 Main.DATA_CANVAS.delete(self.set_playlist_name_draw)
 
                 self.set_playlist_name.unbind("<Return>")
+                self.set_playlist_name.unbind("<FocusIn>")
 
                 self.draw_playlist_interface()
 
@@ -118,6 +119,7 @@ class MusicInterface(SearchData):
             self.set_playlist_name_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.lib_name)[2]+19, Main.DATA_CANVAS.bbox(self.lib_name)[3]-9, window=self.set_playlist_name, anchor=W)
 
             self.set_playlist_name.bind("<Return>", save_playlist)
+            self.set_playlist_name.bind("<FocusIn>", Main.KEY_EVENT.unbind_keys)
 
             # Draw button for create playlist #
             self.create_button = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.set_playlist_name_draw)[2]+12, Main.DATA_CANVAS.bbox(self.set_playlist_name_draw)[3]-3, anchor=SW, window=Button(image=MyImage.OK, width=18, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
