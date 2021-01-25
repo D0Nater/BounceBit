@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 
-import json
 import requests
 import lxml.html
 from os import path, mkdir
+from json import loads as json_loads
 
 """ For encode/decode db4 """
 from Scripts.settings import encode_text, decode_text
@@ -23,7 +23,7 @@ class News:
         else:
             try:
                 with open("Databases/database4") as json_db:
-                    json.loads(decode_text(json_db.read()).replace("'", '"'))
+                    json_loads(decode_text(json_db.read()).replace("'", '"'))
             except:
                 with open("Databases/database4", "w+") as json_db:
                     json_db.write(encode_text('{"text":{"ru":"","en":""},"id":"","date":""}'))
@@ -42,11 +42,11 @@ class News:
                 tree = lxml.html.document_fromstring(api.text)
 
                 # parse and decode text #
-                text = json.loads(decode_text(tree.xpath(f'//*[@id="LC1"]/text()')[0]).replace("'", '"'))
+                text = json_loads(decode_text(tree.xpath(f'//*[@id="LC1"]/text()')[0]).replace("'", '"'))
 
             except Exception as error:
                 with open("Databases/database4", encoding="utf-8") as json_db:
-                    text = json.loads(decode_text(json_db.read()).replace("'", '"'))
+                    text = json_loads(decode_text(json_db.read()).replace("'", '"'))
 
             return text
 
@@ -57,7 +57,7 @@ class News:
 
         # news from database4 #
         with open("Databases/database4", encoding="utf-8") as json_db:
-            json_data_db = json.loads(decode_text(json_db.read()).replace("'", '"'))
+            json_data_db = json_loads(decode_text(json_db.read()).replace("'", '"'))
 
         if new_news_data["id"] != json_data_db["id"]:
             with open("Databases/database4", "w+") as json_db:
@@ -68,6 +68,6 @@ class News:
         News.check_errors_db4()
 
         with open("Databases/database4", encoding="utf-8") as json_db:
-            json_data_db = json.loads(decode_text(json_db.read()).replace("'", '"'))
+            json_data_db = json_loads(decode_text(json_db.read()).replace("'", '"'))
 
         return [json_data_db["date"], json_data_db["text"]]
