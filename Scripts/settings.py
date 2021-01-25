@@ -66,7 +66,7 @@ class Settings:
         global text_for_readme
 
         with open("Databases/README.md", "w+") as file:
-            file.write(text_for_readme % (PROGRAM_NAME, VERSION, AUTHOR, GITHUB))
+            file.write(text_for_readme % (PROGRAM_NAME, VERSION, AUTHOR, GITHUB, LICENSE))
 
         del text_for_readme
 
