@@ -63,20 +63,14 @@ class Settings:
         self.volume = volume
 
     def create_readme(self):
-        global text_for_readme
-
-        with open("Databases/README.md", "w+") as file:
-            file.write(text_for_readme % (PROGRAM_NAME, VERSION, AUTHOR, GITHUB, LICENSE))
-
-        del text_for_readme
+        with open(resource_path(path.join("Readme", "README"))) as README:
+            with open("Databases/README.md", "w+") as file:
+                file.write(README.read() % (PROGRAM_NAME, VERSION, AUTHOR, GITHUB, LICENSE))
 
     def create_license(self):
-        global text_for_license
-
-        with open("Databases/LICENSE", "w+") as file:
-            file.write(text_for_license)
-
-        del text_for_license
+        with open(resource_path(path.join("", "LICENSE"))) as LICENSE:
+            with open("Databases/LICENSE", "w+") as file:
+                file.write(LICENSE.read())
 
     def error_correction(self):
         """
