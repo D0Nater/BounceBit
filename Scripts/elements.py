@@ -34,10 +34,65 @@ def clear_list_of_songs():
 
 
 """ Elements for main program """
-VERSION = "0.5.4"
+VERSION = "0.5.5"
 AUTHOR = "D0Nater"
 GITHUB = "https://github.com/D0Nater/BounceBit/"
 PROGRAM_NAME = "Bounce Bit"
+
+text_for_readme = """ %s v%s
+
+ Author: %s
+ GitHub: %s
+
+ Language: Python
+ Interface: Tkinter
+ Media player: Pyglet
+
+ Don't delete files because you will lose data!
+
+ BounceBit  -  Main File
+ |
+ |___Databases  -  Folder With Data
+     |
+     |___README  -  Readme
+     |
+     |___LICENSE  -  License
+     |
+     |___database1  -  Settings
+     |
+     |___database2  -  Added Music & Playlists
+     |
+     |___database3  -  Saved Music
+     |
+     |___database4  -  News
+     |
+     |___Download_Music  -  Folder With Your Music
+"""
+
+text_for_license = """
+(The MIT License)
+
+Copyright © 2021 D0Nater. All rights reserved.
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+"""
 
 list_of_music = {}
 
