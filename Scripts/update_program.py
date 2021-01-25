@@ -124,6 +124,7 @@ class UpdateProgram:
         Main.MENU_CANVAS.delete(self.update_text_draw)
         Main.MENU_CANVAS.delete(self.download_button)
         Main.MENU_CANVAS.delete(self.close_button)
-        Main.MENU_CANVAS.delete(self.draw_downloading_num)
+        try: Main.MENU_CANVAS.delete(self.draw_downloading_num)
+        except: pass
 
         self.draw_update = False
