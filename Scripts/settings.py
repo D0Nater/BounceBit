@@ -16,35 +16,6 @@ from base64 import b64decode, b64encode
 from Scripts.elements import *
 
 
-text_for_readme = """ %s v%s
-
- Author: %s
- GitHub: %s
-
- Language: Python
- Interface: Tkinter
- Media player: Pyglet
-
- Don't delete files because you will lose data!
-
- BounceBit  -  Main File
- |
- |___Databases  -  Folder With Data
-     |
-     |___README  -  Readme
-     |
-     |___database1  -  Settings
-     |
-     |___database2  -  Added Music & Playlists
-     |
-     |___database3  -  Saved Music
-     |
-     |___database4  -  News
-     |
-     |___Download_Music  -  Folder With Your Music
-"""
-
-
 def sql_request(db_name, text, args=()):
     conn = sqlite3.connect(f"Databases/{db_name}")
     cursor = conn.cursor()
@@ -98,6 +69,14 @@ class Settings:
             file.write(text_for_readme % (PROGRAM_NAME, VERSION, AUTHOR, GITHUB))
 
         del text_for_readme
+
+    def create_license(self):
+        global text_for_license
+
+        with open("Databases/LICENSE", "w+") as file:
+            file.write(text_for_license)
+
+        del text_for_license
 
     def error_correction(self):
         """
