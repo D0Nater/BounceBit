@@ -53,7 +53,8 @@ class BounceBit:
         # Settings #
         Main.SETTINGS = Settings(language="en", theme="dark", volume=0.4) # default settings
         Main.SETTINGS.update_settings() # get settings from database
-        Main.SETTINGS.create_readme()
+        Thread(target=Main.SETTINGS.create_license).start()
+        Thread(target=Main.SETTINGS.create_readme).start()
 
         # Window settings #
         Main.ROOT.title("")
