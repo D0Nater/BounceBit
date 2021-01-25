@@ -20,32 +20,6 @@ class DrawPlaylist:
         self.button_more = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.draw_playlist_name)[2]+13, Main.DATA_CANVAS.bbox(self.draw_playlist_name)[3]+2, anchor=SW, window=Button(image=MyImage.MORE, width=20, height=20, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
             command=lambda: self.music_interface(f"Плейлист {self.playlist_name}", None)))
 
-    def set_class(self, playlist_class):
-        self.playlist_class = playlist_class
-
-    def recovery_playlist(self):
-        # Clear #
-        Main.DATA_CANVAS.delete(self.draw_playlist_name)
-        Main.DATA_CANVAS.delete(self.button_recovery)
-
-        PlaylistStorage.add_playlist("database2.sqlite", self.playlist_name, self.music_data)
-
-        self.draw_playlist()
-
-    def delete_playlist(self, music_data):
-        self.music_data = music_data
-
-        # Clear #
-        Main.DATA_CANVAS.delete(self.draw_playlist_name)
-        Main.DATA_CANVAS.delete(self.button_more)
-
-        # Draw crossed out name #
-        self.draw_playlist_name = Main.DATA_CANVAS.create_text(self.x, self.y, text="\u0336".join(self.playlist_name)+"\u0336", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=W, font="Verdana 13")
-
-        # button "recovery" #
-        self.button_recovery = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.draw_playlist_name)[2]+13, Main.DATA_CANVAS.bbox(self.draw_playlist_name)[3]+2, anchor=SW, window=Button(image=MyImage.UPDATE, width=20, height=20, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
-            command=lambda: self.recovery_playlist()))
-
 
 class DrawPlaylists:
     def __init__(self, lib_name, music_interface):
@@ -65,7 +39,6 @@ class DrawPlaylists:
         for playlist_name in playlists:
             new_playlist = DrawPlaylist(playlist_name, x, self.y, self.music_interface)
             new_playlist.draw_playlist()
-            new_playlist.set_class(new_playlist)
 
             self.y += 40
 
@@ -94,7 +67,6 @@ class DrawPlaylists:
 
         new_playlist = DrawPlaylist(name, x, y, self.music_interface)
         new_playlist.draw_playlist()
-        new_playlist.set_class(new_playlist)
 
     def clear_all(self, draw=True):
         try:
@@ -105,6 +77,7 @@ class DrawPlaylists:
             Main.DATA_CANVAS.delete(self.cancel_button)
 
             self.set_playlist_name.unbind("<Return>")
+            self.set_playlist_name.unbind("<FocusIn>")
 
             if draw:
                 self.draw_new_playlist(self.x_new_playlist, self.y_new_playlist)
@@ -125,6 +98,7 @@ class DrawPlaylists:
         self.set_playlist_name_draw = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.playlist_text)[2]+19, Main.DATA_CANVAS.bbox(self.playlist_text)[3]-9, window=self.set_playlist_name, anchor=W)
 
         self.set_playlist_name.bind("<Return>", self.save_playlist)
+        self.set_playlist_name.bind("<FocusIn>", Main.KEY_EVENT.unbind_keys)
 
         # Draw button for create playlist #
         self.create_button = Main.DATA_CANVAS.create_window(Main.DATA_CANVAS.bbox(self.set_playlist_name_draw)[2]+12, Main.DATA_CANVAS.bbox(self.set_playlist_name_draw)[3]-3, anchor=SW, window=Button(image=MyImage.OK, width=18, height=16, bd=0, bg=themes[Main.SETTINGS.theme]["background"], activebackground=themes[Main.SETTINGS.theme]["background"], relief=RIDGE, \
