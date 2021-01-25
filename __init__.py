@@ -11,7 +11,7 @@ Author: D0Nater
 GitHub: https://github.com/D0Nater/BounceBit/
 
 Date: 14.10.2020 (day/month/year)
-Last update: 21.01.2021 (day/month/year)
+Last update: 25.01.2021 (day/month/year)
 
 Lang: Python 3.6.7
 
