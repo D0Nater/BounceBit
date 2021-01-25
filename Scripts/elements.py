@@ -37,12 +37,14 @@ def clear_list_of_songs():
 VERSION = "0.5.5"
 AUTHOR = "D0Nater"
 GITHUB = "https://github.com/D0Nater/BounceBit/"
+LICENSE = "https://github.com/D0Nater/BounceBit/blob/main/LICENSE"
 PROGRAM_NAME = "Bounce Bit"
 
 text_for_readme = """ %s v%s
 
  Author: %s
  GitHub: %s
+ License: %s
 
  Language: Python
  Interface: Tkinter
