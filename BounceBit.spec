@@ -2,12 +2,17 @@
 
 block_cipher = None
 
-
 a = Analysis(
     ['BounceBit.py'],
     pathex=['C:/MyPrograms/Python/Work/BounceBit'],
     binaries=[],
     datas=[
+        ('LICENSE', '.'),
+        ('Readme/README', 'Readme'),
+
+        ('JsonFiles/themes.json', 'JsonFiles'),
+        ('JsonFiles/languages.json', 'JsonFiles'),
+
         ('pictures/main_logo1.jpg', 'pictures'),
         ('pictures/program_icon.ico', 'pictures'),
 
