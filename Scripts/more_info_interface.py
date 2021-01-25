@@ -135,6 +135,14 @@ class MoreInfoInterface(AddToPlaylist):
             pass
 
     def song_info_draw(self, song_data, searched_data=None):
+        def parse_data_thred():
+            self.searched_data = ParseMusic.more_song_info(song_more_info["song_id"])
+
+            # Draw Song size #
+            if self.num_of_wins:
+                self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_size_draw)[2]+11, self.song_info_canvas.bbox(self.song_size_draw)[1]+3, text=self.searched_data["size"]+" mb", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 12")
+
+
         global song_more_info
 
         # Delete past window #
@@ -186,10 +194,6 @@ class MoreInfoInterface(AddToPlaylist):
         Main.ROOT.update()
 
         if not searched_data:
-            # Search data #
-            self.searched_data = ParseMusic.more_song_info(song_more_info["song_id"])
-
-        # Draw Song size #
-        self.song_info_canvas.create_text(self.song_info_canvas.bbox(self.song_size_draw)[2]+11, self.song_info_canvas.bbox(self.song_size_draw)[1]+3, text=self.searched_data["size"]+" mb", fill=themes[Main.SETTINGS.theme]["text_color"], anchor=NW, font="Verdana 12")
+            Thread(target=parse_data_thred).start()
 
         Main.SCROLL_WIN = False
