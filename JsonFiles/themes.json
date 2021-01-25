@@ -1,0 +1,38 @@
+{
+    "dark": {
+        "background": "grey17",
+        "second_color": "grey13",
+        "text_color": "white",
+        "text_second_color": "grey55"
+    },
+    "light": {
+        "background": "grey90",
+        "second_color": "grey75",
+        "text_color": "grey4",
+        "text_second_color": "grey35"
+    },
+    "purple": {
+        "background": "#7D007D",
+        "second_color": "#690069",
+        "text_color": "white",
+        "text_second_color": "grey60"
+    },
+    "red": {
+        "background": "#AA1F1F",
+        "second_color": "#821F1F",
+        "text_color": "white",
+        "text_second_color": "grey70"
+    },
+    "green": {
+        "background": "#1E8C46",
+        "second_color": "#1E6E46",
+        "text_color": "white",
+        "text_second_color": "grey80"
+    },
+    "blue": {
+        "background": "#3C5AFA",
+        "second_color": "#323CFA",
+        "text_color": "white",
+        "text_second_color": "grey75"
+    }
+}

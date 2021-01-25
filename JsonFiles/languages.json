@@ -1,0 +1,170 @@
+{
+    "Загруженное": {
+        "ru": "Загруженное",
+        "en": "Loaded"
+    },
+    "Избранное": {
+        "ru": "Избранное",
+        "en": "Favorites"
+    },
+    "Рекомендации": {
+        "ru": "Рекомендации",
+        "en": "Recommendations"
+    },
+    "Сейчас_играет": {
+        "ru": "Сейчас играет",
+        "en": "Playing now"
+    },
+
+    "Настройки": {
+        "ru": "Настройки",
+        "en": "Settings"
+    },
+    "Сохранить": {
+        "ru": "Сохранить",
+        "en": "Save"
+    },
+    "Тема": {
+        "ru": "Тема",
+        "en": "Theme"
+    },
+    "Фон": {
+        "ru": "Фон",
+        "en": "Background"
+    },
+    "Язык": {
+        "ru": "Язык",
+        "en": "Language"
+    },
+    "volume": {
+        "ru": "Громкость",
+        "en": "Volume"
+    },
+    "more": {
+        "ru": "Больше",
+        "en": "More"
+    },
+    "key_e": {
+        "ru": "Назначение клавиш",
+        "en": "Key assignment"
+    },
+
+    "Жанры": {
+        "ru": "Жанры",
+        "en": "Genres"
+    },
+    "Жанр": {
+        "ru": "Жанр",
+        "en": "Genre"
+    },
+    "Поп": {
+        "ru": "Поп",
+        "en": "Pop",
+        "num": "2"
+    },
+    "Рок": {
+        "ru": "Рок",
+        "en": "Rock",
+        "num": "6"
+    },
+    "Рэп": {
+        "ru": "Рэп",
+        "en": "Rap",
+        "num": "3"
+    },
+    "Джаз": {
+        "ru": "Джаз",
+        "en": "Jazz",
+        "num": "39"
+    },
+    "Шансон": {
+        "ru": "Шансон",
+        "en": "Shanson",
+        "num": "14"
+    },
+    "Классика": {
+        "ru": "Классика",
+        "en": "Classical",
+        "num": "28"
+    },
+
+    "Трек": {
+        "ru": "Трек",
+        "en": "Track"
+    },
+    "Артист": {
+        "ru": "Артист",
+        "en": "Artist"
+    },
+    "Длительность": {
+        "ru": "Длительность",
+        "en": "Duration"
+    },
+    "Размер": {
+        "ru": "Размер",
+        "en": "Size"
+    },
+
+    "Плейлист": {
+        "ru": "Плейлист",
+        "en": "Playlist"
+    },
+    "add_pl": {
+        "ru": "Добавить в плейлист",
+        "en": "Add to playlist"
+    },
+    "create_pl": {
+        "ru": "Создать Плейлист",
+        "en": "Create Playlist"
+    },
+    "pl_name": {
+        "ru": "Название Плейлиста",
+        "en": "Playlist Name"
+    },
+
+    "not_found": {
+        "ru": "Упс, ничего не найдено ;(",
+        "en": "Oops, nothing found ;("
+    },
+    "load_error": {
+        "ru": "Упс, ничего не загружено ;(",
+        "en": "Oops, nothing uploaded ;("
+    },
+    "add_error": {
+        "ru": "Упс, сюда ничего не добавлено ;(",
+        "en": "Oops, nothing added here ;("
+    },
+    "song_error": {
+        "ru": "Упс, не удалось воспроизвести трек ;(",
+        "en": "Oops, failed to play track ;("
+    },
+    "connect_error": {
+        "ru": "Упс, не удалось подключиться к интернету ;(",
+        "en": "Oops, could not connect to the internet ;("
+    },
+
+    "update_text": {
+        "ru": "Доступно обновление",
+        "en": "Update is available"
+    },
+    "Загрузка": {
+        "ru": "Загрузка",
+        "en": "Loading"
+    },
+    "Новости": {
+        "ru": "Новости",
+        "en": "News"
+    },
+    "Поиск" : {
+        "ru": "Поиск",
+        "en": "Search"
+    },
+    "Страница": {
+        "ru": "страница",
+        "en": "page"
+    },
+    "key_assignmet": {
+        "ru": "Клавишы\n\n< SPACE > - Плей/Пауза\n\n< UP > - Сделать громче\n\n< DOWN > - Сделать тише\n\n< RIGHT > - Следующая песня\n\n< LEFT > - Предыдущая песня\n\n< Shift > - Информация о песне",
+        "en": "Keyboard keys\n\n< SPACE > - Play/Pause\n\n< UP > - Make it louder\n\n< DOWN > - Make it quieter\n\n< RIGHT > - After song\n\n< LEFT > - Behind song\n\n< Shift > - Information about song"
+    }
+}

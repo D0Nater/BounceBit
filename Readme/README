@@ -1,0 +1,29 @@
+%s v%s
+
+ Author: %s
+ GitHub: %s
+ License: %s
+
+ Language: Python
+ Interface: Tkinter
+ Media player: Pyglet
+
+ Don't delete files because you will lose data!
+
+ BounceBit  -  Main File
+ |
+ |___Databases  -  Folder With Data
+     |
+     |___README  -  Readme
+     |
+     |___LICENSE  -  License
+     |
+     |___database1  -  Settings
+     |
+     |___database2  -  Added Music & Playlists
+     |
+     |___database3  -  Saved Music
+     |
+     |___database4  -  News
+     |
+     |___Download_Music  -  Folder With Your Music
