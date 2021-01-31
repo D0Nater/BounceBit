@@ -95,7 +95,6 @@ class UpdateProgram:
                     downloading_num.set(f"{done} %")
 
                     continue
-
                 break
 
         self.close_msg()
@@ -110,15 +109,9 @@ class UpdateProgram:
                     showinfo(title="BounceBit", message="Starting Error!")
         else:
             delete_update()
-            showinfo(title=f"BounceBit Update {self.new_version}", message="Program was not updated!")
+            showinfo(title=f"BounceBit", message="Program was not updated!")
 
         self.downloading = False
-
-    def update_msg(self):
-        if self.draw_update:
-            self.close_msg()
-            self.draw_update = True
-            self.create_text_upd()
 
     def close_msg(self):
         Main.MENU_CANVAS.delete(self.update_text_draw)
