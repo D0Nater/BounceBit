@@ -4,7 +4,7 @@
 import requests
 import lxml.html
 
-from os import remove, startfile
+from os import remove, system as os_system
 
 """ For make message box """
 from tkinter.messagebox import showinfo, askyesno
@@ -105,7 +105,7 @@ class UpdateProgram:
             if answer:
                 try:
                     Main.ROOT.quit()
-                    startfile(f"BounceBit_{self.new_version}.exe")
+                    os_system(f"start BounceBit_{self.new_version}.exe")
                 except:
                     showinfo(title="BounceBit", message="Starting Error!")
         else:
