@@ -99,12 +99,18 @@ class ParseMusic:
 
             song_data = json_loads(tree.xpath(f'//*[@id="pjax-container"]/div[1]/div/div[1]/@data-musmeta')[0])
 
+            try:
+                song_size = tree.xpath('//*[@id="pjax-container"]/div[1]/div/div[2]/div/select/option[2]/text()')[0].split(" ")[-2]
+            except:
+                song_size = str(tree.xpath('//*[@id="pjax-container"]/div[1]/div/div[3]/p/text()')).split(" ")
+                song_size = song_size[song_size.index("Мб")-1]
+
             return {
                 "name": song_data["title"],
                 "author": song_data["artist"],
                 "url": song_data["url"],
                 "song_time": tree.xpath(f'//*[@id="pjax-container"]/div[1]/div/div[1]/div[3]/div[2]/div/div[1]/text()')[0],
-                "size": tree.xpath('//*[@id="pjax-container"]/div[1]/div/div[2]/div/select/option[2]/text()')[0].split(" ")[-2],
+                "size": song_size,
                 "song_id": song_id,
                 "error": None
             }
